@@ -21,14 +21,14 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Les Saveurs du Cap Bon",
+  title: "Les Mille Saveurs du Cap Bon",
   description:
-    "Every order, product and customer request, from every channel, in one organised workspace.",
+    "Chaque commande, produit et demande client, de tous les canaux, dans un espace organisé.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <body className={`${bricolage.variable} ${publicSans.variable} ${plexMono.variable}`}>
         {children}
       </body>

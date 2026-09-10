@@ -11,3 +11,9 @@ tsconfig.tsbuildinfo
 # Preview tooling leftovers, not part of the project.
 .clicky-preview.*
 output/
+
+# Internal notes about the client and this work. The GitHub repository is public,
+# so nothing under here is allowed to leave the machine.
+.memory/
+MEMORY.md
+.claude/

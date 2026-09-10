@@ -18,55 +18,55 @@ export const CHANNELS: Record<ChannelId, ChannelDefinition> = {
   website: {
     id: "website",
     label: "Website",
-    longLabel: "Website lead form",
+    longLabel: "Formulaire du site web",
     colorVar: "var(--color-ch-website)",
-    composerPlaceholder: (name) => `Reply to ${name} by email`,
-    cannotSendReason: "The website form is not connected, so replies cannot be sent from here.",
+    composerPlaceholder: (name) => `Répondre à ${name} par e-mail`,
+    cannotSendReason: "Le formulaire du site n’est pas connecté, les réponses ne peuvent donc pas partir d’ici.",
   },
   whatsapp: {
     id: "whatsapp",
     label: "WhatsApp",
     longLabel: "WhatsApp Business",
     colorVar: "var(--color-ch-whatsapp)",
-    composerPlaceholder: (name) => `Write to ${name} on WhatsApp`,
+    composerPlaceholder: (name) => `Écrire à ${name} sur WhatsApp`,
     cannotSendReason:
-      "WhatsApp setup is not finished. Add the business phone number and get one message template approved before sending.",
+      "La configuration de WhatsApp n’est pas terminée. Ajoutez le numéro professionnel et faites approuver un modèle de message avant l’envoi.",
   },
   instagram: {
     id: "instagram",
     label: "Instagram",
-    longLabel: "Instagram professional account",
+    longLabel: "Compte professionnel Instagram",
     colorVar: "var(--color-ch-instagram)",
-    composerPlaceholder: (name) => `Reply to ${name} on Instagram`,
+    composerPlaceholder: (name) => `Répondre à ${name} sur Instagram`,
     cannotSendReason:
-      "The Instagram professional account is not connected, so this reply cannot leave this workspace.",
+      "Le compte professionnel Instagram n’est pas connecté, cette réponse ne peut donc pas quitter cet espace.",
   },
   facebook: {
     id: "facebook",
     label: "Facebook",
-    longLabel: "Facebook Page Messenger",
+    longLabel: "Messenger de la page Facebook",
     colorVar: "var(--color-ch-facebook)",
-    composerPlaceholder: (name) => `Reply to ${name} on Messenger`,
+    composerPlaceholder: (name) => `Répondre à ${name} sur Messenger`,
     cannotSendReason:
-      "The page permission was withdrawn, so Messenger replies would fail. Reconnect the page first.",
+      "L’autorisation de la page a été retirée, les réponses Messenger échoueraient. Reconnectez d’abord la page.",
   },
   google: {
     id: "google",
     label: "Google",
-    longLabel: "Google Ads lead form",
+    longLabel: "Formulaire de prospects Google Ads",
     colorVar: "var(--color-ch-google)",
-    composerPlaceholder: (name) => `Reply to ${name} by email`,
+    composerPlaceholder: (name) => `Répondre à ${name} par e-mail`,
     cannotSendReason:
-      "Google Ads lead forms deliver leads one way. Reply by email or phone instead.",
+      "Les formulaires de prospects Google Ads transmettent les demandes dans un seul sens. Répondez plutôt par e-mail ou par téléphone.",
   },
   manual: {
     id: "manual",
-    label: "Manual",
-    longLabel: "Added by hand",
+    label: "Manuel",
+    longLabel: "Ajouté manuellement",
     colorVar: "var(--color-ch-manual)",
-    composerPlaceholder: (name) => `Record what you told ${name}`,
+    composerPlaceholder: (name) => `Noter ce que vous avez dit à ${name}`,
     cannotSendReason:
-      "This request was typed in by hand, so there is no channel to send a reply on.",
+      "Cette demande a été saisie manuellement, il n’y a donc aucun canal pour envoyer une réponse.",
   },
 };
 

@@ -59,11 +59,11 @@ export function PageHeader({
 export function DemoChip({ className = "" }: { className?: string }) {
   return (
     <span
-      title="Sample data. No Instagram, WhatsApp, Facebook or Google account is connected, and nothing here reaches a customer."
+      title="Données d’exemple. Aucun compte Instagram, WhatsApp, Facebook ou Google n’est connecté et rien ici ne contacte un client."
       className={`inline-flex items-center gap-2 rounded-full border border-accent-line bg-accent-soft px-3 py-1 text-xs font-semibold text-accent-ink ${className}`}
     >
       <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
-      Demo data, no account is connected
+      Espace de prévisualisation · données d’exemple
     </span>
   );
 }

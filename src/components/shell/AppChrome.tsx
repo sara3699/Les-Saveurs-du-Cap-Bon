@@ -84,7 +84,7 @@ export function AppChrome(props: ChromeProps) {
             </span>
           </div>
 
-          <div className="os-rail-caption px-2">Command center</div>
+          <div className="os-rail-caption px-2">Centre de commande</div>
           <nav aria-label="Main" className="os-rail-nav">
             {NAV_GROUPS.map((group) => (
               <div key={group.title} className="mb-4">
@@ -131,8 +131,8 @@ export function AppChrome(props: ChromeProps) {
             ))}
           </nav>
           <div className="rounded-[var(--radius-md)] border border-white/12 bg-white/7 px-3 py-2.5 text-[11px] leading-relaxed text-white/65">
-            <span className="mb-1 block font-semibold text-white/90">One workspace, every channel</span>
-            Website, WhatsApp, Instagram, Facebook, Google and counter orders stay attributed from first message to paid order.
+            <span className="mb-1 block font-semibold text-white/90">Un espace, tous les canaux</span>
+            Les commandes du site, de WhatsApp, Instagram, Facebook, Google et du comptoir gardent leur source jusqu’au paiement.
           </div>
         </div>
       </aside>
@@ -157,15 +157,15 @@ export function AppChrome(props: ChromeProps) {
                 setPanel("search");
               }}
               onFocus={() => setPanel("search")}
-              placeholder="Search a customer, a conversation, or an order number"
-              aria-label="Search"
+              placeholder="Rechercher un client, une conversation ou une commande"
+              aria-label="Rechercher"
               className="w-full rounded-[var(--radius-md)] border border-line bg-surface px-3 py-2 text-[13px] placeholder:text-faint"
             />
             {panel === "search" && query.trim().length >= 2 ? (
               <div className="absolute left-0 right-0 top-11 z-30 overflow-hidden rounded-[var(--radius-md)] border border-line bg-surface shadow-[var(--shadow-card)]">
                 {results.length === 0 ? (
                   <p className="px-3 py-3 text-[13px] text-muted">
-                    Nothing matches {query.trim()} in the demo data.
+                    Aucun résultat pour « {query.trim()} » dans les données d’exemple.
                   </p>
                 ) : (
                   results.map((r) => (
@@ -192,7 +192,7 @@ export function AppChrome(props: ChromeProps) {
             href="/help"
             className="hidden rounded-[var(--radius-md)] border border-line bg-surface px-3 py-2 text-xs font-semibold sm:block"
           >
-            Help
+            Aide
           </Link>
 
           <div className="relative">
@@ -202,7 +202,7 @@ export function AppChrome(props: ChromeProps) {
               aria-expanded={panel === "notices"}
               className="relative rounded-[var(--radius-md)] border border-line bg-surface px-3 py-2 text-xs font-semibold"
             >
-              Alerts
+              Alertes
               {props.notices.length > 0 ? (
                 <span
                   className={`absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full px-1 text-[10px] font-bold text-white ${
@@ -216,7 +216,7 @@ export function AppChrome(props: ChromeProps) {
             {panel === "notices" ? (
               <div className="absolute right-0 top-11 z-30 w-[300px] overflow-hidden rounded-[var(--radius-md)] border border-line bg-surface shadow-[var(--shadow-card)]">
                 {props.notices.length === 0 ? (
-                  <p className="px-3 py-3 text-[13px] text-muted">Nothing needs your attention.</p>
+                  <p className="px-3 py-3 text-[13px] text-muted">Rien ne demande votre attention.</p>
                 ) : (
                   props.notices.map((n) => (
                     <Link
@@ -259,10 +259,10 @@ export function AppChrome(props: ChromeProps) {
                 <p className="text-[11.5px] text-muted">{props.userRole} of {props.storeName}</p>
                 <div className="mt-3 flex flex-col gap-1.5">
                   <Link href="/settings" onClick={closeAll} className="rounded-[var(--radius-sm)] border border-line px-2.5 py-1.5 text-[13px] hover:bg-surface-2">
-                    Settings
+                    Paramètres
                   </Link>
                   <span className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[12px] text-muted">
-                    Signing in arrives with the real database. Until then the demo workspace opens without a password.
+                    La connexion arrivera avec la vraie base de données. Pour l’instant, l’espace de démonstration s’ouvre sans mot de passe.
                   </span>
                 </div>
               </div>
@@ -273,7 +273,7 @@ export function AppChrome(props: ChromeProps) {
         {panel !== "none" ? (
           <button
             type="button"
-            aria-label="Close the open panel"
+            aria-label="Fermer le panneau ouvert"
             onClick={() => setPanel("none")}
             className="fixed inset-0 z-10 cursor-default"
           />

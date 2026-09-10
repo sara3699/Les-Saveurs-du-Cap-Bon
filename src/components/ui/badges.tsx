@@ -39,27 +39,27 @@ export function SourceBadge({
 }
 
 const PAYMENT_COPY: Record<PaymentStatus, { label: string; tone: Tone }> = {
-  paid: { label: "Paid", tone: "success" },
-  cash_on_delivery: { label: "On delivery", tone: "accent" },
-  pending: { label: "Awaiting payment", tone: "muted" },
-  refused: { label: "Refused", tone: "danger" },
-  refunded: { label: "Refunded", tone: "danger" },
+  paid: { label: "Payée", tone: "success" },
+  cash_on_delivery: { label: "À la livraison", tone: "accent" },
+  pending: { label: "En attente de paiement", tone: "muted" },
+  refused: { label: "Refusée", tone: "danger" },
+  refunded: { label: "Remboursée", tone: "danger" },
 };
 
 const DELIVERY_COPY: Record<DeliveryStatus, { label: string; tone: Tone }> = {
-  preparing: { label: "Preparing", tone: "muted" },
-  dispatched: { label: "On the way", tone: "primary" },
-  delivered: { label: "Delivered", tone: "success" },
-  returned: { label: "Returned", tone: "danger" },
-  cancelled: { label: "Cancelled", tone: "muted" },
+  preparing: { label: "En préparation", tone: "muted" },
+  dispatched: { label: "En livraison", tone: "primary" },
+  delivered: { label: "Livrée", tone: "success" },
+  returned: { label: "Retournée", tone: "danger" },
+  cancelled: { label: "Annulée", tone: "muted" },
 };
 
 export const CONNECTION_COPY: Record<ConnectionStatus, { label: string; tone: Tone }> = {
-  connected: { label: "Connected", tone: "success" },
-  setup_required: { label: "Setup required", tone: "accent" },
-  not_connected: { label: "Not connected", tone: "muted" },
-  warning: { label: "Needs a look", tone: "accent" },
-  error: { label: "Not receiving", tone: "danger" },
+  connected: { label: "Connecté", tone: "success" },
+  setup_required: { label: "Configuration requise", tone: "accent" },
+  not_connected: { label: "Non connecté", tone: "muted" },
+  warning: { label: "À vérifier", tone: "accent" },
+  error: { label: "Ne reçoit plus", tone: "danger" },
 };
 
 type Tone = "success" | "danger" | "accent" | "muted" | "primary";

@@ -13,11 +13,11 @@ export function SourcePanel({ rows, periodLabel }: { rows: SourceRow[]; periodLa
   return (
     <Card>
       <CardHead
-        title="Where your orders come from"
-        hint={`${periodLabel}, by the channel the request arrived on`}
+        title="D’où viennent vos commandes"
+        hint={`${periodLabel}, selon le canal d’arrivée de la demande`}
         action={
           <Link href="/statistics" className="text-xs font-semibold text-primary hover:underline">
-            Compare channels
+            Comparer les canaux
           </Link>
         }
       />
@@ -25,11 +25,11 @@ export function SourcePanel({ rows, periodLabel }: { rows: SourceRow[]; periodLa
         <table className="w-full min-w-[520px] border-collapse text-sm">
           <thead>
             <tr>
-              <th className="os-label pb-2 text-left font-normal">Channel</th>
-              <th className="os-label pb-2 text-left font-normal">Share</th>
-              <th className="os-label pb-2 text-right font-normal">Orders</th>
-              <th className="os-label pb-2 text-right font-normal">Revenue</th>
-              <th className="os-label pb-2 text-right font-normal">Trend</th>
+              <th className="os-label pb-2 text-left font-normal">Canal</th>
+              <th className="os-label pb-2 text-left font-normal">Part</th>
+              <th className="os-label pb-2 text-right font-normal">Commandes</th>
+              <th className="os-label pb-2 text-right font-normal">Chiffre d’affaires</th>
+              <th className="os-label pb-2 text-right font-normal">Évolution</th>
             </tr>
           </thead>
           <tbody>
@@ -61,7 +61,7 @@ export function SourcePanel({ rows, periodLabel }: { rows: SourceRow[]; periodLa
                 </td>
                 <td className="os-num py-2.5 text-right text-[12px]">
                   {row.trend === null ? (
-                    <span className="text-faint">new</span>
+                    <span className="text-faint">nouveau</span>
                   ) : (
                     <span className={row.trend >= 0 ? "text-success" : "text-danger"}>
                       {row.trend >= 0 ? "+" : ""}
@@ -93,10 +93,10 @@ export interface AttentionItem {
 export function AttentionPanel({ items }: { items: AttentionItem[] }) {
   return (
     <Card>
-      <CardHead title="Needs attention" hint={`${items.length} things nobody has picked up`} />
+      <CardHead title="À surveiller" hint={`${items.length} éléments attendent une action`} />
       {items.length === 0 ? (
         <p className="rounded-[var(--radius-md)] border border-dashed border-line-strong bg-surface-2 px-4 py-6 text-center text-sm text-muted">
-          Nothing is waiting. Every request has an owner and no follow up is late.
+          Rien n’attend. Chaque demande a un responsable et aucun suivi n’est en retard.
         </p>
       ) : (
         <ul className="flex flex-col gap-2">
@@ -132,7 +132,7 @@ export function DayChart({ bars }: { bars: DayBar[] }) {
 
   return (
     <Card>
-      <CardHead title="Orders per day" hint="Confirmed against abandoned, last 7 days" />
+      <CardHead title="Commandes par jour" hint="Confirmées par rapport aux abandons, sur les 7 derniers jours" />
       <div className="flex h-[132px] items-end gap-2.5">
         {bars.map((bar, i) => (
           <div key={`${bar.label}-${i}`} className="flex flex-1 flex-col items-center gap-1.5">
@@ -154,11 +154,11 @@ export function DayChart({ bars }: { bars: DayBar[] }) {
       <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted">
         <span className="flex items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-[3px] bg-primary" />
-          Confirmed {((confirmed / total) * 100).toFixed(0)} percent
+          Confirmées {((confirmed / total) * 100).toFixed(0)} %
         </span>
         <span className="flex items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-[3px] bg-primary-mute" />
-          Abandoned {((abandoned / total) * 100).toFixed(0)} percent
+          Abandonnées {((abandoned / total) * 100).toFixed(0)} %
         </span>
       </div>
     </Card>
@@ -167,14 +167,14 @@ export function DayChart({ bars }: { bars: DayBar[] }) {
 
 export function DeliveryPanel({ split, worstReturns }: { split: DeliverySplit; worstReturns: { channelId: ChannelId; rate: number } | null }) {
   const rows = [
-    { label: "Delivered", value: split.delivered, color: "var(--color-success)" },
-    { label: "On the way", value: split.dispatched, color: "var(--color-primary)" },
-    { label: "Preparing", value: split.preparing, color: "var(--color-line-strong)" },
-    { label: "Returned", value: split.returned, color: "var(--color-danger)" },
+    { label: "Livrées", value: split.delivered, color: "var(--color-success)" },
+    { label: "En livraison", value: split.dispatched, color: "var(--color-primary)" },
+    { label: "En préparation", value: split.preparing, color: "var(--color-line-strong)" },
+    { label: "Retournées", value: split.returned, color: "var(--color-danger)" },
   ];
   return (
     <Card>
-      <CardHead title="Delivery" hint={`${split.total} orders in the last 30 days`} />
+      <CardHead title="Livraison" hint={`${split.total} commandes sur les 30 derniers jours`} />
       <ul className="flex flex-col gap-2.5">
         {rows.map((row) => (
           <li key={row.label} className="grid grid-cols-[92px_1fr_44px] items-center gap-3">
@@ -213,11 +213,11 @@ export function DemandPanel({
   return (
     <Card>
       <CardHead
-        title="Orders by platform today"
-        hint="Orders that arrived today and over the last seven days, with anything still waiting for an answer"
+        title="Commandes par canal aujourd’hui"
+        hint="Commandes reçues aujourd’hui et sur les sept derniers jours, avec les demandes encore en attente"
         action={
           <Link href="/orders" className="text-xs font-semibold text-primary hover:underline">
-            Open orders
+            Ouvrir les commandes
           </Link>
         }
       />
@@ -267,11 +267,11 @@ export interface ChannelHubRow {
 }
 
 const connectionStatusCopy: Record<ConnectionStatus, { label: string; className: string }> = {
-  connected: { label: "Receiving", className: "bg-success-soft text-success" },
-  setup_required: { label: "Setup needed", className: "bg-accent-soft text-accent-ink" },
-  not_connected: { label: "Not connected", className: "bg-surface-2 text-muted" },
-  warning: { label: "Check setup", className: "bg-accent-soft text-accent-ink" },
-  error: { label: "Action needed", className: "bg-danger-soft text-danger" },
+  connected: { label: "Réception active", className: "bg-success-soft text-success" },
+  setup_required: { label: "Configuration requise", className: "bg-accent-soft text-accent-ink" },
+  not_connected: { label: "Non connecté", className: "bg-surface-2 text-muted" },
+  warning: { label: "À vérifier", className: "bg-accent-soft text-accent-ink" },
+  error: { label: "Action requise", className: "bg-danger-soft text-danger" },
 };
 
 export function ChannelHubPanel({ rows }: { rows: ChannelHubRow[] }) {
@@ -282,18 +282,18 @@ export function ChannelHubPanel({ rows }: { rows: ChannelHubRow[] }) {
   return (
     <Card>
       <CardHead
-        title="One order desk, every channel"
-        hint="Orders and conversations keep their original source while arriving in one shared workspace"
+        title="Un seul espace pour tous les canaux"
+        hint="Les commandes et conversations gardent leur source tout en arrivant dans un espace partagé"
         action={
           <Link href="/integrations" className="text-xs font-semibold text-primary hover:underline">
-            Manage connections
+            Gérer les connexions
           </Link>
         }
       />
       <div className="mb-4 flex flex-wrap gap-x-5 gap-y-2 border-b border-line pb-4 text-xs text-muted">
-        <span><strong className="os-num text-ink">{receiving}/6</strong> channels receiving</span>
-        <span><strong className="os-num text-ink">{ordersThisWeek}</strong> orders this week</span>
-        <span><strong className="os-num text-ink">{waiting}</strong> waiting for a reply</span>
+        <span><strong className="os-num text-ink">{receiving}/6</strong> canaux actifs</span>
+        <span><strong className="os-num text-ink">{ordersThisWeek}</strong> commandes cette semaine</span>
+        <span><strong className="os-num text-ink">{waiting}</strong> en attente de réponse</span>
       </div>
       <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
         {rows.map((row) => {
@@ -315,21 +315,21 @@ export function ChannelHubPanel({ rows }: { rows: ChannelHubRow[] }) {
               </p>
               <div className="mt-3 grid grid-cols-3 gap-2 border-t border-line pt-2.5">
                 <div>
-                  <p className="os-label">Today</p>
+                  <p className="os-label">Aujourd’hui</p>
                   <p className="os-num mt-1 text-[15px] font-semibold">{row.ordersToday}</p>
                 </div>
                 <div>
-                  <p className="os-label">This week</p>
+                  <p className="os-label">Cette semaine</p>
                   <p className="os-num mt-1 text-[15px] font-semibold">{row.ordersThisWeek}</p>
                 </div>
                 <div>
-                  <p className="os-label">Waiting</p>
+                  <p className="os-label">En attente</p>
                   <p className={`os-num mt-1 text-[15px] font-semibold ${row.waiting ? "text-accent-ink" : ""}`}>
                     {row.waiting}
                   </p>
                 </div>
               </div>
-              <p className="mt-2 text-[10.5px] text-faint">{row.eventsThisWeek} incoming events this week</p>
+              <p className="mt-2 text-[10.5px] text-faint">{row.eventsThisWeek} événements reçus cette semaine</p>
             </li>
           );
         })}
@@ -367,20 +367,20 @@ export function ConversionPanel({
   return (
     <Card>
       <CardHead
-        title="Call-to-order conversion"
-        hint="Last 30 days, from calls received to customers won and orders placed"
+        title="Conversion des appels en commandes"
+        hint="30 derniers jours, des appels reçus aux clients gagnés et commandes passées"
         action={
           <Link href={href} className="text-xs font-semibold text-primary hover:underline">
-            Open team performance
+            Voir la performance de l’équipe
           </Link>
         }
       />
       <div className="grid gap-2 sm:grid-cols-4">
         {[
-          { label: "Calls received", value: summary.callsReceived, note: "assigned to the team" },
-          { label: "Customers reached", value: summary.customersReached, note: `${summary.reachRate.toFixed(0)}% reach rate` },
-          { label: "Customers won", value: summary.customersWon, note: `${summary.conversionRate.toFixed(0)}% conversion` },
-          { label: "Orders placed", value: summary.ordersPlaced, note: `${summary.orderRate.toFixed(0)}% of calls` },
+          { label: "Appels reçus", value: summary.callsReceived, note: "attribués à l’équipe" },
+          { label: "Clients joints", value: summary.customersReached, note: `${summary.reachRate.toFixed(0)} % de joignabilité` },
+          { label: "Clients gagnés", value: summary.customersWon, note: `${summary.conversionRate.toFixed(0)} % de conversion` },
+          { label: "Commandes passées", value: summary.ordersPlaced, note: `${summary.orderRate.toFixed(0)} % des appels` },
         ].map((item) => (
           <div key={item.label} className="rounded-[var(--radius-md)] border border-line bg-surface-2 px-3 py-2.5">
             <p className="os-label">{item.label}</p>
@@ -392,13 +392,13 @@ export function ConversionPanel({
 
       <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_1.35fr]">
         <div className="rounded-[var(--radius-md)] border border-line bg-surface-2 p-3">
-          <p className="os-label">Team funnel</p>
+          <p className="os-label">Entonnoir de l’équipe</p>
           <div className="mt-3 flex flex-col gap-2.5">
             {[
-              { label: "Calls received", value: summary.callsReceived, color: "var(--color-primary)" },
-              { label: "Customers reached", value: summary.customersReached, color: "var(--color-accent)" },
-              { label: "Customers won", value: summary.customersWon, color: "var(--color-success)" },
-              { label: "Orders placed", value: summary.ordersPlaced, color: "var(--color-primary-hi)" },
+              { label: "Appels reçus", value: summary.callsReceived, color: "var(--color-primary)" },
+              { label: "Clients joints", value: summary.customersReached, color: "var(--color-accent)" },
+              { label: "Clients gagnés", value: summary.customersWon, color: "var(--color-success)" },
+              { label: "Commandes passées", value: summary.ordersPlaced, color: "var(--color-primary-hi)" },
             ].map((stage) => (
               <div key={stage.label} className="grid grid-cols-[112px_1fr_34px] items-center gap-2">
                 <span className="text-[12px] font-medium">{stage.label}</span>
@@ -421,12 +421,12 @@ export function ConversionPanel({
           <table className="w-full min-w-[500px] border-collapse text-sm">
             <thead>
               <tr>
-                <th className="os-label pb-2 text-left font-normal">Team member</th>
-                <th className="os-label pb-2 text-right font-normal">Calls</th>
-                <th className="os-label pb-2 text-right font-normal">Won</th>
-                <th className="os-label pb-2 text-right font-normal">Rejected</th>
-                <th className="os-label pb-2 text-right font-normal">Orders</th>
-                <th className="os-label pb-2 text-right font-normal">Rate</th>
+                <th className="os-label pb-2 text-left font-normal">Membre</th>
+                <th className="os-label pb-2 text-right font-normal">Appels</th>
+                <th className="os-label pb-2 text-right font-normal">Gagnés</th>
+                <th className="os-label pb-2 text-right font-normal">Refusés</th>
+                <th className="os-label pb-2 text-right font-normal">Commandes</th>
+                <th className="os-label pb-2 text-right font-normal">Taux</th>
               </tr>
             </thead>
             <tbody>

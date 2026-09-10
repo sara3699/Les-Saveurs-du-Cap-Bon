@@ -18,43 +18,43 @@ export interface NavGroup {
  */
 export const NAV_GROUPS: NavGroup[] = [
   {
-    title: "Store",
+    title: "Boutique",
     items: [
-      { href: "/dashboard", label: "Dashboard", glyph: "⌂" },
-      { href: "/orders", label: "Orders", glyph: "◈", badge: "orders" },
-      { href: "/products", label: "Products", glyph: "▦" },
-      { href: "/upsells", label: "Up and cross sells", glyph: "↗" },
-      { href: "/statistics", label: "Statistics", glyph: "▥" },
-      { href: "/calculator", label: "Calculator", glyph: "＋" },
-      { href: "/budget", label: "Budget manager", glyph: "◒" },
-      { href: "/team", label: "Team", glyph: "◎" },
-      { href: "/store", label: "Store", glyph: "▱" },
+      { href: "/dashboard", label: "Tableau de bord", glyph: "⌂" },
+      { href: "/orders", label: "Commandes", glyph: "◈", badge: "orders" },
+      { href: "/products", label: "Produits", glyph: "▦" },
+      { href: "/upsells", label: "Ventes additionnelles", glyph: "↗" },
+      { href: "/statistics", label: "Statistiques", glyph: "▥" },
+      { href: "/calculator", label: "Calculateur", glyph: "＋" },
+      { href: "/budget", label: "Gestion du budget", glyph: "◒" },
+      { href: "/team", label: "Équipe", glyph: "◎" },
+      { href: "/store", label: "Boutique", glyph: "▱" },
     ],
   },
   {
-    title: "Customer flow",
+    title: "Parcours client",
     items: [
-      { href: "/inbox", label: "Inbox", glyph: "✦", badge: "inbox" },
+      { href: "/inbox", label: "Boîte de réception", glyph: "✦", badge: "inbox" },
       { href: "/contacts", label: "Contacts", glyph: "◌" },
-      { href: "/pipeline", label: "Pipeline", glyph: "⌁" },
-      { href: "/tasks", label: "Tasks", glyph: "✓", badge: "tasks" },
-      { href: "/integrations", label: "Integrations", glyph: "⌘", badge: "integrations" },
+      { href: "/pipeline", label: "Prospects", glyph: "⌁" },
+      { href: "/tasks", label: "Tâches", glyph: "✓", badge: "tasks" },
+      { href: "/integrations", label: "Intégrations", glyph: "⌘", badge: "integrations" },
     ],
   },
   {
-    title: "Workspace",
+    title: "Espace de travail",
     items: [
-      { href: "/settings", label: "Settings", glyph: "⚙" },
-      { href: "/help", label: "Need help?", glyph: "?" },
+      { href: "/settings", label: "Paramètres", glyph: "⚙" },
+      { href: "/help", label: "Besoin d’aide ?", glyph: "?" },
     ],
   },
 ];
 
 /** The five destinations that fit across the bottom of a phone. */
 export const MOBILE_NAV: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", glyph: "⌂" },
-  { href: "/orders", label: "Orders", glyph: "◈", badge: "orders" },
-  { href: "/inbox", label: "Inbox", glyph: "✦", badge: "inbox" },
-  { href: "/tasks", label: "Tasks", glyph: "✓", badge: "tasks" },
-  { href: "/integrations", label: "Setup", glyph: "⌘", badge: "integrations" },
+  { href: "/dashboard", label: "Accueil", glyph: "⌂" },
+  { href: "/orders", label: "Commandes", glyph: "◈", badge: "orders" },
+  { href: "/inbox", label: "Messages", glyph: "✦", badge: "inbox" },
+  { href: "/tasks", label: "Tâches", glyph: "✓", badge: "tasks" },
+  { href: "/integrations", label: "Connexion", glyph: "⌘", badge: "integrations" },
 ];

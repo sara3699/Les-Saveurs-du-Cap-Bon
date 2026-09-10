@@ -94,7 +94,17 @@ export default async function OrdersPage({ searchParams }: { searchParams: Param
       <PageHeader
         title="Commandes"
         subtitle={`${rows.length} commandes d'exemple dans cette vue sur ${periodLabel}. ${formatTND(revenueOf(orders))} de chiffre d'affaires confirmé après les refus et les remboursements.`}
-        actions={<DemoChip />}
+        actions={
+          <>
+            <Link
+              href="/orders/nouvelle"
+              className="rounded-[var(--radius-md)] bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hi"
+            >
+              Nouvelle commande
+            </Link>
+            <DemoChip />
+          </>
+        }
       />
 
       <Card>

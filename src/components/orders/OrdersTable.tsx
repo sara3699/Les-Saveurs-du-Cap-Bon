@@ -13,9 +13,9 @@ export function OrdersTable({
   if (rows.length === 0) {
     return (
       <EmptyState
-        title="No orders match these filters"
-        body="Clear a filter to widen the search. Every order in the demo data belongs to one of the six sources, so an empty result means the filters disagree with each other."
-        action={{ label: "Clear the filters", href: "/orders" }}
+        title="Aucune commande ne correspond à ces filtres"
+        body="Retirez un filtre pour élargir la recherche. Chaque commande des données d'exemple appartient à l'une des six sources, donc un résultat vide veut dire que les filtres se contredisent."
+        action={{ label: "Effacer les filtres", href: "/orders" }}
       />
     );
   }
@@ -25,16 +25,16 @@ export function OrdersTable({
       <table className="w-full min-w-[820px] border-collapse text-sm">
         <thead>
           <tr>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Order</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Customer</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Commande</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Client</th>
             <th className="os-label pb-2.5 pr-3 text-left font-normal">Source</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Payment</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Delivery</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Paiement</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Livraison</th>
             {showAssignee ? (
-              <th className="os-label pb-2.5 pr-3 text-left font-normal">Owner</th>
+              <th className="os-label pb-2.5 pr-3 text-left font-normal">Responsable</th>
             ) : null}
             <th className="os-label pb-2.5 pr-3 text-right font-normal">Total, TND</th>
-            <th className="os-label pb-2.5 text-right font-normal">Placed</th>
+            <th className="os-label pb-2.5 text-right font-normal">Passée</th>
           </tr>
         </thead>
         <tbody>
@@ -57,7 +57,7 @@ export function OrdersTable({
               </td>
               {showAssignee ? (
                 <td className="py-2.5 pr-3 text-[13px] text-muted">
-                  {row.assignee ?? <span className="text-danger">Nobody</span>}
+                  {row.assignee ?? <span className="text-danger">Personne</span>}
                 </td>
               ) : null}
               <td className="os-num py-2.5 pr-3 text-right text-[12.5px]">{row.totalLabel}</td>

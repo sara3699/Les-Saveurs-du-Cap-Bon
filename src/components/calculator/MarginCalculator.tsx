@@ -75,12 +75,12 @@ function Field({
 function Figure({
   label,
   value,
-  detail,
+  détail,
   tone = "plain",
 }: {
   label: string;
   value: string;
-  detail: string;
+  détail: string;
   tone?: "plain" | "bad";
 }) {
   const bad = tone === "bad";
@@ -98,7 +98,7 @@ function Figure({
       >
         {value}
       </p>
-      <p className="mt-1.5 text-[11px] leading-snug text-muted">{detail}</p>
+      <p className="mt-1.5 text-[11px] leading-snug text-muted">{détail}</p>
     </div>
   );
 }
@@ -131,9 +131,9 @@ function minus(amount: number): string {
   return amount === 0 ? formatTND(0) : `-${formatTND(amount)}`;
 }
 
-/** "1 order", "96 orders". */
+/** "1 commande", "96 commandes". */
 function orderWord(count: number): string {
-  return `${count} ${count === 1 ? "order" : "orders"}`;
+  return `${count} ${count === 1 ? "commande" : "commandes"}`;
 }
 
 export function MarginCalculator({
@@ -184,24 +184,24 @@ export function MarginCalculator({
 
   const lossAdvice =
     breakEven === null
-      ? "One order does not even cover its own product and delivery, so more orders make the loss bigger. Raise the price, cut the discount, or find cheaper delivery."
-      : `One order leaves ${formatTND(result.contributionPerOrder)} before advertising, so you need ${orderWord(breakEven)} to pay the advertising back. This run is set at ${orderWord(orderCount)}.`;
+      ? "Une commande ne couvre même pas son produit et sa livraison, donc plus il y a de commandes, plus la perte augmente. Augmentez le prix, réduisez la remise, ou trouvez une livraison moins chère."
+      : `Une commande laisse ${formatTND(result.contributionPerOrder)} avant la publicité, il vous faut donc ${orderWord(breakEven)} pour rembourser la publicité. Cette opération est réglée sur ${orderWord(orderCount)}.`;
 
   const profitNote =
     breakEven !== null && breakEven > 0 && inputs.adSpend > 0
-      ? `Each order leaves ${formatTND(result.marginPerOrder)}, and the run is set at ${orderWord(orderCount)}. The advertising is paid back at order ${breakEven}, and everything after that is yours.`
-      : `Each order leaves ${formatTND(result.marginPerOrder)}, and the run is set at ${orderWord(orderCount)}.`;
+      ? `Chaque commande laisse ${formatTND(result.marginPerOrder)}, et l'opération est réglée sur ${orderWord(orderCount)}. La publicité est remboursée à la commande ${breakEven}, et tout ce qui vient après est pour vous.`
+      : `Chaque commande laisse ${formatTND(result.marginPerOrder)}, et l'opération est réglée sur ${orderWord(orderCount)}.`;
 
   return (
     <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
       <Card className="flex min-w-0 flex-col gap-3">
         <CardHead
-          title="What you are pricing"
-          hint="Nothing is saved. Change a figure and the result moves with it."
+          title="Ce que vous chiffrez"
+          hint="Rien n'est enregistré. Changez un chiffre et le résultat suit."
         />
 
         <label className="flex flex-col gap-1">
-          <span className="os-label">Product</span>
+          <span className="os-label">Produit</span>
           <select
             value={productId}
             onChange={(event) => chooseProduct(event.target.value)}
@@ -214,50 +214,50 @@ export function MarginCalculator({
             ))}
           </select>
           <span className="text-[11px] leading-snug text-muted">
-            Picking a product fills in its price, what it costs you, and the units it has sold so
-            far. Reference <span className="os-num">{product.sku}</span>.
+            Choisir un produit remplit son prix, ce qu'il vous coûte, et les unités vendues jusqu'ici.
+            Référence produit <span className="os-num">{product.sku}</span>.
           </span>
         </label>
 
         <div className="grid gap-3 border-t border-line pt-3 sm:grid-cols-2 xl:grid-cols-1">
           <Field
-            label="Selling price, TND"
-            hint="What the product is listed at today, before any discount."
+            label="Prix de vente, TND"
+            hint="Le prix affiché aujourd'hui pour ce produit, avant toute remise."
             value={price}
             onChange={setPrice}
             step="0.5"
           />
           <Field
-            label="What the product costs you, TND"
-            hint="Materials, the maker, and anything you pay before it leaves the workshop."
+            label="Ce que le produit vous coûte, TND"
+            hint="Les matières, la fabrication, et tout ce que vous payez avant qu'il quitte l'atelier."
             value={cost}
             onChange={setCost}
             step="0.5"
           />
           <Field
-            label="Delivery for one order, TND"
+            label="Livraison pour une commande, TND"
             hint={deliveryNote}
             value={delivery}
             onChange={setDelivery}
             step="0.5"
           />
           <Field
-            label="Discount you plan to give, percent"
-            hint="Leave it at zero if the customer pays the full price."
+            label="Remise que vous comptez accorder, en pourcentage"
+            hint="Laissez zéro si le client paie le prix complet."
             value={discount}
             onChange={setDiscount}
             step="1"
             max="100"
           />
           <Field
-            label="Orders in the run"
-            hint={`Prefilled with the ${product.unitsSold} units this product has sold so far, one unit counted as one order.`}
+            label="Commandes de l'opération"
+            hint={`Prérempli avec les ${product.unitsSold} unités que ce produit a vendues jusqu'ici, une unité comptée comme une commande.`}
             value={orders}
             onChange={setOrders}
             step="1"
           />
           <Field
-            label="Advertising for the run, TND"
+            label="Publicité pour l'opération, TND"
             hint={adSpendNote}
             value={ads}
             onChange={setAds}
@@ -268,43 +268,43 @@ export function MarginCalculator({
 
       <div className="flex min-w-0 flex-col gap-4">
         <Card>
-          <CardHead title="What is left" hint={`${product.name}, ${orderWord(orderCount)}`} />
+          <CardHead title="Ce qui reste" hint={`${product.name}, ${orderWord(orderCount)}`} />
 
           <div className="grid gap-2.5 sm:grid-cols-2">
             <Figure
-              label="Margin on one order"
+              label="Marge sur une commande"
               value={formatTND(result.marginPerOrder)}
-              detail={
+              détail={
                 result.netPrice > 0
-                  ? `${formatPercent(Math.round(result.marginPercent))} of what the customer pays`
-                  : "The customer pays nothing at this discount, so there is no percentage to work out"
+                  ? `${formatPercent(Math.round(result.marginPercent))} de ce que le client paie`
+                  : "Le client ne paie rien avec cette remise, il n'y a donc pas de pourcentage à calculer"
               }
               tone={result.marginPerOrder < 0 ? "bad" : "plain"}
             />
             <Figure
-              label="Advertising per order"
+              label="Publicité par commande"
               value={formatTND(result.adPerOrder)}
-              detail={
+              détail={
                 orderCount > 0
-                  ? `${formatTND(inputs.adSpend)} shared across ${orderWord(orderCount)}`
-                  : "No orders in the run yet, so nothing carries the advertising"
+                  ? `${formatTND(inputs.adSpend)} répartis sur ${orderWord(orderCount)}`
+                  : "Aucune commande dans l'opération pour l'instant, rien ne porte donc la publicité"
               }
             />
             <Figure
-              label="Money in, whole run"
+              label="Argent entrant, toute l'opération"
               value={formatTND(result.totalRevenue)}
-              detail={`${orderWord(orderCount)} at ${formatTND(result.netPrice)} each`}
+              détail={`${orderWord(orderCount)} à ${formatTND(result.netPrice)} chacune`}
             />
             <Figure
-              label="Money out, whole run"
+              label="Argent sortant, toute l'opération"
               value={formatTND(result.totalCost)}
-              detail="Product and delivery on every order, plus the advertising once"
+              détail="Le produit et la livraison sur chaque commande, plus la publicité une fois"
             />
           </div>
 
           {result.isLoss ? (
             <div className="mt-3 rounded-[var(--radius-md)] border border-danger/25 bg-danger-soft px-4 py-3">
-              <p className="os-label">This run loses money</p>
+              <p className="os-label">Cette opération perd de l'argent</p>
               <p className="os-num mt-1 font-display text-[26px] font-bold leading-none tracking-tight text-danger">
                 {formatTND(result.profit)}
               </p>
@@ -314,7 +314,7 @@ export function MarginCalculator({
             </div>
           ) : (
             <div className="mt-3 rounded-[var(--radius-md)] border border-accent-line bg-accent-soft px-4 py-3">
-              <p className="os-label">Left after everything is paid</p>
+              <p className="os-label">Ce qui reste une fois tout payé</p>
               <p className="os-num mt-1 font-display text-[26px] font-bold leading-none tracking-tight text-accent-ink">
                 {formatTND(result.profit)}
               </p>
@@ -327,41 +327,41 @@ export function MarginCalculator({
 
         <Card>
           <CardHead
-            title="How that was worked out"
-            hint="One order first, then the same figures multiplied out"
+            title="Comment ce résultat a été calculé"
+            hint="D'abord une commande, puis les mêmes chiffres multipliés"
           />
           <div className="grid gap-x-8 gap-y-1 lg:grid-cols-2">
             <div>
-              <p className="os-label mb-1">One order</p>
+              <p className="os-label mb-1">Une commande</p>
               <dl>
-                <Line label="Selling price" value={formatTND(inputs.sellingPrice)} />
+                <Line label="Prix de vente" value={formatTND(inputs.sellingPrice)} />
                 {discountPercent > 0 ? (
                   <Line
-                    label={`Discount, ${discountPercent} percent`}
+                    label={`Remise, ${discountPercent} pour cent`}
                     value={minus(result.discountValue)}
                   />
                 ) : null}
-                <Line label="What the customer pays" value={formatTND(result.netPrice)} subtotal />
-                <Line label="The product" value={minus(inputs.productCost)} />
-                <Line label="Delivery" value={minus(inputs.deliveryCost)} />
-                <Line label="Advertising, this order's share" value={minus(result.adPerOrder)} />
-                <Line label="Margin on one order" value={formatTND(result.marginPerOrder)} strong />
+                <Line label="Ce que le client paie" value={formatTND(result.netPrice)} subtotal />
+                <Line label="Le produit" value={minus(inputs.productCost)} />
+                <Line label="Livraison" value={minus(inputs.deliveryCost)} />
+                <Line label="Publicité, la part de cette commande" value={minus(result.adPerOrder)} />
+                <Line label="Marge sur une commande" value={formatTND(result.marginPerOrder)} strong />
               </dl>
             </div>
             <div className="mt-3 lg:mt-0">
-              <p className="os-label mb-1">The whole run</p>
+              <p className="os-label mb-1">Toute l'opération</p>
               <dl>
                 <Line
-                  label={`Money in, ${orderWord(orderCount)}`}
+                  label={`Argent entrant, ${orderWord(orderCount)}`}
                   value={formatTND(result.totalRevenue)}
                 />
                 <Line
-                  label="Product and delivery on every order"
+                  label="Le produit et la livraison sur chaque commande"
                   value={minus((inputs.productCost + inputs.deliveryCost) * orderCount)}
                 />
-                <Line label="Advertising for the run" value={minus(inputs.adSpend)} />
+                <Line label="Publicité pour l'opération" value={minus(inputs.adSpend)} />
                 <Line
-                  label={result.isLoss ? "Lost on the run" : "Left after the run"}
+                  label={result.isLoss ? "Perdu sur l'opération" : "Reste après l'opération"}
                   value={formatTND(result.profit)}
                   strong
                 />
@@ -372,27 +372,28 @@ export function MarginCalculator({
           <p className="mt-3 max-w-[80ch] border-t border-line pt-3 text-[12.5px] leading-relaxed text-muted">
             {orderCount > 0 ? (
               <>
-                Check it by hand: the customer pays{" "}
-                <span className="os-num">{formatTND(result.netPrice)}</span>, then take off{" "}
-                <span className="os-num">{formatTND(inputs.productCost)}</span> for the product,{" "}
-                <span className="os-num">{formatTND(inputs.deliveryCost)}</span> for delivery and{" "}
-                <span className="os-num">{formatTND(result.adPerOrder)}</span> of advertising, which
-                is the <span className="os-num">{formatTND(inputs.adSpend)}</span> divided by{" "}
+                Vérifiez à la main : le client paie{" "}
+                <span className="os-num">{formatTND(result.netPrice)}</span>, puis retirez{" "}
+                <span className="os-num">{formatTND(inputs.productCost)}</span> pour le produit,{" "}
+                <span className="os-num">{formatTND(inputs.deliveryCost)}</span> pour la livraison et{" "}
+                <span className="os-num">{formatTND(result.adPerOrder)}</span> de publicité, soit les{" "}
+                <span className="os-num">{formatTND(inputs.adSpend)}</span> divisés par{" "}
                 <span className="os-num">{orderCount}</span>{" "}
-                {orderCount === 1 ? "order" : "orders"}. That leaves{" "}
-                <span className="os-num">{formatTND(result.marginPerOrder)}</span> on one order, and{" "}
-                <span className="os-num">{formatTND(result.profit)}</span> once you multiply it out.
+                {orderCount === 1 ? "commande" : "commandes"}. Il reste{" "}
+                <span className="os-num">{formatTND(result.marginPerOrder)}</span> sur une commande,
+                et <span className="os-num">{formatTND(result.profit)}</span> une fois le calcul
+                multiplié.
               </>
             ) : (
               <>
-                Check it by hand: the customer pays{" "}
-                <span className="os-num">{formatTND(result.netPrice)}</span>, then take off{" "}
-                <span className="os-num">{formatTND(inputs.productCost)}</span> for the product and{" "}
-                <span className="os-num">{formatTND(inputs.deliveryCost)}</span> for delivery, which
-                leaves <span className="os-num">{formatTND(result.marginPerOrder)}</span> on one
-                order. The run has no orders in it yet, so there is nothing to share the{" "}
-                <span className="os-num">{formatTND(inputs.adSpend)}</span> of advertising across,
-                and the run itself stands at{" "}
+                Vérifiez à la main : le client paie{" "}
+                <span className="os-num">{formatTND(result.netPrice)}</span>, puis retirez{" "}
+                <span className="os-num">{formatTND(inputs.productCost)}</span> pour le produit et{" "}
+                <span className="os-num">{formatTND(inputs.deliveryCost)}</span> pour la livraison,
+                il reste <span className="os-num">{formatTND(result.marginPerOrder)}</span> sur une
+                commande. L'opération ne contient encore aucune commande, il n'y a donc rien pour
+                répartir les <span className="os-num">{formatTND(inputs.adSpend)}</span> de
+                publicité, et l'opération elle-même s'établit à{" "}
                 <span className="os-num">{formatTND(result.profit)}</span>.
               </>
             )}
@@ -401,29 +402,29 @@ export function MarginCalculator({
 
         <Card>
           <CardHead
-            title="Where this product has been selling"
+            title="Où ce produit se vend"
             hint={
               product.sales.length < product.orderCount
-                ? `${orderWord(product.orderCount)} in the demo data include ${product.name}. The ${product.sales.length} most recent are listed here.`
-                : `${orderWord(product.orderCount)} in the demo data include ${product.name}`
+                ? `${orderWord(product.orderCount)} des données d'exemple contiennent ${product.name}. Les ${product.sales.length} plus récentes sont listées ici.`
+                : `${orderWord(product.orderCount)} des données d'exemple contiennent ${product.name}`
             }
           />
           {product.sales.length === 0 ? (
             <EmptyState
-              title="No order in the demo data includes this product"
-              body="The figures above still work, they are just not backed by a sale yet. Pick another product to see real orders, or open Orders to look at the full list."
-              action={{ label: "Open orders", href: "/orders" }}
+              title="Aucune commande des données d'exemple ne contient ce produit"
+              body="Les chiffres ci-dessus fonctionnent toujours, ils ne sont simplement pas encore appuyés par une vente. Choisissez un autre produit pour voir des commandes réelles, ou ouvrez les commandes pour consulter la liste complète."
+              action={{ label: "Ouvrir les commandes", href: "/orders" }}
             />
           ) : (
             <div className="os-scroll">
               <table className="w-full min-w-[520px] border-collapse text-sm">
                 <thead>
                   <tr>
-                    <th className="os-label pb-2 text-left font-normal">Order</th>
-                    <th className="os-label pb-2 text-left font-normal">Came in on</th>
-                    <th className="os-label pb-2 text-left font-normal">When</th>
-                    <th className="os-label pb-2 text-right font-normal">Units</th>
-                    <th className="os-label pb-2 text-right font-normal">Line value, TND</th>
+                    <th className="os-label pb-2 text-left font-normal">Commande</th>
+                    <th className="os-label pb-2 text-left font-normal">Arrivée sur</th>
+                    <th className="os-label pb-2 text-left font-normal">Quand</th>
+                    <th className="os-label pb-2 text-right font-normal">Unités</th>
+                    <th className="os-label pb-2 text-right font-normal">Valeur de la ligne, TND</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -455,9 +456,9 @@ export function MarginCalculator({
             </div>
           )}
           <p className="mt-3 max-w-[80ch] text-xs text-muted">
-            Every row names the channel that order arrived on, kept from the moment the request came
-            in. It is here so a price you set for an Instagram run is checked against orders that
-            really came from Instagram.
+            Chaque ligne nomme le canal sur lequel la commande est arrivée, conservé depuis le moment
+            où la demande est entrée. Cette colonne est là pour qu'un prix fixé pour une opération
+            Instagram soit vérifié face à des commandes venues réellement d'Instagram.
           </p>
         </Card>
       </div>

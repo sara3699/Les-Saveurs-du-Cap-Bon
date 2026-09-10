@@ -8,7 +8,7 @@ import { revenueOf } from "@/lib/metrics";
 import { DEMO_NOW } from "@/lib/mock/time";
 import { getRepositories } from "@/lib/repositories";
 
-export const metadata = { title: "Budget manager, Les Saveurs du Cap Bon" };
+export const metadata = { title: "Gestion du budget, Les Saveurs du Cap Bon" };
 
 // The demo clock moves with the visit, so these pages are rendered per request
 // rather than frozen into the build.
@@ -48,7 +48,7 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
   const [{ budgets, lines }, recentOrders, connections, attributions] = await Promise.all([
     repos.workspace.budgets(),
     repos.orders.list({ sinceDays: 30 }),
-    repos.integrations.list(),
+    repos.intégrations.list(),
     repos.workspace.attributions(),
   ]);
 
@@ -65,7 +65,7 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
     };
   });
 
-  const period = budgets[0]?.period ?? "This month";
+  const period = budgets[0]?.period ?? "Ce mois-ci";
   const plannedTotal = rollups.reduce((sum, r) => sum + r.planned, 0);
   const usedTotal = rollups.reduce((sum, r) => sum + r.used, 0);
   const leftTotal = plannedTotal - usedTotal;
@@ -102,35 +102,35 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
   return (
     <div className="flex flex-col gap-4">
       <PageHeader
-        title="Budget manager"
-        subtitle={`${period}. What you planned to spend, what has gone out, and what the plan still allows.`}
+        title="Gestion du budget"
+        subtitle={`${period}. Ce que vous aviez prévu de depenser, ce qui est déjà sorti, et ce que le plan permet encore.`}
         actions={<DemoChip />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Stat
-          label="Planned this month"
+          label="Prévu ce mois-ci"
           value={formatTNDCompact(plannedTotal)}
-          detail={budgets.map((b) => b.name).join(", ")}
+          détail={budgets.map((b) => b.name).join(", ")}
         />
         <Stat
-          label="Used so far"
+          label="Utilisé a ce jour"
           value={formatTNDCompact(usedTotal)}
-          detail={`${shareLabel(usedTotal, plannedTotal)} of the plan`}
+          détail={`${shareLabel(usedTotal, plannedTotal)} du plan`}
         />
         <Stat
-          label="Left in the plan"
+          label="Restant dans le plan"
           value={formatTNDCompact(leftTotal)}
-          detail="If nothing new is added to it"
+          détail="Si rien de nouveau n'y est ajouté"
           tone="money"
         />
         <Stat
-          label="Lines at their limit"
+          label="Lignes a leur limite"
           value={String(atLimit.length)}
-          detail={
+          détail={
             atLimit.length > 0
               ? atLimit.map((l) => l.label).join(", ")
-              : "Every line still has room"
+              : "Chaque ligne a encore de la marge"
           }
         />
       </div>
@@ -138,18 +138,18 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
       <div className="grid gap-3 xl:grid-cols-[1.35fr_1fr]">
         <Card>
           <CardHead
-            title="Planned against used"
-            hint={`The three budgets for ${period}, with the total underneath`}
+            title="Prévu et utilisé"
+            hint={`Les trois budgets de ${period}, avec le total en dessous`}
           />
           <div className="os-scroll">
             <table className="w-full min-w-[600px] border-collapse text-sm">
               <thead>
                 <tr>
                   <th className="os-label pb-2.5 pr-3 text-left font-normal">Budget</th>
-                  <th className="os-label pb-2.5 pr-3 text-left font-normal">Share used</th>
-                  <th className="os-label pb-2.5 pr-3 text-right font-normal">Planned, TND</th>
-                  <th className="os-label pb-2.5 pr-3 text-right font-normal">Used, TND</th>
-                  <th className="os-label pb-2.5 text-right font-normal">Left, TND</th>
+                  <th className="os-label pb-2.5 pr-3 text-left font-normal">Part utilisée</th>
+                  <th className="os-label pb-2.5 pr-3 text-right font-normal">Prévu, TND</th>
+                  <th className="os-label pb-2.5 pr-3 text-right font-normal">Utilisé, TND</th>
+                  <th className="os-label pb-2.5 text-right font-normal">Restant, TND</th>
                 </tr>
               </thead>
               <tbody>
@@ -181,7 +181,7 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
               </tbody>
               <tfoot>
                 <tr className="border-t-2 border-line-strong">
-                  <td className="py-2.5 pr-3 text-[13px] font-semibold">All three budgets</td>
+                  <td className="py-2.5 pr-3 text-[13px] font-semibold">Les trois budgets</td>
                   <td className="py-2.5 pr-3">
                     <Meter used={usedTotal} planned={plannedTotal} />
                   </td>
@@ -199,26 +199,32 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
             </table>
           </div>
           <p className="mt-3 text-xs text-muted">
-            Used is what has already left the account this month. Left is what the plan still
-            allows, which is not the same as money sitting in the bank.
+            Utilisé correspond a ce qui est déjà sorti du compte ce mois-ci. Restant correspond a
+            ce que le plan permet encore, ce qui n'est pas la même chose que de l'argent disponible
+            en banque.
           </p>
         </Card>
 
         <Card>
-          <CardHead title="Profit snapshot" hint="Demo figures, added up on this screen" />
+          <CardHead
+            title="Apercu du resultat"
+            hint="Chiffres d'exemple, additionnes sur cet écran"
+          />
           <dl className="flex flex-col gap-2">
             <div className="flex items-baseline justify-between gap-3 border-b border-line pb-2">
-              <dt className="text-[13px] text-muted">Revenue, last 30 days</dt>
+              <dt className="text-[13px] text-muted">Chiffre d'affaires, 30 derniers jours</dt>
               <dd className="os-num text-[14px] font-semibold">{formatTND(revenue)}</dd>
             </div>
             <div className="flex items-baseline justify-between gap-3 border-b border-line pb-2">
-              <dt className="text-[13px] text-muted">Budget used, all three</dt>
+              <dt className="text-[13px] text-muted">Budget utilisé, les trois</dt>
               <dd className="os-num text-[14px] font-semibold text-danger">
                 -{formatTND(usedTotal)}
               </dd>
             </div>
             <div className="flex items-baseline justify-between gap-3 rounded-[var(--radius-md)] border border-accent-line bg-accent-soft px-3 py-2">
-              <dt className="text-[13px] font-semibold text-accent-ink">Left after the spend</dt>
+              <dt className="text-[13px] font-semibold text-accent-ink">
+                Restant après les dépenses
+              </dt>
               <dd className="os-num text-[16px] font-bold text-accent-ink">
                 {formatTND(leftAfterSpend)}
               </dd>
@@ -227,7 +233,7 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
 
           {bySource.length > 0 ? (
             <>
-              <p className="os-label mt-4">Where that revenue came from</p>
+              <p className="os-label mt-4">D'ou vient ce chiffre d'affaires</p>
               <ul className="mt-2 flex flex-col gap-1.5">
                 {bySource.map((row) => (
                   <li
@@ -248,11 +254,13 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
           ) : null}
 
           <p className="mt-4 text-xs leading-relaxed text-muted">
-            Two numbers go into this. Revenue is every order placed in the 30 days up to{" "}
-            {formatDate(DEMO_NOW.toISOString())}, with refused and refunded orders taken out.
-            Spend is the used column of all three budgets, which cover {period}, so the two do not
-            count exactly the same days. What the goods themselves cost to make is not in here, so
-            read the last line as money left against the plan rather than profit in your books.
+            Deux chiffres entrent ici. Le chiffre d'affaires reprend toutes les commandes passées
+            sur les 30 jours jusqu'au{" "}
+            {formatDate(DEMO_NOW.toISOString())}, les commandes refusees et remboursees retirées.
+            Les dépenses sont la colonne utilisé des trois budgets, qui couvrent {period}, donc les
+            deux ne comptent pas exactement les memes jours. Ce que les produits coutent a fabriquer
+            n'est pas compris ici, lisez donc la dernière ligne comme l'argent restant face au plan
+            plutot que comme un bénéfice dans vos comptes.
           </p>
         </Card>
       </div>
@@ -266,7 +274,7 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
               focus ? "border-line bg-surface-2 text-muted" : "border-primary bg-primary text-white"
             }`}
           >
-            All three budgets
+            Les trois budgets
           </Link>
           {budgets.map((budget) => {
             const active = focus?.budget.id === budget.id;
@@ -294,25 +302,25 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
                 : "border-line bg-surface-2 text-muted"
             }`}
           >
-            Only lines at their limit
+            Seulement les lignes a leur limite
           </Link>
         </div>
       </Card>
 
       <section className="flex flex-col gap-3">
         <h2 className="os-label">
-          {focus ? `${focus.budget.name}, line by line` : "Every budget, line by line"}
+          {focus ? `${focus.budget.name}, ligne par ligne` : "Tous les budgets, ligne par ligne"}
         </h2>
 
         {cards.length === 0 ? (
           <EmptyState
-            title="No line matches these filters"
+            title="Aucune ligne ne correspond a ces filtres"
             body={
               nearOnly
-                ? "Only lines that have used 95 percent or more of their plan are showing, and nothing in view has gone that far. Clear the filter to see every line again."
-                : "There is no line under this budget yet, so there is nothing to break down here."
+                ? "Seules les lignes qui ont utilisé 95 pour cent ou plus de leur plan sont affichees, et rien dans cette vue n'est alle aussi loin. Retirez le filtre pour revoir toutes les lignes."
+                : "Il n'y a pas encore de ligne sous ce budget, il n'y a donc rien a detailler ici."
             }
-            action={{ label: "Show every line", href: "/budget" }}
+            action={{ label: "Afficher toutes les lignes", href: "/budget" }}
           />
         ) : (
           cards.map(({ budget, planned, used, lineCount, lines: budgetLines }) => {
@@ -321,16 +329,16 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
               <Card key={budget.id} className={warned ? "border-accent-line" : ""}>
                 <CardHead
                   title={budget.name}
-                  hint={`${budget.period}, ${shareLabel(used, planned)} of the plan used`}
+                  hint={`${budget.period}, ${shareLabel(used, planned)} du plan utilisé`}
                   action={<LimitPill used={used} planned={planned} />}
                 />
 
                 <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
                   <Meter used={used} planned={planned} showShare={false} />
                   <dl className="flex flex-wrap gap-x-7 gap-y-2">
-                    <Figure label="Planned" value={formatTND(planned)} />
-                    <Figure label="Used" value={formatTND(used)} />
-                    <Figure label="Left" value={formatTND(planned - used)} money />
+                    <Figure label="Prévu" value={formatTND(planned)} />
+                    <Figure label="Utilisé" value={formatTND(used)} />
+                    <Figure label="Restant" value={formatTND(planned - used)} money />
                   </dl>
                 </div>
 
@@ -338,13 +346,19 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
                   <table className="w-full min-w-[700px] border-collapse text-sm">
                     <thead>
                       <tr>
-                        <th className="os-label pb-2.5 pr-3 text-left font-normal">Line</th>
-                        <th className="os-label pb-2.5 pr-3 text-left font-normal">Share used</th>
-                        <th className="os-label pb-2.5 pr-3 text-right font-normal">
-                          Planned, TND
+                        <th className="os-label pb-2.5 pr-3 text-left font-normal">Ligne</th>
+                        <th className="os-label pb-2.5 pr-3 text-left font-normal">
+                          Part utilisée
                         </th>
-                        <th className="os-label pb-2.5 pr-3 text-right font-normal">Used, TND</th>
-                        <th className="os-label pb-2.5 pr-3 text-right font-normal">Left, TND</th>
+                        <th className="os-label pb-2.5 pr-3 text-right font-normal">
+                          Prévu, TND
+                        </th>
+                        <th className="os-label pb-2.5 pr-3 text-right font-normal">
+                          Utilisé, TND
+                        </th>
+                        <th className="os-label pb-2.5 pr-3 text-right font-normal">
+                          Restant, TND
+                        </th>
                         <th className="os-label pb-2.5 text-left font-normal">Note</th>
                       </tr>
                     </thead>
@@ -382,9 +396,9 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
 
                 {budgetLines.length < lineCount ? (
                   <p className="mt-2.5 text-xs text-muted">
-                    Showing {budgetLines.length} of {lineCount} lines. The planned and used
-                    figures at the top of this card still count every line, including the ones
-                    the filter is hiding.
+                    {budgetLines.length} lignes affichees sur {lineCount}. Les montants prevus et
+                    utilises en haut de cette carte comptent toujours chaque ligne, y compris celles
+                    que le filtre masqué.
                   </p>
                 ) : null}
               </Card>
@@ -394,8 +408,9 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
       </section>
 
       <p className="text-xs text-muted">
-        This screen only reads the figures. Editing a plan and sending the month to your
-        accountant are not built yet, and nothing here moves money or talks to a bank.
+        Cet écran se contente de lire les chiffres. Modifier un plan et envoyer le mois a votre
+        comptable ne sont pas encore construits, et rien ici ne deplace d'argent ni ne communique
+        avec une banque.
       </p>
     </div>
   );

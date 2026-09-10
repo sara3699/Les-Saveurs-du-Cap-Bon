@@ -19,7 +19,7 @@ export interface SearchEntry {
 export interface HealthNotice {
   id: string;
   title: string;
-  detail: string;
+  détail: string;
   href: string;
   severity: "warning" | "error";
 }
@@ -31,11 +31,25 @@ export interface ChromeProps {
   userName: string;
   userInitials: string;
   userRole: string;
-  counts: Partial<Record<"inbox" | "orders" | "tasks" | "integrations", number>>;
+  counts: Partial<Record<"inbox" | "orders" | "tasks" | "intégrations", number>>;
+  /** Screens this person's role cannot open, hidden from both navigations. */
+  hiddenHrefs: string[];
   search: SearchEntry[];
   notices: HealthNotice[];
+  /** Server action that clears the demo session and returns to the sign-in screen. */
+  signOut: () => void;
   children: React.ReactNode;
 }
+
+/**
+ * SearchEntry.kind is a set of ids the server side sets. These are the words a
+ * reader sees next to a search result.
+ */
+const KIND_LABEL: Record<SearchEntry["kind"], string> = {
+  Contact: "Contact",
+  Conversation: "Conversation",
+  Order: "Commande",
+};
 
 function badgeValue(item: NavItem, counts: ChromeProps["counts"]): number | null {
   if (!item.badge) return null;
@@ -80,19 +94,19 @@ export function AppChrome(props: ChromeProps) {
             </span>
             <span className="min-w-0">
               <span className="block truncate text-[13px] font-semibold leading-tight text-white">{props.storeName}</span>
-              <span className="block text-[11px] text-white/65">{props.storeCity} · owner workspace</span>
+              <span className="block text-[11px] text-white/65">{props.storeCity} · espace du propriétaire</span>
             </span>
           </div>
 
           <div className="os-rail-caption px-2">Centre de commande</div>
-          <nav aria-label="Main" className="os-rail-nav">
+          <nav aria-label="Navigation principale" className="os-rail-nav">
             {NAV_GROUPS.map((group) => (
               <div key={group.title} className="mb-4">
                 <p className="os-rail-group px-2 pb-1.5 pt-1">{group.title}</p>
-                {group.items.map((item) => {
+                {group.items.filter((item) => !props.hiddenHrefs.includes(item.href)).map((item) => {
                   const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
                   const count = badgeValue(item, props.counts);
-                  const warn = item.badge === "integrations" && errorCount > 0;
+                  const warn = item.badge === "intégrations" && errorCount > 0;
                   return (
                     <Link
                       key={item.href}
@@ -112,7 +126,7 @@ export function AppChrome(props: ChromeProps) {
                       </span>
                       {warn ? (
                         <span
-                          aria-label={`${errorCount} connection problem`}
+                          aria-label={`${errorCount} problème${errorCount > 1 ? "s" : ""} de connexion`}
                           className="h-1.5 w-1.5 rounded-full bg-danger"
                         />
                       ) : count ? (
@@ -132,7 +146,7 @@ export function AppChrome(props: ChromeProps) {
           </nav>
           <div className="rounded-[var(--radius-md)] border border-white/12 bg-white/7 px-3 py-2.5 text-[11px] leading-relaxed text-white/65">
             <span className="mb-1 block font-semibold text-white/90">Un espace, tous les canaux</span>
-            Les commandes du site, de WhatsApp, Instagram, Facebook, Google et du comptoir gardent leur source jusqu’au paiement.
+            Les commandes du site, de WhatsApp, Instagram, Facebook, Google et du comptoir gardent leur source jusqu'au paiement.
           </div>
         </div>
       </aside>
@@ -165,7 +179,7 @@ export function AppChrome(props: ChromeProps) {
               <div className="absolute left-0 right-0 top-11 z-30 overflow-hidden rounded-[var(--radius-md)] border border-line bg-surface shadow-[var(--shadow-card)]">
                 {results.length === 0 ? (
                   <p className="px-3 py-3 text-[13px] text-muted">
-                    Aucun résultat pour « {query.trim()} » dans les données d’exemple.
+                    Aucun résultat pour « {query.trim()} » dans les données d'exemple.
                   </p>
                 ) : (
                   results.map((r) => (
@@ -180,7 +194,7 @@ export function AppChrome(props: ChromeProps) {
                         <span className="block truncate text-[13px] font-medium">{r.label}</span>
                         <span className="block truncate text-[11.5px] text-muted">{r.sub}</span>
                       </span>
-                      <span className="os-label">{r.kind}</span>
+                      <span className="os-label">{KIND_LABEL[r.kind]}</span>
                     </Link>
                   ))
                 )}
@@ -232,7 +246,7 @@ export function AppChrome(props: ChromeProps) {
                       />
                       <span>
                         <span className="block text-[13px] font-semibold">{n.title}</span>
-                        <span className="block text-[11.5px] text-muted">{n.detail}</span>
+                        <span className="block text-[11.5px] text-muted">{n.détail}</span>
                       </span>
                     </Link>
                   ))
@@ -256,13 +270,24 @@ export function AppChrome(props: ChromeProps) {
             {panel === "user" ? (
               <div className="absolute right-0 top-11 z-30 w-[248px] rounded-[var(--radius-md)] border border-line bg-surface p-3 shadow-[var(--shadow-card)]">
                 <p className="text-[13px] font-semibold">{props.userName}</p>
-                <p className="text-[11.5px] text-muted">{props.userRole} of {props.storeName}</p>
+                <p className="text-[11.5px] text-muted">{props.userRole}, {props.storeName}</p>
                 <div className="mt-3 flex flex-col gap-1.5">
-                  <Link href="/settings" onClick={closeAll} className="rounded-[var(--radius-sm)] border border-line px-2.5 py-1.5 text-[13px] hover:bg-surface-2">
-                    Paramètres
-                  </Link>
+                  {props.hiddenHrefs.includes("/settings") ? null : (
+                    <Link href="/settings" onClick={closeAll} className="rounded-[var(--radius-sm)] border border-line px-2.5 py-1.5 text-[13px] hover:bg-surface-2">
+                      Paramètres
+                    </Link>
+                  )}
+                  <form action={props.signOut}>
+                    <button
+                      type="submit"
+                      className="w-full rounded-[var(--radius-sm)] border border-line px-2.5 py-1.5 text-left text-[13px] hover:bg-surface-2"
+                    >
+                      Changer de personne
+                    </button>
+                  </form>
                   <span className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[12px] text-muted">
-                    La connexion arrivera avec la vraie base de données. Pour l’instant, l’espace de démonstration s’ouvre sans mot de passe.
+                    Démonstration, sans mot de passe. Les vrais comptes arriveront avec la base de
+                    données.
                   </span>
                 </div>
               </div>
@@ -283,10 +308,10 @@ export function AppChrome(props: ChromeProps) {
       </div>
 
       <nav
-        aria-label="Main, compact"
+        aria-label="Navigation principale, compacte"
         className="fixed bottom-0 left-0 right-0 z-20 grid grid-cols-5 border-t border-line bg-surface lg:hidden"
       >
-        {MOBILE_NAV.map((item) => {
+        {MOBILE_NAV.filter((item) => !props.hiddenHrefs.includes(item.href)).map((item) => {
           const active = pathname.startsWith(item.href);
           const count = badgeValue(item, props.counts);
           return (

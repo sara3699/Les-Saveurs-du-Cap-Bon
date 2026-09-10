@@ -52,7 +52,7 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
     const value = placedOrder ? Number(orderValue) : 0;
 
     if (placedOrder && (!Number.isFinite(value) || value <= 0)) {
-      setError("Give the order a value in dinars, or say that no order was placed.");
+      setError("Donnez un montant en dinars a la commande, ou indiquez qu'aucune commande n'a été passee.");
       return;
     }
     setError(null);
@@ -119,18 +119,18 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
   }
 
   const tiles = [
-    { label: "Calls received", value: summary.callsReceived, note: "team total" },
-    { label: "Reached", value: summary.customersReached, note: `${summary.reachRate.toFixed(0)}% reach` },
-    { label: "Won", value: summary.customersWon, note: `${summary.conversionRate.toFixed(0)}% conversion` },
-    { label: "Rejected", value: summary.customersRejected, note: "not qualified" },
-    { label: "Orders", value: summary.ordersPlaced, note: `${summary.orderRate.toFixed(0)}% of calls` },
+    { label: "Appels reçus", value: summary.callsReceived, note: "total de l'equipe" },
+    { label: "Joints", value: summary.customersReached, note: `${summary.reachRate.toFixed(0)}% de contact` },
+    { label: "Gagnés", value: summary.customersWon, note: `${summary.conversionRate.toFixed(0)}% de conversion` },
+    { label: "Non qualifiés", value: summary.customersRejected, note: "clients non retenus" },
+    { label: "Commandes", value: summary.ordersPlaced, note: `${summary.orderRate.toFixed(0)}% des appels` },
   ];
 
   return (
     <Card>
       <CardHead
-        title="Call conversion performance"
-        hint="Use the same funnel every week: calls received, customers reached, customers won, rejected customers and orders placed."
+        title="Performance de conversion des appels"
+        hint="Utilisez le même entonnoir chaque semaine : appels reçus, clients joints, clients gagnés, clients non qualifiés et commandes passées."
       />
 
       <div className="grid gap-2 sm:grid-cols-5">
@@ -150,14 +150,14 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
         <table className="w-full min-w-[720px] border-collapse text-sm">
           <thead>
             <tr>
-              <th className="os-label pb-2.5 pr-3 text-left font-normal">Team member</th>
-              <th className="os-label pb-2.5 pr-3 text-right font-normal">Calls received</th>
-              <th className="os-label pb-2.5 pr-3 text-right font-normal">Reached</th>
-              <th className="os-label pb-2.5 pr-3 text-right font-normal">Won</th>
-              <th className="os-label pb-2.5 pr-3 text-right font-normal">Rejected</th>
-              <th className="os-label pb-2.5 pr-3 text-right font-normal">Orders</th>
+              <th className="os-label pb-2.5 pr-3 text-left font-normal">Membre de l&apos;équipe</th>
+              <th className="os-label pb-2.5 pr-3 text-right font-normal">Appels reçus</th>
+              <th className="os-label pb-2.5 pr-3 text-right font-normal">Joints</th>
+              <th className="os-label pb-2.5 pr-3 text-right font-normal">Gagnés</th>
+              <th className="os-label pb-2.5 pr-3 text-right font-normal">Non qualifiés</th>
+              <th className="os-label pb-2.5 pr-3 text-right font-normal">Commandes</th>
               <th className="os-label pb-2.5 pr-3 text-right font-normal">Conversion</th>
-              <th className="os-label pb-2.5 text-right font-normal">Revenue, TND</th>
+              <th className="os-label pb-2.5 text-right font-normal">Chiffre d&apos;affaires, TND</th>
             </tr>
           </thead>
           <tbody>
@@ -182,23 +182,25 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
       </div>
 
       <p className="mt-3 text-xs text-muted">
-        Conversion rate is customers won divided by calls received. Revenue from these call-led
-        orders totals {formatTNDCompact(summary.revenue)}.
+        Le taux de conversion, ce sont les clients gagnés divises par les appels reçus. Le chiffre
+        d&apos;affaires de ces commandes issues d&apos;appels totalise{" "}
+        {formatTNDCompact(summary.revenue)}.
       </p>
 
       <form
         onSubmit={record}
         className="mt-4 rounded-[var(--radius-md)] border border-line bg-surface-2 p-3.5"
       >
-        <p className="text-[13px] font-semibold">Record a call</p>
+        <p className="text-[13px] font-semibold">Enregistrer un appel</p>
         <p className="mt-0.5 max-w-[78ch] text-xs text-muted">
-          Calls do not arrive through the website, WhatsApp, Instagram, Facebook or Google, so they
-          are typed in here after the call. The figures above move as soon as you add one.
+          Les appels n&apos;arrivent pas par le site web, WhatsApp, Instagram, Facebook ou Google,
+          ils sont donc saisis ici après l&apos;appel. Les chiffres ci-dessus bougent dès que vous
+          en ajoutez un.
         </p>
 
         <div className="mt-3 grid gap-3 lg:grid-cols-4">
           <label className="flex flex-col gap-1">
-            <span className="os-label">Who took the call</span>
+            <span className="os-label">Qui a pris l&apos;appel</span>
             <select
               value={memberId}
               onChange={(e) => setMemberId(e.target.value)}
@@ -213,11 +215,11 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
           </label>
 
           <fieldset className="flex flex-col gap-1">
-            <legend className="os-label">Did you reach them</legend>
+            <legend className="os-label">Avez-vous joint le client</legend>
             <div className="flex gap-1.5 pt-1">
               {[
-                { value: true, label: "Reached" },
-                { value: false, label: "No answer" },
+                { value: true, label: "Joint" },
+                { value: false, label: "Sans réponse" },
               ].map((option) => (
                 <label
                   key={option.label}
@@ -241,21 +243,21 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
           </fieldset>
 
           <label className="flex flex-col gap-1">
-            <span className="os-label">How it ended</span>
+            <span className="os-label">Comment cela s&apos;est termine</span>
             <select
               value={outcome}
               disabled={!reached}
               onChange={(e) => setOutcome(e.target.value as typeof outcome)}
               className="rounded-[var(--radius-sm)] border border-line bg-surface px-2.5 py-1.5 text-[13px] disabled:text-faint"
             >
-              <option value="won">Customer won</option>
-              <option value="rejected">Not qualified</option>
-              <option value="undecided">Still thinking</option>
+              <option value="won">Client gagne</option>
+              <option value="rejected">Non qualifie</option>
+              <option value="undecided">Encore en reflexion</option>
             </select>
           </label>
 
           <div className="flex flex-col gap-1">
-            <span className="os-label">Order placed</span>
+            <span className="os-label">Commande passee</span>
             <div className="flex gap-1.5">
               <label className="flex items-center gap-1.5 text-[12px]">
                 <input
@@ -265,7 +267,7 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
                   onChange={(e) => setOrdered(e.target.checked)}
                   className="h-3.5 w-3.5"
                 />
-                Yes, for
+                Oui, pour
               </label>
               <input
                 type="number"
@@ -274,7 +276,7 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
                 value={orderValue}
                 disabled={!ordered || !reached || outcome !== "won"}
                 onChange={(e) => setOrderValue(e.target.value)}
-                aria-label="Order value in dinars"
+                aria-label="Montant de la commande en dinars"
                 className="w-24 rounded-[var(--radius-sm)] border border-line bg-surface px-2 py-1.5 text-[13px] disabled:text-faint"
               />
             </div>
@@ -292,7 +294,7 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
             type="submit"
             className="rounded-[var(--radius-md)] bg-primary px-4 py-2 text-[13px] font-semibold text-white hover:bg-primary-hi"
           >
-            Add this call
+            Ajouter cet appel
           </button>
           {recorded.length > 0 ? (
             <button
@@ -300,7 +302,7 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
               onClick={undoLast}
               className="rounded-[var(--radius-md)] border border-line bg-surface px-3.5 py-2 text-[13px] font-semibold"
             >
-              Undo the last one
+              Annuler le dernier
             </button>
           ) : null}
         </div>
@@ -310,18 +312,20 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
         {recorded.length > 0 ? (
           <div className="rounded-[var(--radius-md)] border border-primary-mute bg-primary-soft px-3.5 py-2.5">
             <p className="text-[13px] font-semibold">
-              {recorded.length} {recorded.length === 1 ? "call" : "calls"} added on this visit
+              {recorded.length} {recorded.length === 1 ? "appel ajouté" : "appels ajoutes"} sur cette
+              visite
             </p>
             <p className="mt-0.5 max-w-[80ch] text-[12px] text-muted">
-              Nothing is saved. These calls live in this browser tab and disappear when you leave,
-              because the database that would keep them arrives in a later step.
+              Rien n&apos;est enregistré. Ces appels vivent dans cet onglet du navigateur et
+              disparaissent quand vous partez, parce que la base de données qui les conserverait
+              arrive dans une étape ulterieure.
             </p>
             <ul className="mt-2 flex flex-col gap-1 text-[12px]">
               {recorded.slice(0, 4).map((entry) => (
                 <li key={entry.id}>
-                  {entry.memberName}, {entry.reached ? "reached" : "no answer"}
-                  {entry.reached ? `, ${entry.outcome === "won" ? "won" : entry.outcome === "rejected" ? "not qualified" : "still thinking"}` : ""}
-                  {entry.orderValue ? `, order of ${formatTND(entry.orderValue)}` : ""}
+                  {entry.memberName}, {entry.reached ? "joint" : "sans réponse"}
+                  {entry.reached ? `, ${entry.outcome === "won" ? "gagne" : entry.outcome === "rejected" ? "non qualifie" : "encore en reflexion"}` : ""}
+                  {entry.orderValue ? `, commande de ${formatTND(entry.orderValue)}` : ""}
                 </li>
               ))}
             </ul>

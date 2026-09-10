@@ -74,26 +74,26 @@ export function EditProductDialog({
   function submit(event: React.FormEvent) {
     event.preventDefault();
     if (!name.trim() || !sku.trim()) {
-      setError("A product needs a name and a code before it can be saved.");
+      setError("Un produit a besoin d'un nom et d'une référence avant de pouvoir etre enregistré.");
       return;
     }
     const wanted = sku.trim().toUpperCase();
     if (takenCodes.some((taken) => taken.trim().toUpperCase() === wanted)) {
-      setError(`Another product already uses the code ${wanted}. Give this one a code of its own.`);
+      setError(`Un autre produit utilisé déjà la référence ${wanted}. Donnez a celui-ci une référence qui lui est propre.`);
       return;
     }
     if (![price, cost, stock, lowStockAt].every(filled)) {
-      setError("Price, cost, stock and the warning level all have to be filled in.");
+      setError("Le prix, le cout, le stock et le seuil d'alerte doivent tous etre remplis.");
       return;
     }
     if (!Object.values(numbers).every(sane)) {
       setError(
-        "Price, cost, stock and the warning level all have to be numbers, and none of them can go below zero.",
+        "Le prix, le cout, le stock et le seuil d'alerte doivent tous etre des nombres, et aucun ne peut passer sous zero.",
       );
       return;
     }
     if (numbers.price <= 0) {
-      setError("A product needs a price above zero before it can go on the storefront.");
+      setError("Un produit a besoin d'un prix superieur a zero avant de pouvoir figurer sur la boutique.");
       return;
     }
     setError(null);
@@ -117,7 +117,7 @@ export function EditProductDialog({
     >
       <button
         type="button"
-        aria-label="Close the product editor"
+        aria-label="Fermer l'editeur de produit"
         onClick={onCancel}
         className="absolute inset-0 bg-ink/40"
       />
@@ -130,7 +130,7 @@ export function EditProductDialog({
         <header className="mb-4 flex items-start justify-between gap-3">
           <div>
             <h2 id="edit-product-title" className="text-[15px] leading-tight">
-              Edit this product
+              Modifier ce produit
             </h2>
             <p className="os-num mt-0.5 text-[11px] text-muted">{row.sku}</p>
           </div>
@@ -139,13 +139,13 @@ export function EditProductDialog({
             onClick={onCancel}
             className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1 text-[12px] font-semibold"
           >
-            Close
+            Fermer
           </button>
         </header>
 
         <form onSubmit={submit} className="grid gap-3 sm:grid-cols-2">
           <div className="sm:col-span-2">
-            <Field label="Name">
+            <Field label="Nom">
               <input
                 autoFocus
                 value={name}
@@ -154,14 +154,14 @@ export function EditProductDialog({
               />
             </Field>
           </div>
-          <Field label="Product code" hint="Your own code. No other product can hold the same one.">
+          <Field label="Référence produit" hint="Votre propre code. Aucun autre produit ne peut porter le même.">
             <input
               value={sku}
               onChange={(event) => setSku(event.target.value)}
               className={`${FIELD} os-num`}
             />
           </Field>
-          <Field label="Price, TND" hint="What the customer pays.">
+          <Field label="Prix, TND" hint="Ce que le client paie.">
             <input
               type="number"
               min="0"
@@ -171,7 +171,7 @@ export function EditProductDialog({
               className={`${FIELD} os-num`}
             />
           </Field>
-          <Field label="Cost, TND" hint="What you pay to have it on the shelf.">
+          <Field label="Coût, TND" hint="Ce que vous payez pour l'avoir en rayon.">
             <input
               type="number"
               min="0"
@@ -181,7 +181,7 @@ export function EditProductDialog({
               className={`${FIELD} os-num`}
             />
           </Field>
-          <Field label="Units in stock">
+          <Field label="Unités en stock">
             <input
               type="number"
               min="0"
@@ -191,7 +191,7 @@ export function EditProductDialog({
               className={`${FIELD} os-num`}
             />
           </Field>
-          <Field label="Warn me at" hint="The count that turns the product yellow.">
+          <Field label="Seuil d'alerte" hint="Le nombre qui fait passer le produit en jaune.">
             <input
               type="number"
               min="0"
@@ -204,9 +204,9 @@ export function EditProductDialog({
 
           <div className="sm:col-span-2 rounded-[var(--radius-md)] border border-line bg-surface-2 px-3 py-2.5 text-[12px]">
             <p className="flex flex-wrap items-baseline gap-x-2">
-              <span className="os-label">Margin per unit</span>
+              <span className="os-label">Marge par unité</span>
               <span className="os-num text-[14px] font-semibold">
-                {priced ? formatTND(margin) : "Waiting on a price and a cost"}
+                {priced ? formatTND(margin) : "En attente d'un prix et d'un cout"}
               </span>
               {priced ? (
                 <span className="os-num text-muted">{formatPercent(marginShare)}</span>
@@ -214,12 +214,12 @@ export function EditProductDialog({
             </p>
             <p className="mt-1 text-muted">
               {sellsAtALoss
-                ? "The cost is above the price, so every sale loses money. You can still save it, the figure is yours."
+                ? "Le cout est superieur au prix, chaque vente perd donc de l'argent. Vous pouvez quand même enregistrer, le chiffre vous appartient."
                 : !countsKnown
-                  ? "Fill in the stock and the warning level to see where this product would sit."
+                  ? "Remplissez le stock et le seuil d'alerte pour voir ou se situerait ce produit."
                   : willWarn
-                    ? "At this stock level the product sits in the low stock warning."
-                    : "At this stock level the product sits above its warning."}
+                    ? "A ce niveau de stock, le produit se trouve dans l'alerte de stock faible."
+                    : "A ce niveau de stock, le produit se trouve au-dessus de son seuil d'alerte."}
             </p>
           </div>
 
@@ -233,8 +233,9 @@ export function EditProductDialog({
           ) : null}
 
           <p className="sm:col-span-2 text-[12px] leading-relaxed text-muted">
-            Saving holds the change for this visit only. The database arrives in a later step, so a
-            refresh brings the original figures back, and nothing here is sent to a storefront.
+            L'enregistrement conserve la modification pour cette visite uniquement. La base de
+            données arrive dans une étape ulterieure, un rafraichissement ramene donc les chiffres
+            d'origine, et rien ici n'est envoyé a une boutique.
           </p>
 
           <div className="sm:col-span-2 flex flex-wrap gap-2">
@@ -242,14 +243,14 @@ export function EditProductDialog({
               type="submit"
               className="rounded-[var(--radius-md)] bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hi"
             >
-              Save for this visit
+              Enregistrer pour cette visite
             </button>
             <button
               type="button"
               onClick={onCancel}
               className="rounded-[var(--radius-md)] border border-line bg-surface px-4 py-2 text-sm font-semibold"
             >
-              Cancel
+              Annuler
             </button>
           </div>
         </form>

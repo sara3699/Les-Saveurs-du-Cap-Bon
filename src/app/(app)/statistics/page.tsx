@@ -16,7 +16,7 @@ import { deliverySplit, revenueOf } from "@/lib/metrics";
 import { DEMO_NOW } from "@/lib/mock/time";
 import { getRepositories } from "@/lib/repositories";
 
-export const metadata = { title: "Statistics, Les Saveurs du Cap Bon" };
+export const metadata = { title: "Statistiques, Les Saveurs du Cap Bon" };
 
 // The demo clock moves with the visit, so these pages are rendered per request
 // rather than frozen into the build.
@@ -30,9 +30,9 @@ const DAY = 86_400_000;
 const RETURN_RATE_MINIMUM = 10;
 
 const PERIODS = [
-  { value: "7", days: 7, label: "7 days" },
-  { value: "30", days: 30, label: "30 days" },
-  { value: "90", days: 90, label: "90 days" },
+  { value: "7", days: 7, label: "7 jours" },
+  { value: "30", days: 30, label: "30 jours" },
+  { value: "90", days: 90, label: "90 jours" },
 ];
 
 function one(value: string | string[] | undefined): string | undefined {
@@ -64,14 +64,14 @@ export default async function StatisticsPage({ searchParams }: { searchParams: P
   const [orders, allConversations, connections, attributions] = await Promise.all([
     repos.orders.list({ sinceDays: days }),
     repos.conversations.list(),
-    repos.integrations.list(),
+    repos.intégrations.list(),
     repos.workspace.attributions(),
   ]);
 
   const index = buildAttributionIndex(attributions, connections);
   const now = DEMO_NOW;
   const startMs = now.getTime() - days * DAY;
-  const rangeLabel = `${formatDate(new Date(startMs).toISOString())} to ${formatDate(now.toISOString())}`;
+  const rangeLabel = `du ${formatDate(new Date(startMs).toISOString())} au ${formatDate(now.toISOString())}`;
 
   // Conversations are counted from the moment Les Saveurs du Cap Bon received the request,
   // which is the same clock the orders are measured on.
@@ -183,8 +183,8 @@ export default async function StatisticsPage({ searchParams }: { searchParams: P
       label: String(from.getDate()),
       title:
         bucketDays === 1
-          ? formatDate(from.toISOString())
-          : `${formatDate(from.toISOString())} to ${formatDate(to.toISOString())}`,
+          ? `le ${formatDate(from.toISOString())}`
+          : `du ${formatDate(from.toISOString())} au ${formatDate(to.toISOString())}`,
       orders: bucketOrders.length,
       revenue: revenueOf(bucketOrders),
     };
@@ -206,17 +206,17 @@ export default async function StatisticsPage({ searchParams }: { searchParams: P
   }));
 
   const busiest = bucketMeta.reduce((best, b) => (b.revenue > best.revenue ? b : best), bucketMeta[0]);
-  const bucketWord = bucketDays === 1 ? "day" : "week";
+  const bucketWord = bucketDays === 1 ? "jour" : "semaine";
 
   return (
     <div className="flex flex-col gap-4">
       <PageHeader
-        title="Statistics"
-        subtitle={`Every figure below covers the last ${days} days, ${rangeLabel}.`}
+        title="Statistiques"
+        subtitle={`Tous les chiffres ci-dessous couvrent les ${days} derniers jours, ${rangeLabel}.`}
         actions={
           <>
             <DemoChip />
-            <span className="flex gap-1.5" role="group" aria-label="Date range for every figure on this page">
+            <span className="flex gap-1.5" role="group" aria-label="Période couverte par tous les chiffres de cette page">
               {PERIODS.map((option) => (
                 <Link
                   key={option.value}
@@ -238,72 +238,72 @@ export default async function StatisticsPage({ searchParams }: { searchParams: P
 
       {orders.length === 0 ? (
         <EmptyState
-          title="No orders in this period"
+          title="Aucune commande sur cette période"
           body={
             days === 90
-              ? "Nothing was ordered in the last 90 days, which is the widest range this screen offers, so there is nothing to compare yet."
-              : "Nothing was ordered in the range you picked, so there is nothing to compare. Widen the range and the six sources come back."
+              ? "Aucune commande n'a été passee sur les 90 derniers jours, la plage la plus large que cet écran propose, il n'y a donc rien a comparer pour l'instant."
+              : "Aucune commande n'a été passee sur la plage choisie, il n'y a donc rien a comparer. Elargissez la plage et les six sources reviennent."
           }
           action={
             days === 90
               ? undefined
-              : { label: "Look at the last 90 days", href: "/statistics?days=90" }
+              : { label: "Voir les 90 derniers jours", href: "/statistics?days=90" }
           }
         />
       ) : (
         <>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <Stat
-              label="Orders"
+              label="Commandes"
               value={String(orders.length)}
-              detail={
+              détail={
                 threads.length === 1
-                  ? "1 conversation arrived as well"
-                  : `${threads.length} conversations arrived as well`
+                  ? "1 conversation est aussi arrivée"
+                  : `${threads.length} conversations sont aussi arrivées`
               }
             />
             <Stat
-              label="Revenue"
+              label="Chiffre d'affaires"
               value={formatTNDCompact(totalRevenue)}
-              detail="Refused and refunded orders are left out"
+              détail="Les commandes refusees et remboursees sont exclues"
               tone="money"
             />
             <Stat
-              label="Average order"
+              label="Commande moyenne"
               value={formatTNDCompact(
                 countedForRevenue.length === 0 ? 0 : totalRevenue / countedForRevenue.length,
               )}
-              detail={`Across ${countedForRevenue.length} orders, with the refused and refunded ones left out`}
+              détail={`Sur ${countedForRevenue.length} commandes, les refusees et les remboursees exclues`}
             />
             <Stat
-              label="Conversations that led to an order"
-              value={`${convertedTotal} of ${threads.length}`}
-              detail={
+              label="Conversations qui ont mene a une commande"
+              value={`${convertedTotal} sur ${threads.length}`}
+              détail={
                 threads.length === 0
-                  ? "No conversation arrived in this period"
-                  : `${((convertedTotal / threads.length) * 100).toFixed(0)} percent across all six sources`
+                  ? "Aucune conversation n'est arrivée sur cette période"
+                  : `${((convertedTotal / threads.length) * 100).toFixed(0)} pour cent sur les six sources`
               }
             />
           </div>
 
-          <ChannelComparison rows={rows} periodLabel={`Last ${days} days`} />
+          <ChannelComparison rows={rows} periodLabel={`${days} derniers jours`} />
 
           <div className="grid gap-3 xl:grid-cols-2">
             <PeriodBars
-              title="Revenue over the period"
-              hint={`One bar per ${bucketWord}, refused and refunded orders left out`}
+              title="Chiffre d'affaires sur la période"
+              hint={`Une barre par ${bucketWord}, commandes refusees et remboursees exclues`}
               bars={revenueBars}
               tone="money"
               showValues={false}
-              footer={`${formatTND(totalRevenue)} in total. The tallest bar is ${busiest.title}, at ${formatTND(busiest.revenue)}.`}
+              footer={`${formatTND(totalRevenue)} au total. La barre la plus haute couvre ${busiest.title}, avec ${formatTND(busiest.revenue)}.`}
             />
             <PeriodBars
-              title="Orders over the period"
-              hint={`The same ${bucketWord}s as the revenue chart, counting every order including the refused ones`}
+              title="Commandes sur la période"
+              hint={`Les memes ${bucketWord}s que le graphique du chiffre d'affaires, toutes les commandes comptees, y compris les refusees`}
               bars={orderBars}
               tone="orders"
               showValues={orderBars.length <= 10}
-              footer={`${orders.length} orders in total, an average of ${(orders.length / days).toFixed(1)} a day.`}
+              footer={`${orders.length} commandes au total, soit une moyenne de ${(orders.length / days).toFixed(1)} par jour.`}
             />
           </div>
 
@@ -315,12 +315,12 @@ export default async function StatisticsPage({ searchParams }: { searchParams: P
 
           <Card>
             <p className="text-[13px] leading-relaxed text-muted">
-              Every number on this screen is worked out from the orders and conversations held in
-              Les Saveurs du Cap Bon, cut by the channel each request arrived on. A copy you can download and
-              send to someone else is designed but not built, so there is nothing to export from
-              here yet.{" "}
+              Chaque chiffre de cet écran est calcule a partir des commandes et des conversations
+              enregistrees dans Les Saveurs du Cap Bon, decoupees par le canal sur lequel chaque demande est
+              arrivée. Une copie a telecharger et a envoyer a quelqu'un d'autre est prévue mais pas
+              construite, il n'y a donc rien a exporter d'ici pour l'instant.{" "}
               <Link href="/orders" className="font-semibold text-primary hover:underline">
-                Open the orders behind these figures
+                Ouvrir les commandes derriere ces chiffres
               </Link>
               .
             </p>

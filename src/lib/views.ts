@@ -32,7 +32,7 @@ export function toOrderRow(
   return {
     id: order.id,
     reference: order.reference,
-    customer: names.contacts.get(order.contactId) ?? "Unknown customer",
+    customer: names.contacts.get(order.contactId) ?? "Client inconnu",
     channelId: source.channelId,
     account: source.accountLabel,
     campaign: source.campaign,

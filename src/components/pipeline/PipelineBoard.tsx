@@ -91,12 +91,12 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
           <>
             <div className="min-w-0">
               <p className="text-[13px] font-semibold">
-                {last.name} moved out of {stageLabel(last.from)}, into {stageLabel(last.to)}.
+                {last.name} passe de {stageLabel(last.from)} a {stageLabel(last.to)}.
               </p>
               <p className="mt-0.5 max-w-[74ch] text-[12px] text-muted">
-                The move is held for this visit only, because the database that would keep it
-                arrives later. Nothing was sent to {last.name}.
-                {moves.length > 1 ? ` ${moves.length} moves are being held so far.` : ""}
+                Ce deplacement est garde pour cette visite seulement, la base de données qui
+                l'enregistrerait viendra plus tard. Rien n'a été envoyé a {last.name}.
+                {moves.length > 1 ? ` ${moves.length} deplacements sont gardes pour l'instant.` : ""}
               </p>
             </div>
             <button
@@ -104,17 +104,17 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
               onClick={undo}
               className="shrink-0 rounded-[var(--radius-md)] bg-primary px-3.5 py-1.5 text-[12px] font-semibold text-white hover:bg-primary-hi"
             >
-              Undo
+              Annuler
             </button>
           </>
         ) : null}
       </div>
 
       <p className="text-xs text-muted">
-        <span className="os-num">{openCards.length}</span> of{" "}
-        <span className="os-num">{cards.length}</span> still open, worth{" "}
-        <span className="os-num">{formatTND(openValue)}</span> if every one closes. Won and lost
-        are left out of that.
+        <span className="os-num">{openCards.length}</span> sur{" "}
+        <span className="os-num">{cards.length}</span> encore en cours, soit{" "}
+        <span className="os-num">{formatTND(openValue)}</span> si chacun aboutit. Gagné et perdu
+        ne sont pas comptes.
       </p>
 
       <div className="os-scroll pb-1">
@@ -130,7 +130,7 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
               <section
                 key={stage.id}
                 aria-label={`${stage.label}, ${columnCards.length} ${
-                  columnCards.length === 1 ? "lead" : "leads"
+                  columnCards.length === 1 ? "prospect" : "prospects"
                 }`}
                 onDragOver={(event) => {
                   event.preventDefault();
@@ -166,8 +166,8 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
                 <div className="flex flex-col gap-2">
                   {columnCards.length === 0 ? (
                     <p className="rounded-[var(--radius-md)] border border-dashed border-line-strong px-2 py-5 text-center text-[11.5px] leading-snug text-muted">
-                      Nothing in this column. Drop a card here, or use the move buttons on a
-                      card.
+                      Rien dans cette colonne. Deposez une carte ici, ou utilisez les boutons de
+                      deplacement d'une carte.
                     </p>
                   ) : (
                     columnCards.map((card) => (
@@ -205,27 +205,29 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
                         </p>
 
                         <p className="mt-1.5 text-[11.5px] text-muted">
-                          <span className="os-num">{card.ageLabel}</span>, opened{" "}
+                          <span className="os-num">{card.ageLabel}</span>, le{" "}
                           {card.openedLabel}
                         </p>
 
                         <p className="text-[11.5px]">
                           {card.owner ? (
-                            <span className="text-muted">With {card.owner}</span>
+                            <span className="text-muted">Suivi par {card.owner}</span>
                           ) : (
-                            <span className="font-semibold text-danger">Nobody owns this yet</span>
+                            <span className="font-semibold text-danger">
+                              Aucun responsable pour l'instant
+                            </span>
                           )}
                         </p>
 
                         {stageOf(card) === "lost" && card.lostReason ? (
                           <p className="mt-1.5 text-[11.5px] text-muted">
-                            Reason given, {card.lostReason.toLowerCase()}
+                            Raison donnee, {card.lostReason.toLowerCase()}
                           </p>
                         ) : null}
 
                         {card.nextStep ? (
                           <div className="mt-2 rounded-[var(--radius-sm)] bg-surface-2 px-2 py-1.5">
-                            <p className="os-label">Next step</p>
+                            <p className="os-label">Prochaine action</p>
                             <p className="mt-0.5 text-[11.5px] leading-snug">{card.nextStep.title}</p>
                             <p
                               className={`os-num mt-0.5 text-[11px] ${
@@ -233,12 +235,12 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
                               }`}
                             >
                               {card.nextStep.overdue
-                                ? `Late, was due ${card.nextStep.dueLabel}`
-                                : `Due ${card.nextStep.dueLabel}`}
+                                ? `En retard, échéance ${card.nextStep.dueLabel}`
+                                : `Échéance ${card.nextStep.dueLabel}`}
                             </p>
                           </div>
                         ) : (
-                          <p className="mt-2 text-[11.5px] text-faint">No next step written down</p>
+                          <p className="mt-2 text-[11.5px] text-faint">Aucune action prévue</p>
                         )}
 
                         <div className="mt-2 flex items-center justify-between gap-1 border-t border-line pt-2">
@@ -251,12 +253,12 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
                             }}
                             aria-label={
                               previous
-                                ? `Move ${card.contactName} back to ${previous.label}`
-                                : `${card.contactName} is already in the first column`
+                                ? `Ramener ${card.contactName} a ${previous.label}`
+                                : `${card.contactName} est déjà dans la première colonne`
                             }
                             className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2 py-1 text-[11px] font-semibold hover:bg-surface disabled:cursor-not-allowed disabled:text-faint"
                           >
-                            Left
+                            Gauche
                           </button>
                           <span className="os-label truncate">{stage.label}</span>
                           <button
@@ -268,12 +270,12 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
                             }}
                             aria-label={
                               next
-                                ? `Move ${card.contactName} on to ${next.label}`
-                                : `${card.contactName} is already in the last column`
+                                ? `Faire passer ${card.contactName} a ${next.label}`
+                                : `${card.contactName} est déjà dans la dernière colonne`
                             }
                             className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2 py-1 text-[11px] font-semibold hover:bg-surface disabled:cursor-not-allowed disabled:text-faint"
                           >
-                            Right
+                            Droite
                           </button>
                         </div>
                       </article>
@@ -287,10 +289,11 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
       </div>
 
       <p className="max-w-[86ch] text-xs text-muted">
-        Drag a card into another column, or use the Left and Right buttons on it, which do the same
-        job without a mouse. Cards sit highest value first inside a column. Every move is demo mode:
-        it lives on this screen for the visit, a refresh puts all six columns back, and no message
-        goes to the customer.
+        Faites glisser une carte vers une autre colonne, ou utilisez les boutons Gauche et Droite,
+        qui font la même chose sans souris. Dans une colonne, les cartes les plus fortes en valeur
+        sont en haut. Chaque deplacement reste en mode démonstration. Il vit sur cet écran le temps
+        de la visite, un rafraichissement remet les six colonnes en place, et aucun message ne part
+        vers le client.
       </p>
     </div>
   );

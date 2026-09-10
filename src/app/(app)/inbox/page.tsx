@@ -5,12 +5,12 @@ import { Thread, type ThreadMessage } from "@/components/inbox/Thread";
 import { DemoChip, EmptyState } from "@/components/ui/surfaces";
 import { buildAttributionIndex, resolveSource } from "@/lib/domain/attribution";
 import { CHANNEL_ORDER, channel } from "@/lib/domain/channels";
-import type { ChannelId, ConversationStatus } from "@/lib/domain/types";
+import type { ChannelId, ConversationStatus, PipelineStage } from "@/lib/domain/types";
 import { formatDate, formatStamp, formatTND, isOverdue, relativeTime } from "@/lib/format";
 import { DEMO_NOW } from "@/lib/mock/time";
 import { getRepositories } from "@/lib/repositories";
 
-export const metadata = { title: "Inbox, Les Saveurs du Cap Bon" };
+export const metadata = { title: "Boîte de réception, Les Saveurs du Cap Bon" };
 
 type Params = Promise<Record<string, string | string[] | undefined>>;
 
@@ -19,12 +19,21 @@ function one(value: string | string[] | undefined): string | undefined {
 }
 
 const STATUSES: { value: ConversationStatus; label: string }[] = [
-  { value: "new", label: "New" },
-  { value: "open", label: "Open" },
-  { value: "waiting", label: "Waiting" },
-  { value: "resolved", label: "Resolved" },
-  { value: "snoozed", label: "Snoozed" },
+  { value: "new", label: "Nouveau" },
+  { value: "open", label: "Ouvert" },
+  { value: "waiting", label: "En attente" },
+  { value: "resolved", label: "Résolu" },
+  { value: "snoozed", label: "Reporté" },
 ];
+
+const STAGE_LABELS: Record<PipelineStage, string> = {
+  new: "Nouveau",
+  contacted: "Contacté",
+  qualified: "Qualifié",
+  proposal: "Devis",
+  won: "Gagné",
+  lost: "Perdu",
+};
 
 export default async function InboxPage({ searchParams }: { searchParams: Params }) {
   const params = await searchParams;
@@ -47,7 +56,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
       }),
       repos.contacts.list(),
       repos.workspace.team(),
-      repos.integrations.list(),
+      repos.intégrations.list(),
       repos.workspace.attributions(),
       repos.workspace.tasks(),
       repos.orders.list(),
@@ -81,7 +90,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
     const source = resolveSource(conversation.attributionId, index);
     return {
       id: conversation.id,
-      name: contact?.name ?? "Unknown",
+      name: contact?.name ?? "Inconnu",
       subject: conversation.subject,
       channelId: source.channelId,
       stamp: relativeTime(conversation.lastMessageAt, DEMO_NOW),
@@ -127,7 +136,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
       canSend,
       cannotSendReason:
         connection && connection.status !== "connected"
-          ? `${channel(source.channelId).cannotSendReason} Open Integrations to finish the setup.`
+          ? `${channel(source.channelId).cannotSendReason} Ouvrez Intégrations pour terminer la configuration.`
           : channel(source.channelId).cannotSendReason,
       messages: threadMessages,
       team: team.map((m) => ({ id: m.id, name: m.name })),
@@ -150,7 +159,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
       firstTouch: contact.firstTouchChannel,
       latestTouch: contact.latestTouchChannel,
       firstContactLabel: formatDate(contact.firstContactAt),
-      stage: contact.stage.charAt(0).toUpperCase() + contact.stage.slice(1),
+      stage: STAGE_LABELS[contact.stage],
       tags: contact.tags,
       leadScore: contact.leadScore,
       leadScoreReasons: contact.leadScoreReasons,
@@ -165,7 +174,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
         })),
       notes: contact.notes.map((n) => ({
         id: n.id,
-        author: teamById.get(n.authorId)?.name ?? "Your team",
+        author: teamById.get(n.authorId)?.name ?? "Votre équipe",
         stamp: relativeTime(n.createdAt, DEMO_NOW),
         body: n.body,
       })),
@@ -190,9 +199,9 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl leading-tight">Inbox</h1>
+          <h1 className="text-2xl leading-tight">Boîte de réception</h1>
           <p className="mt-1 text-sm text-muted">
-            {conversations.length} questions and order requests from six platforms, in one list. Orders themselves live in Orders.
+            {conversations.length} questions et demandes de commande venues de six plateformes, dans une seule liste. Les commandes elles-mêmes sont dans Commandes.
           </p>
         </div>
         <DemoChip />
@@ -207,8 +216,8 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
               <input
                 name="q"
                 defaultValue={query}
-                placeholder="Search conversations"
-                aria-label="Search conversations"
+                placeholder="Rechercher une conversation"
+                aria-label="Rechercher une conversation"
                 className="w-full rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[13px]"
               />
             </form>
@@ -221,7 +230,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
                     : "border-line bg-surface-2 text-muted"
                 }`}
               >
-                All
+                Toutes
               </Link>
               <Link
                 href={href({ unread: unreadOnly ? undefined : "1" })}
@@ -229,7 +238,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
                   unreadOnly ? "border-primary bg-primary text-white" : "border-line bg-surface-2 text-muted"
                 }`}
               >
-                Unread
+                Non lu
               </Link>
               {CHANNEL_ORDER.map((id) => (
                 <Link
@@ -260,7 +269,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
                   assigneeFilter === "none" ? "border-primary bg-primary text-white" : "border-line bg-surface-2 text-muted"
                 }`}
               >
-                Unassigned
+                Sans responsable
               </Link>
             </div>
           </div>
@@ -269,7 +278,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
             {listRows.length === 0 ? (
               <li className="p-4">
                 <p className="text-[13px] text-muted">
-                  No conversation matches these filters. Clear one to widen the list.
+                  Aucune conversation ne correspond à ces filtres. Retirez-en un pour élargir la liste.
                 </p>
               </li>
             ) : (
@@ -297,22 +306,22 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
                       ) : null}
                       {row.priority ? (
                         <span className="rounded-full border border-accent-line bg-accent-soft px-1.5 text-[10.5px] font-semibold text-accent-ink">
-                          Priority
+                          Prioritaire
                         </span>
                       ) : null}
                       {!row.assignee && row.status !== "resolved" ? (
                         <span className="rounded-full border border-line bg-surface-2 px-1.5 text-[10.5px] text-muted">
-                          Nobody assigned
+                          Sans responsable
                         </span>
                       ) : null}
                       {row.status === "waiting" ? (
                         <span className="rounded-full border border-line bg-surface-2 px-1.5 text-[10.5px] text-muted">
-                          Waiting on customer
+                          En attente du client
                         </span>
                       ) : null}
                       {row.status === "resolved" ? (
                         <span className="rounded-full border border-line bg-surface-2 px-1.5 text-[10.5px] text-muted">
-                          Resolved
+                          Résolu
                         </span>
                       ) : null}
                     </span>
@@ -328,7 +337,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
             <div className={selectedId ? "block" : "hidden lg:block"}>
               <div className="border-b border-line px-4 py-2 lg:hidden">
                 <Link href={href({ c: undefined })} className="text-xs font-semibold text-primary">
-                  Back to the list
+                  Retour à la liste
                 </Link>
               </div>
               <Thread {...threadProps} />
@@ -340,19 +349,18 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
         ) : (
           <div className="col-span-2 p-6">
             <EmptyState
-              title="Nothing matches these filters"
-              body="Every request in the demo data belongs to one of the six sources. Clear a filter to bring the list back."
-              action={{ label: "Clear the filters", href: "/inbox" }}
+              title="Rien ne correspond à ces filtres"
+              body="Chaque demande des données d'exemple vient de l'une des six sources. Retirez un filtre pour revoir la liste."
+              action={{ label: "Retirer les filtres", href: "/inbox" }}
             />
           </div>
         )}
       </div>
 
       <p className="text-xs text-muted">
-        Sending is switched off for any channel that is not connected, and the reason is shown in
-        the reply box rather than hidden behind a failed send.{" "}
+        {"L'envoi est désactivé sur tout canal qui n'est pas connecté, et la raison s'affiche dans la zone de réponse plutôt que derrière un envoi qui échoue."}{" "}
         <Link href="/integrations" className="font-semibold text-primary hover:underline">
-          See what is connected
+          Voir ce qui est connecté
         </Link>
         .
       </p>

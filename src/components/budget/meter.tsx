@@ -28,9 +28,9 @@ export function spendTone(used: number, planned: number): SpendTone {
 
 /** Wording, so a line that is exactly spent is not described as close to it. */
 export function limitLabel(used: number, planned: number): string {
-  if (used > planned) return "Over the plan";
-  if (used === planned) return "Fully spent";
-  return "Close to the limit";
+  if (used > planned) return "Depassement du plan";
+  if (used === planned) return "Entierement utilisé";
+  return "Proche de la limite";
 }
 
 /** Nothing is rendered while a line still has room, which keeps the yellow rare. */
@@ -85,7 +85,7 @@ export function Meter({
     <span className={`block ${className}`}>
       <span
         role={labelled ? "img" : undefined}
-        aria-label={labelled ? `${formatPercent(share, 1)} of the plan used` : undefined}
+        aria-label={labelled ? `${formatPercent(share, 1)} du plan utilisé` : undefined}
         aria-hidden={labelled ? undefined : true}
         className="block h-1.5 w-full min-w-[70px] overflow-hidden rounded-full bg-surface-2 ring-1 ring-line"
       >

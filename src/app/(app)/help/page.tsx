@@ -3,7 +3,7 @@ import { SourceBadge } from "@/components/ui/badges";
 import { Card, DemoChip, PageHeader } from "@/components/ui/surfaces";
 import type { ChannelId } from "@/lib/domain/types";
 
-export const metadata = { title: "Need help, Les Saveurs du Cap Bon" };
+export const metadata = { title: "Besoin d'aide, Les Saveurs du Cap Bon" };
 
 interface Guide {
   id: string;
@@ -19,95 +19,98 @@ const GUIDES: Guide[] = [
   {
     id: "website-form",
     channelId: "website",
-    title: "Website lead form",
-    what: "Requests sent from your own site arrive as conversations, with the page they came from.",
-    youNeed: ["A site you can add a form to", "Ten minutes with whoever manages the site"],
+    title: "Formulaire de contact du site web",
+    what: "Les demandes envoyées depuis votre propre site arrivent sous forme de conversations, avec la page d'origine.",
+    youNeed: [
+      "Un site auquel vous pouvez ajouter un formulaire",
+      "Dix minutes avec la personne qui géré le site",
+    ],
     weDo: [
-      "Give you an address on your Les Saveurs du Cap Bon workspace that the form posts to",
-      "Check every request before it is accepted, and refuse anything malformed",
-      "Limit how often the address can be called, so nobody can flood your inbox",
+      "Vous donner une adresse sur votre espace Les Saveurs du Cap Bon vers laquelle le formulaire envoie les demandes",
+      "Vérifier chaque demande avant de l'accepter, et refuser tout ce qui est mal forme",
+      "Limiter la frequence d'appel de cette adresse, pour que personne ne puisse inonder votre boîte de réception",
     ],
   },
   {
     id: "whatsapp",
     channelId: "whatsapp",
     title: "WhatsApp Business",
-    what: "Read and answer WhatsApp messages here instead of on a phone passed between people.",
+    what: "Lisez et repondez aux messages WhatsApp ici, plutot que sur un téléphone que l'on se passe entre collegues.",
     youNeed: [
-      "A business verified with Meta",
-      "A phone number that is not already in use on the WhatsApp app",
-      "One message template approved by Meta",
+      "Une entreprise vérifiée aupres de Meta",
+      "Un numéro de téléphone qui n'est pas déjà utilisé sur l'application WhatsApp",
+      "Un modèle de message approuve par Meta",
     ],
     weDo: [
-      "Connect through the official WhatsApp Business Platform, never through your personal account",
-      "Keep inbound messages, your replies and delivery receipts as separate records",
-      "Refuse to send a template that Meta has not approved, rather than failing silently",
+      "Passer par la plateforme officielle WhatsApp Business, jamais par votre compte personnel",
+      "Conserver les messages reçus, vos reponses et les accuses de reception comme des enregistrements distincts",
+      "Refuser d'envoyer un modèle que Meta n'a pas approuve, plutot que d'echouer en silence",
     ],
     gotcha:
-      "Answering within 24 hours of a customer message needs nothing extra. Starting a conversation after that needs an approved template, and approval takes days.",
+      "Répondre dans les 24 heures qui suivent le message d'un client ne demande rien de plus. Ouvrir une conversation après ce délai exige un modèle approuve, et l'approbation prend plusieurs jours.",
   },
   {
     id: "instagram",
     channelId: "instagram",
     title: "Instagram",
-    what: "Messages sent to your Instagram professional account arrive in the same list.",
+    what: "Les messages envoyés a votre compte professionnel Instagram arrivent dans la même liste.",
     youNeed: [
-      "An Instagram professional account",
-      "A Facebook page linked to it that you administer",
+      "Un compte professionnel Instagram",
+      "Une page Facebook liée a ce compte, que vous administrez",
     ],
     weDo: [
-      "Ask Meta only for the permission needed to read and answer messages",
-      "Keep story replies and post comments distinguishable from direct messages",
+      "Demander a Meta uniquement l'autorisation nécessaire pour lire et repondre aux messages",
+      "Garder les reponses aux stories et les commentaires de publication distincts des messages directs",
     ],
     gotcha:
-      "Only professional accounts can be connected. No product can read a personal Instagram inbox, including this one.",
+      "Seuls les comptes professionnels peuvent etre connectes. Aucun produit ne peut lire une boîte de réception Instagram personnelle, celui-ci compris.",
   },
   {
     id: "facebook",
     channelId: "facebook",
     title: "Facebook Messenger",
-    what: "Messages sent to your Facebook page, answered from here.",
-    youNeed: ["A Facebook page you administer"],
+    what: "Les messages envoyés a votre page Facebook, auxquels vous repondez depuis ici.",
+    youNeed: ["Une page Facebook que vous administrez"],
     weDo: [
-      "Connect the page through the official Messenger platform",
-      "Tell you the moment the page permission is withdrawn, instead of quietly receiving nothing",
+      "Connecter la page via la plateforme officielle Messenger",
+      "Vous prevenir dès que l'autorisation sur la page est retirée, au lieu de ne plus rien recevoir en silence",
     ],
-    gotcha: "Messages sent to a personal Facebook profile are never available. Only pages.",
+    gotcha: "Les messages envoyés a un profil Facebook personnel ne sont jamais disponibles. Les pages uniquement.",
   },
   {
     id: "google-ads",
     channelId: "google",
-    title: "Google Ads lead forms",
-    what: "Someone who fills in a lead form on your ad becomes a request here, with the campaign name.",
-    youNeed: ["A Google Ads account", "At least one lead form on a campaign"],
+    title: "Formulaires prospects Google Ads",
+    what: "Une personne qui remplit un formulaire prospect sur votre annonce devient une demande ici, avec le nom de la campagne.",
+    youNeed: ["Un compte Google Ads", "Au moins un formulaire prospect sur une campagne"],
     weDo: [
-      "Check the key on every notification, so a stranger cannot post fake leads",
-      "Record the campaign, so you can tell which advert paid for itself",
+      "Vérifier la clé sur chaque notification, pour qu'un inconnu ne puisse pas envoyer de faux prospects",
+      "Enregistrer la campagne, pour que vous sachiez quelle annonce a été rentable",
     ],
   },
   {
     id: "google-business",
     channelId: "google",
     title: "Google Business Profile",
-    what: "Messages and reviews from your Google Business Profile. Planned, not built.",
-    youNeed: ["A verified Google Business Profile"],
-    weDo: ["Keep it as its own source, so a review is never counted as a lead"],
+    what: "Les messages et les avis de votre Google Business Profile. Prévu, pas encore developpe.",
+    youNeed: ["Un Google Business Profile vérifié"],
+    weDo: ["Le garder comme source distincte, pour qu'un avis ne soit jamais compte comme un prospect"],
   },
   {
     id: "gmail",
     channelId: "google",
     title: "Gmail",
-    what: "Emails to your shop address as conversations. Planned, not built.",
-    youNeed: ["A Gmail or Google Workspace account"],
-    weDo: ["Keep it separate from Google Ads, because the two answer different questions"],
+    what: "Les e-mails envoyés a l'adresse de la boutique, sous forme de conversations. Prévu, pas encore developpe.",
+    youNeed: ["Un compte Gmail ou Google Workspace"],
+    weDo: ["Le garder separe de Google Ads, parce que les deux repondent a des questions differentes"],
   },
   {
     id: "manual",
     channelId: "manual",
-    title: "Typed in by hand",
-    what: "Orders and requests taken on the phone or at the counter.",
-    youNeed: ["Nothing"],
-    weDo: ["Label them Manual, never as one of the connected channels"],
+    title: "Saisi a la main",
+    what: "Les commandes et les demandes prises au téléphone ou au comptoir.",
+    youNeed: ["Rien"],
+    weDo: ["Les marquer comme Manuel, jamais comme l'un des canaux connectes"],
   },
 ];
 
@@ -115,27 +118,28 @@ export default function HelpPage() {
   return (
     <div className="flex flex-col gap-4">
       <PageHeader
-        title="Need help?"
-        subtitle="What you are looking at, and what happens when you want it connected to your real accounts."
+        title="Besoin d'aide ?"
+        subtitle="Ce que vous avez sous les yeux, et ce qui se passe quand vous voudrez le connecter a vos vrais comptes."
         actions={<DemoChip />}
       />
 
       <Card className="max-w-[75ch]">
-        <h2 className="text-[15px]">You are in demo mode</h2>
+        <h2 className="text-[15px]">Vous etes en mode démonstration</h2>
         <div className="mt-2 flex flex-col gap-2 text-sm text-muted">
           <p>
-            Every customer, message and order you see was invented for this demo. No Instagram,
-            WhatsApp, Facebook or Google account is connected, and nothing you do here reaches a
-            customer.
+            Chaque client, message et commande que vous voyez a été invente pour cette
+            démonstration. Aucun compte Instagram, WhatsApp, Facebook ou Google n'est connecté, et
+            rien de ce que vous faites ici n'atteint un client.
           </p>
           <p>
-            The point of the demo is to let you judge the product before handing over access to
-            anything. Assign a conversation, filter the orders by source, and see whether the
-            answers feel right.
+            L'interet de la démonstration est de vous laisser juger le produit avant de donner accès
+            a quoi que ce soit. Attribuez une conversation, filtrez les commandes par source, et
+            voyez si les reponses vous conviennent.
           </p>
           <p>
-            The next step is a real database and a way to sign in. After that, the website form is
-            the first connector, because it is the only one that needs nothing from Meta or Google.
+            L'étape suivante est une vraie base de données et un moyen de se connecter. Ensuite, le
+            formulaire du site web sera le premier connecteur, parce que c'est le seul qui ne demande
+            rien a Meta ni a Google.
           </p>
         </div>
       </Card>
@@ -149,14 +153,14 @@ export default function HelpPage() {
             </div>
             <p className="mt-2 text-[13px] text-muted">{guide.what}</p>
 
-            <p className="os-label mt-3">What you need</p>
+            <p className="os-label mt-3">Ce dont vous avez besoin</p>
             <ul className="mt-1 flex flex-col gap-1 text-[13px]">
               {guide.youNeed.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
 
-            <p className="os-label mt-3">What Les Saveurs du Cap Bon does</p>
+            <p className="os-label mt-3">Ce que fait Les Saveurs du Cap Bon</p>
             <ul className="mt-1 flex flex-col gap-1 text-[13px]">
               {guide.weDo.map((item) => (
                 <li key={item}>{item}</li>
@@ -173,9 +177,9 @@ export default function HelpPage() {
       </section>
 
       <p className="text-xs text-muted">
-        Ready to look at what is connected?{" "}
+        Envie de voir ce qui est connecté ?{" "}
         <Link href="/integrations" className="font-semibold text-primary hover:underline">
-          Open Integrations
+          Ouvrir Intégrations
         </Link>
         .
       </p>

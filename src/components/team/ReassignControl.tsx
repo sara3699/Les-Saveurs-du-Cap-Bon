@@ -7,10 +7,10 @@ import type { ChannelId } from "@/lib/domain/types";
 
 export interface ReassignItem {
   id: string;
-  /** What the row is called: a conversation subject, or an order reference. */
+  /** What the row is called: a conversation subject, or an order référence. */
   label: string;
   /** The customer and how long it has been sitting there. */
-  detail: string;
+  détail: string;
   channelId: ChannelId;
   account: string | null;
 }
@@ -18,7 +18,7 @@ export interface ReassignItem {
 export interface ReassignOption {
   id: string;
   name: string;
-  /** "Manager", "Agent", shown so nobody is handed work their role cannot do. */
+  /** "Responsable", "Agent", shown so nobody is handed work their role cannot do. */
   role: string;
 }
 
@@ -59,13 +59,13 @@ export function ReassignControl({
 
   return (
     <div className="mt-auto flex flex-col gap-2 border-t border-line pt-3">
-      <p className="os-label">Move work to someone else</p>
+      <p className="os-label">Transferer du travail a quelqu&apos;un d&apos;autre</p>
 
       {remaining.length > 0 && selected && target ? (
         <>
           <div className="flex flex-wrap items-center gap-1.5">
             <select
-              aria-label="Work to move"
+              aria-label="Travail a transferer"
               value={selected.id}
               onChange={(event) => setItemId(event.target.value)}
               className="min-w-[9rem] flex-1 rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2 py-1.5 text-[12.5px]"
@@ -77,7 +77,7 @@ export function ReassignControl({
               ))}
             </select>
             <select
-              aria-label="Person to move it to"
+              aria-label="Personne a qui le transferer"
               value={target.id}
               onChange={(event) => setToId(event.target.value)}
               className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2 py-1.5 text-[12.5px]"
@@ -96,20 +96,20 @@ export function ReassignControl({
               }}
               className="rounded-[var(--radius-sm)] bg-primary px-3 py-1.5 text-[12.5px] font-semibold text-white hover:bg-primary-hi"
             >
-              Move
+              Transferer
             </button>
           </div>
           <p className="flex flex-wrap items-center gap-1.5 text-[11.5px] text-muted">
             <SourceBadge channelId={selected.channelId} account={selected.account} size="sm" />
             <span>
-              {selected.detail}
+              {selected.détail}
               {selected.account ? `, ${selected.account}` : ""}
             </span>
           </p>
         </>
       ) : (
         <p className="text-[12px] text-muted">
-          Everything here has been handed to someone else on this screen.
+          Tout ce qui est ici a été transmis a quelqu&apos;un d&apos;autre sur cet écran.
         </p>
       )}
 
@@ -121,14 +121,15 @@ export function ReassignControl({
               className="flex items-center justify-between gap-2 rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[12px]"
             >
               <span className="min-w-0">
-                <span className="font-semibold">{move.itemLabel}</span> now sits with {move.toName}
+                <span className="font-semibold">{move.itemLabel}</span> revient maintenant a{" "}
+                {move.toName}
               </span>
               <button
                 type="button"
                 onClick={() => setMoves(moves.filter((m) => m.itemId !== move.itemId))}
                 className="shrink-0 font-semibold text-primary hover:underline"
               >
-                Put it back
+                Remettre en place
               </button>
             </li>
           ))}
@@ -136,8 +137,9 @@ export function ReassignControl({
       ) : null}
 
       <p className="text-[11.5px] text-muted">
-        Nothing is saved yet. A real move would drop the work into the inbox of the person you
-        picked and tell them. Here it changes this screen only, and is forgotten when you leave.
+        Rien n&apos;est encore enregistré. Un vrai transfert deposerait le travail dans la boite de
+        reception de la personne choisie et l&apos;en avertirait. Ici, cela ne change que cet écran,
+        et c&apos;est oublie quand vous partez.
       </p>
     </div>
   );

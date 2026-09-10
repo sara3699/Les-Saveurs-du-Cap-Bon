@@ -17,8 +17,17 @@ describe("source attribution", () => {
     }
   });
 
-  it("never labels an order Online, Other or Unknown", () => {
-    const forbidden = new Set(["online", "other", "unknown", "n/a", ""]);
+  it("never labels an order Online, Other or Unknown, in English or in French", () => {
+    const forbidden = new Set([
+      "online",
+      "other",
+      "unknown",
+      "en ligne",
+      "autre",
+      "inconnu",
+      "n/a",
+      "",
+    ]);
     for (const order of ORDERS) {
       const label = orderSource(order, index).label.toLowerCase();
       expect(forbidden.has(label)).toBe(false);
@@ -50,7 +59,7 @@ describe("source attribution", () => {
     const source = orderSource(order, index);
     expect(source.connectionId).toBeNull();
     expect(source.accountLabel).toBeNull();
-    expect(source.label).toBe("Manual");
+    expect(source.label).toBe("Manuel");
   });
 
   it("refuses to display a record whose attribution is missing", () => {

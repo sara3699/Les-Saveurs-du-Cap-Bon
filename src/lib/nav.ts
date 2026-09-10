@@ -3,7 +3,7 @@ export interface NavItem {
   label: string;
   glyph: string;
   /** Key of the count passed in from the server, when the item carries one. */
-  badge?: "inbox" | "orders" | "tasks" | "integrations";
+  badge?: "inbox" | "orders" | "tasks" | "intégrations";
 }
 
 export interface NavGroup {
@@ -32,20 +32,20 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    title: "Parcours client",
+    title: "Relation client",
     items: [
       { href: "/inbox", label: "Boîte de réception", glyph: "✦", badge: "inbox" },
       { href: "/contacts", label: "Contacts", glyph: "◌" },
-      { href: "/pipeline", label: "Prospects", glyph: "⌁" },
+      { href: "/pipeline", label: "Pipeline", glyph: "⌁" },
       { href: "/tasks", label: "Tâches", glyph: "✓", badge: "tasks" },
-      { href: "/integrations", label: "Intégrations", glyph: "⌘", badge: "integrations" },
+      { href: "/integrations", label: "Intégrations", glyph: "⌘", badge: "intégrations" },
     ],
   },
   {
     title: "Espace de travail",
     items: [
       { href: "/settings", label: "Paramètres", glyph: "⚙" },
-      { href: "/help", label: "Besoin d’aide ?", glyph: "?" },
+      { href: "/help", label: "Besoin d'aide ?", glyph: "?" },
     ],
   },
 ];
@@ -56,5 +56,5 @@ export const MOBILE_NAV: NavItem[] = [
   { href: "/orders", label: "Commandes", glyph: "◈", badge: "orders" },
   { href: "/inbox", label: "Messages", glyph: "✦", badge: "inbox" },
   { href: "/tasks", label: "Tâches", glyph: "✓", badge: "tasks" },
-  { href: "/integrations", label: "Connexion", glyph: "⌘", badge: "integrations" },
+  { href: "/integrations", label: "Canaux", glyph: "⌘", badge: "intégrations" },
 ];

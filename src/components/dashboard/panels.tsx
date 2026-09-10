@@ -13,8 +13,8 @@ export function SourcePanel({ rows, periodLabel }: { rows: SourceRow[]; periodLa
   return (
     <Card>
       <CardHead
-        title="D’où viennent vos commandes"
-        hint={`${periodLabel}, selon le canal d’arrivée de la demande`}
+        title="D'où viennent vos commandes"
+        hint={`${periodLabel}, selon le canal sur lequel la demande est arrivée`}
         action={
           <Link href="/statistics" className="text-xs font-semibold text-primary hover:underline">
             Comparer les canaux
@@ -28,7 +28,7 @@ export function SourcePanel({ rows, periodLabel }: { rows: SourceRow[]; periodLa
               <th className="os-label pb-2 text-left font-normal">Canal</th>
               <th className="os-label pb-2 text-left font-normal">Part</th>
               <th className="os-label pb-2 text-right font-normal">Commandes</th>
-              <th className="os-label pb-2 text-right font-normal">Chiffre d’affaires</th>
+              <th className="os-label pb-2 text-right font-normal">Chiffre d'affaires</th>
               <th className="os-label pb-2 text-right font-normal">Évolution</th>
             </tr>
           </thead>
@@ -75,8 +75,8 @@ export function SourcePanel({ rows, periodLabel }: { rows: SourceRow[]; periodLa
         </table>
       </div>
       <p className="mt-3 text-xs text-muted">
-        Revenue leaves out refused and refunded orders. The order count keeps them, which is why
-        the two columns do not move together.
+        Le chiffre d'affaires exclut les commandes refusées et remboursées. Le nombre de commandes
+        les garde, ce qui explique que les deux colonnes ne varient pas ensemble.
       </p>
     </Card>
   );
@@ -85,7 +85,7 @@ export function SourcePanel({ rows, periodLabel }: { rows: SourceRow[]; periodLa
 export interface AttentionItem {
   id: string;
   title: string;
-  detail: string;
+  détail: string;
   href: string;
   severity: "warning" | "error";
 }
@@ -93,10 +93,10 @@ export interface AttentionItem {
 export function AttentionPanel({ items }: { items: AttentionItem[] }) {
   return (
     <Card>
-      <CardHead title="À surveiller" hint={`${items.length} éléments attendent une action`} />
+      <CardHead title="À surveiller" hint={`${items.length} éléments que personne n'a pris en charge`} />
       {items.length === 0 ? (
         <p className="rounded-[var(--radius-md)] border border-dashed border-line-strong bg-surface-2 px-4 py-6 text-center text-sm text-muted">
-          Rien n’attend. Chaque demande a un responsable et aucun suivi n’est en retard.
+          Rien n'attend. Chaque demande a un responsable et aucun suivi n'est en retard.
         </p>
       ) : (
         <ul className="flex flex-col gap-2">
@@ -113,7 +113,7 @@ export function AttentionPanel({ items }: { items: AttentionItem[] }) {
                 />
                 <span>
                   <span className="block text-[13px] font-semibold leading-snug">{item.title}</span>
-                  <span className="block text-xs text-muted">{item.detail}</span>
+                  <span className="block text-xs text-muted">{item.détail}</span>
                 </span>
               </Link>
             </li>
@@ -168,7 +168,7 @@ export function DayChart({ bars }: { bars: DayBar[] }) {
 export function DeliveryPanel({ split, worstReturns }: { split: DeliverySplit; worstReturns: { channelId: ChannelId; rate: number } | null }) {
   const rows = [
     { label: "Livrées", value: split.delivered, color: "var(--color-success)" },
-    { label: "En livraison", value: split.dispatched, color: "var(--color-primary)" },
+    { label: "En route", value: split.dispatched, color: "var(--color-primary)" },
     { label: "En préparation", value: split.preparing, color: "var(--color-line-strong)" },
     { label: "Retournées", value: split.returned, color: "var(--color-danger)" },
   ];
@@ -191,8 +191,8 @@ export function DeliveryPanel({ split, worstReturns }: { split: DeliverySplit; w
       </ul>
       {worstReturns ? (
         <p className="mt-3 text-xs text-muted">
-          Returns run highest on {channel(worstReturns.channelId).label} orders, at{" "}
-          {worstReturns.rate.toFixed(0)} percent.
+          Le taux de retour est le plus élevé sur les commandes {channel(worstReturns.channelId).label}, à{" "}
+          {worstReturns.rate.toFixed(0)} %.
         </p>
       ) : null}
     </Card>
@@ -213,8 +213,8 @@ export function DemandPanel({
   return (
     <Card>
       <CardHead
-        title="Commandes par canal aujourd’hui"
-        hint="Commandes reçues aujourd’hui et sur les sept derniers jours, avec les demandes encore en attente"
+        title="Commandes par canal aujourd'hui"
+        hint="Commandes reçues aujourd'hui et sur les sept derniers jours, avec les demandes encore en attente de réponse"
         action={
           <Link href="/orders" className="text-xs font-semibold text-primary hover:underline">
             Ouvrir les commandes
@@ -234,10 +234,10 @@ export function DemandPanel({
               </span>
               <span className="mt-0.5 block text-[11px] text-muted">
                 {row.waiting > 0
-                  ? `${row.waiting} waiting for an answer`
+                  ? `${row.waiting} en attente de réponse`
                   : row.connected
-                    ? "nothing waiting"
-                    : "not connected"}
+                    ? "rien en attente"
+                    : "non connecté"}
               </span>
             </span>
             <span className="shrink-0 text-right">
@@ -245,7 +245,7 @@ export function DemandPanel({
                 {row.ordersToday}
               </span>
               <span className="os-num block text-[11px] text-muted">
-                {row.ordersThisWeek} this week
+                {row.ordersThisWeek} cette semaine
               </span>
             </span>
           </li>
@@ -267,11 +267,11 @@ export interface ChannelHubRow {
 }
 
 const connectionStatusCopy: Record<ConnectionStatus, { label: string; className: string }> = {
-  connected: { label: "Réception active", className: "bg-success-soft text-success" },
-  setup_required: { label: "Configuration requise", className: "bg-accent-soft text-accent-ink" },
+  connected: { label: "Connecté", className: "bg-success-soft text-success" },
+  setup_required: { label: "Configuration à terminer", className: "bg-accent-soft text-accent-ink" },
   not_connected: { label: "Non connecté", className: "bg-surface-2 text-muted" },
   warning: { label: "À vérifier", className: "bg-accent-soft text-accent-ink" },
-  error: { label: "Action requise", className: "bg-danger-soft text-danger" },
+  error: { label: "Ne reçoit plus", className: "bg-danger-soft text-danger" },
 };
 
 export function ChannelHubPanel({ rows }: { rows: ChannelHubRow[] }) {
@@ -283,7 +283,7 @@ export function ChannelHubPanel({ rows }: { rows: ChannelHubRow[] }) {
     <Card>
       <CardHead
         title="Un seul espace pour tous les canaux"
-        hint="Les commandes et conversations gardent leur source tout en arrivant dans un espace partagé"
+        hint="Les commandes et les conversations gardent leur source tout en arrivant dans un espace partagé"
         action={
           <Link href="/integrations" className="text-xs font-semibold text-primary hover:underline">
             Gérer les connexions
@@ -291,7 +291,7 @@ export function ChannelHubPanel({ rows }: { rows: ChannelHubRow[] }) {
         }
       />
       <div className="mb-4 flex flex-wrap gap-x-5 gap-y-2 border-b border-line pb-4 text-xs text-muted">
-        <span><strong className="os-num text-ink">{receiving}/6</strong> canaux actifs</span>
+        <span><strong className="os-num text-ink">{receiving}/6</strong> canaux qui reçoivent</span>
         <span><strong className="os-num text-ink">{ordersThisWeek}</strong> commandes cette semaine</span>
         <span><strong className="os-num text-ink">{waiting}</strong> en attente de réponse</span>
       </div>
@@ -315,7 +315,7 @@ export function ChannelHubPanel({ rows }: { rows: ChannelHubRow[] }) {
               </p>
               <div className="mt-3 grid grid-cols-3 gap-2 border-t border-line pt-2.5">
                 <div>
-                  <p className="os-label">Aujourd’hui</p>
+                  <p className="os-label">Aujourd'hui</p>
                   <p className="os-num mt-1 text-[15px] font-semibold">{row.ordersToday}</p>
                 </div>
                 <div>
@@ -368,18 +368,18 @@ export function ConversionPanel({
     <Card>
       <CardHead
         title="Conversion des appels en commandes"
-        hint="30 derniers jours, des appels reçus aux clients gagnés et commandes passées"
+        hint="30 derniers jours, des appels reçus aux clients gagnés et aux commandes passées"
         action={
           <Link href={href} className="text-xs font-semibold text-primary hover:underline">
-            Voir la performance de l’équipe
+            Voir la performance de l'équipe
           </Link>
         }
       />
       <div className="grid gap-2 sm:grid-cols-4">
         {[
-          { label: "Appels reçus", value: summary.callsReceived, note: "attribués à l’équipe" },
-          { label: "Clients joints", value: summary.customersReached, note: `${summary.reachRate.toFixed(0)} % de joignabilité` },
-          { label: "Clients gagnés", value: summary.customersWon, note: `${summary.conversionRate.toFixed(0)} % de conversion` },
+          { label: "Appels reçus", value: summary.callsReceived, note: "attribués à l'équipe" },
+          { label: "Clients joints", value: summary.customersReached, note: `taux de contact de ${summary.reachRate.toFixed(0)} %` },
+          { label: "Clients gagnés", value: summary.customersWon, note: `taux de conversion de ${summary.conversionRate.toFixed(0)} %` },
           { label: "Commandes passées", value: summary.ordersPlaced, note: `${summary.orderRate.toFixed(0)} % des appels` },
         ].map((item) => (
           <div key={item.label} className="rounded-[var(--radius-md)] border border-line bg-surface-2 px-3 py-2.5">
@@ -392,7 +392,7 @@ export function ConversionPanel({
 
       <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_1.35fr]">
         <div className="rounded-[var(--radius-md)] border border-line bg-surface-2 p-3">
-          <p className="os-label">Entonnoir de l’équipe</p>
+          <p className="os-label">Entonnoir de l'équipe</p>
           <div className="mt-3 flex flex-col gap-2.5">
             {[
               { label: "Appels reçus", value: summary.callsReceived, color: "var(--color-primary)" },
@@ -413,7 +413,7 @@ export function ConversionPanel({
             ))}
           </div>
           <p className="mt-3 text-[11.5px] text-muted">
-            {summary.customersRejected} customers were rejected or did not qualify.
+            {summary.customersRejected} clients ont été refusés ou n'étaient pas qualifiés.
           </p>
         </div>
 
@@ -424,7 +424,7 @@ export function ConversionPanel({
                 <th className="os-label pb-2 text-left font-normal">Membre</th>
                 <th className="os-label pb-2 text-right font-normal">Appels</th>
                 <th className="os-label pb-2 text-right font-normal">Gagnés</th>
-                <th className="os-label pb-2 text-right font-normal">Refusés</th>
+                <th className="os-label pb-2 text-right font-normal">Non qualifiés</th>
                 <th className="os-label pb-2 text-right font-normal">Commandes</th>
                 <th className="os-label pb-2 text-right font-normal">Taux</th>
               </tr>

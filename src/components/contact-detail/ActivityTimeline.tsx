@@ -65,9 +65,9 @@ export function ActivityTimeline({
   if (entries.length === 0) {
     return (
       <EmptyState
-        title="Nothing has happened on this record yet"
-        body={`No message, order, task or note is attached to ${name}. Anything that arrives on WhatsApp, Instagram, Facebook, Google, the website or the counter lands here.`}
-        action={{ label: "Open the inbox", href: "/inbox" }}
+        title="Rien ne s'est encore passé sur cette fiche"
+        body={`Aucun message, commande, tâche ou note n'est rattaché à ${name}. Tout ce qui arrive sur WhatsApp, Instagram, Facebook, Google, le site web ou au comptoir apparaît ici.`}
+        action={{ label: "Ouvrir la boîte de réception", href: "/inbox" }}
       />
     );
   }
@@ -90,7 +90,7 @@ export function ActivityTimeline({
       {older.length > 0 ? (
         <details className="mt-1 border-t border-line pt-3">
           <summary className="cursor-pointer text-[13px] font-semibold text-primary">
-            Show the <span className="os-num">{older.length}</span> older entries
+            Afficher les <span className="os-num">{older.length}</span> entrées plus anciennes
           </summary>
           <ol className="mt-3 flex flex-col">
             {older.map((entry, position) => (
@@ -128,7 +128,7 @@ function Row({ entry, rail }: { entry: TimelineEntry; rail: boolean }) {
                 <span className="os-num ml-2">{entry.totalLabel}</span>
               </>
             ) : null}
-            {/* Coloured like the order reference above it: a task title and a
+            {/* Coloured like the order référence above it: a task title and a
                 conversation subject sit at the same size and weight, so the one
                 you can click has to say so without waiting for a hover. */}
             {entry.kind === "conversation" ? (
@@ -137,7 +137,7 @@ function Row({ entry, rail }: { entry: TimelineEntry; rail: boolean }) {
               </Link>
             ) : null}
             {entry.kind === "task" ? entry.title : null}
-            {entry.kind === "note" ? `Note from ${entry.author}` : null}
+            {entry.kind === "note" ? `Note de ${entry.author}` : null}
           </p>
           <time
             dateTime={entry.at}
@@ -164,13 +164,13 @@ function Row({ entry, rail }: { entry: TimelineEntry; rail: boolean }) {
           ) : null}
           {entry.kind === "task" ? (
             <>
-              <Marker label="Task" />
+              <Marker label="Tâche" />
               <span
                 className={`text-[11.5px] ${entry.overdue ? "font-semibold text-danger" : "text-muted"}`}
               >
                 {entry.state}
               </span>
-              <span className="text-[11.5px] text-muted">for {entry.owner}</span>
+              <span className="text-[11.5px] text-muted">pour {entry.owner}</span>
             </>
           ) : null}
           {entry.kind === "note" ? <Marker label="Note" /> : null}

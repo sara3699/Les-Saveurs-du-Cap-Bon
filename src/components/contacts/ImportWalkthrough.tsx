@@ -10,24 +10,24 @@ type MappedField = Exclude<Field, "skip">;
 type Step = "file" | "map" | "preview" | "check" | "confirm" | "done";
 
 const FIELDS: { value: Field; label: string }[] = [
-  { value: "name", label: "Name" },
-  { value: "phone", label: "Phone" },
-  { value: "email", label: "Email" },
-  { value: "city", label: "City" },
-  { value: "source", label: "Where they came from" },
-  { value: "skip", label: "Leave this column out" },
+  { value: "name", label: "Nom" },
+  { value: "phone", label: "Téléphone" },
+  { value: "email", label: "E-mail" },
+  { value: "city", label: "Ville" },
+  { value: "source", label: "D'ou ils viennent" },
+  { value: "skip", label: "Ne pas importer cette colonne" },
 ];
 
 const STEPS: { id: Step; label: string }[] = [
-  { id: "file", label: "File" },
-  { id: "map", label: "Columns" },
-  { id: "preview", label: "Preview" },
-  { id: "check", label: "Checks" },
-  { id: "confirm", label: "Confirm" },
+  { id: "file", label: "Fichier" },
+  { id: "map", label: "Colonnes" },
+  { id: "preview", label: "Apercu" },
+  { id: "check", label: "Controles" },
+  { id: "confirm", label: "Confirmation" },
 ];
 
 const FILE_NAME = "contacts-september.csv";
-const COLUMNS = ["Full name", "Mobile", "Email address", "Town", "Came from", "Notes"];
+const COLUMNS = ["Nom complet", "Mobile", "Adresse e-mail", "Ville", "Provenance", "Notes"];
 const DEFAULT_MAPPING: Field[] = ["name", "phone", "email", "city", "source", "skip"];
 
 /** How many rows the preview step shows before the checks run over all of them. */
@@ -39,20 +39,22 @@ const PREVIEW_ROWS = 5;
  * is not Tunisian, and two rows that already exist under another spelling.
  */
 const ROWS: string[][] = [
-  ["Fatma Riahi", "+216 55 210 447", "fatma.riahi@gmail.com", "Tunis", "Instagram", "Met her at the Sidi Bou market"],
-  ["Nizar Hamdi", "+216 27 663 190", "nizar.hamdi@gmail.com", "Sousse", "Facebook", "Asked about the pistachio cream"],
-  ["", "+216 98 445 213", "", "Nabeul", "WhatsApp", "Left a voice note, name not written down"],
-  ["Sami Gharsalli", "06 78 12 34 56", "sami.gharsalli@gmail.com", "Tunis", "Website", "Number copied from an old sheet"],
-  ["Rania Trabelsi", "+216 20 114 882", "", "Ariana", "WhatsApp", "Repeat buyer"],
-  ["Karim Belaid", "+216 24 900 990", "karim.belaid@gmail.com", "Tunis", "Website", "Second sheet, dessert platter"],
-  ["Hedi Sliti", "+216 92 118 440", "hedi.sliti@topnet.tn", "Bizerte", "Website", "Wants twelve dessert assortments"],
-  ["Awatef Mzoughi", "+216 29 771 502", "awatef.mzoughi@gmail.com", "Ben Arous", "Added by hand", "Phoned the shop"],
+  ["Fatma Riahi", "+216 55 210 447", "fatma.riahi@gmail.com", "Tunis", "Instagram", "Rencontree au marche de Sidi Bou"],
+  ["Nizar Hamdi", "+216 27 663 190", "nizar.hamdi@gmail.com", "Sousse", "Facebook", "A demande la creme de pistache"],
+  ["", "+216 98 445 213", "", "Nabeul", "WhatsApp", "A laisse un message vocal, nom non note"],
+  ["Sami Gharsalli", "06 78 12 34 56", "sami.gharsalli@gmail.com", "Tunis", "Site web", "Numéro recopie sur une ancienne feuille"],
+  ["Rania Trabelsi", "+216 20 114 882", "", "Ariana", "WhatsApp", "Cliente fidele"],
+  ["Karim Belaid", "+216 24 900 990", "karim.belaid@gmail.com", "Tunis", "Site web", "Deuxieme feuille, plateau de desserts"],
+  ["Hedi Sliti", "+216 92 118 440", "hedi.sliti@topnet.tn", "Bizerte", "Site web", "Veut douze assortiments de desserts"],
+  ["Awatef Mzoughi", "+216 29 771 502", "awatef.mzoughi@gmail.com", "Ben Arous", "Ajoute a la main", "A téléphone a la boutique"],
 ];
 
 const CHANNEL_WORDS: Record<string, ChannelId> = {
   website: "website",
+  "site web": "website",
   site: "website",
   "web form": "website",
+  "formulaire web": "website",
   whatsapp: "whatsapp",
   instagram: "instagram",
   insta: "instagram",
@@ -61,8 +63,11 @@ const CHANNEL_WORDS: Record<string, ChannelId> = {
   google: "google",
   "google ads": "google",
   "added by hand": "manual",
+  "ajouté a la main": "manual",
   "walk-in": "manual",
+  "en boutique": "manual",
   shop: "manual",
+  boutique: "manual",
 };
 
 const PRIMARY_BUTTON =
@@ -111,11 +116,13 @@ function checkRows(mapping: Field[], existing: ExistingContact[]): CheckedRow[] 
     const problems: string[] = [];
 
     if (!values.name) {
-      problems.push("There is no name, so the record would have nothing to be filed under.");
+      problems.push("Il n'y a pas de nom, la fiche n'aurait donc rien sous quoi etre classee.");
     }
 
     if (values.phone && !isTunisianNumber(values.phone)) {
-      problems.push(`${values.phone} is not a Tunisian number, so nobody could be called back on it.`);
+      problems.push(
+        `${values.phone} n'est pas un numéro tunisien, donc personne ne pourrait etre rappele dessus.`,
+      );
     }
 
     if (values.phone) {
@@ -123,7 +130,7 @@ function checkRows(mapping: Field[], existing: ExistingContact[]): CheckedRow[] 
         .filter((contact) => contact.phone && localNumber(contact.phone) === localNumber(values.phone))
         .map((contact) => contact.name);
       if (twins.length > 0) {
-        problems.push(`This phone number is already on ${twins.join(" and ")}.`);
+        problems.push(`Ce numéro de téléphone est déjà sur la fiche de ${twins.join(" et ")}.`);
       }
     }
 
@@ -132,16 +139,18 @@ function checkRows(mapping: Field[], existing: ExistingContact[]): CheckedRow[] 
         .filter((contact) => contact.email && contact.email.toLowerCase() === values.email.toLowerCase())
         .map((contact) => contact.name);
       if (twins.length > 0) {
-        problems.push(`This email address is already on ${twins.join(" and ")}.`);
+        problems.push(`Cette adresse e-mail est déjà sur la fiche de ${twins.join(" et ")}.`);
       }
     }
 
     const channelId = values.source ? toChannel(values.source) : null;
     if (!values.source) {
-      problems.push("The source column is empty on this row, so there would be nothing to say where this customer came from.");
+      problems.push(
+        "La colonne de la source est vide sur cette ligne, rien ne dirait donc d'ou vient ce client.",
+      );
     } else if (!channelId) {
       problems.push(
-        `${values.source} does not name one of your ${CHANNEL_ORDER.length} sources.`,
+        `${values.source} ne nomme aucune de vos ${CHANNEL_ORDER.length} sources.`,
       );
     }
 
@@ -224,20 +233,21 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
       {step === "file" ? (
         <div className="flex flex-col gap-3">
           <p className="text-[13px] text-muted">
-            Reading a file from your computer arrives with the database. This is a walkthrough on{" "}
-            <span className="os-num">{ROWS.length}</span> sample rows, so you can see every step and
-            every check before then.
+            La lecture d'un fichier depuis votre ordinateur arrive avec la base de données. Ceci est
+            une démonstration sur <span className="os-num">{ROWS.length}</span> lignes d'exemple,
+            pour que vous voyiez chaque étape et chaque contrôle avant cela.
           </p>
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-md)] border border-dashed border-line-strong bg-surface-2 px-3 py-2.5">
             <span>
               <span className="os-num block text-[13px] font-semibold">{FILE_NAME}</span>
               <span className="block text-[12px] text-muted">
-                <span className="os-num">{ROWS.length}</span> rows,{" "}
-                <span className="os-num">{COLUMNS.length}</span> columns, held inside this screen
+                <span className="os-num">{ROWS.length}</span> lignes,{" "}
+                <span className="os-num">{COLUMNS.length}</span> colonnes, gardees a l'interieur de
+                cet écran
               </span>
             </span>
             <button type="button" className={PRIMARY_BUTTON} onClick={() => { setNotice(null); setStep("map"); }}>
-              Open the sample file
+              Ouvrir le fichier d'exemple
             </button>
           </div>
         </div>
@@ -246,8 +256,8 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
       {step === "map" ? (
         <div className="flex flex-col gap-3">
           <p className="text-[13px] text-muted">
-            Say what each column in the file holds. A column can only be used once, so choosing a
-            field takes it off the column that had it.
+            Dites ce que contient chaque colonne du fichier. Une colonne ne peut servir qu'une
+            fois, donc choisir un champ le retire de la colonne qui l'avait.
           </p>
           <ul className="flex flex-col gap-2">
             {COLUMNS.map((column, position) => (
@@ -258,13 +268,13 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
                 <span className="min-w-0">
                   <span className="block text-[13px] font-semibold">{column}</span>
                   <span className="block text-[12px] text-muted">
-                    First row: {ROWS[0][position] || "empty"}
+                    Première ligne : {ROWS[0][position] || "vide"}
                   </span>
                 </span>
                 <label className="flex items-center gap-2">
-                  <span className="os-label">Import as</span>
+                  <span className="os-label">Importer comme</span>
                   <select
-                    aria-label={`Import as, for the column ${column}`}
+                    aria-label={`Importer comme, pour la colonne ${column}`}
                     value={mapping[position]}
                     onChange={(event) => setField(position, event.target.value as Field)}
                     className="rounded-[var(--radius-sm)] border border-line bg-surface px-2.5 py-1.5 text-[12.5px]"
@@ -281,9 +291,9 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
           </ul>
           {!nameMapped || !sourceMapped ? (
             <p className="rounded-[var(--radius-sm)] border border-accent-line bg-accent-soft px-3 py-2 text-[12px] text-accent-ink">
-              Map one column to the name and one to where they came from. A contact imported without
-              a source would sit on every screen with no channel against it, and that is the one
-              thing this product refuses to do.
+              Associez une colonne au nom et une autre a d'ou ils viennent. Un contact importe sans
+              source resterait sur chaque écran sans canal en face de lui, et c'est la seule chose
+              que ce produit refuse de faire.
             </p>
           ) : null}
           <div className="flex flex-wrap gap-1.5">
@@ -293,10 +303,10 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
               disabled={!nameMapped || !sourceMapped}
               onClick={() => setStep("preview")}
             >
-              Preview the rows
+              Voir l'apercu des lignes
             </button>
             <button type="button" className={PLAIN_BUTTON} onClick={() => setStep("file")}>
-              Back
+              Retour
             </button>
           </div>
         </div>
@@ -305,19 +315,19 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
       {step === "preview" ? (
         <div className="flex flex-col gap-3">
           <p className="text-[13px] text-muted">
-            The first <span className="os-num">{preview.length}</span> rows, read with the columns
-            you chose. Nothing has been added yet.
+            Les <span className="os-num">{preview.length}</span> premieres lignes, lues avec les
+            colonnes que vous avez choisies. Rien n'a encore été ajouté.
           </p>
           <div className="os-scroll">
             <table className="w-full min-w-[720px] border-collapse text-sm">
               <thead>
                 <tr>
-                  <th className="os-label pb-2 pr-3 text-left font-normal">Row</th>
-                  <th className="os-label pb-2 pr-3 text-left font-normal">Name</th>
-                  <th className="os-label pb-2 pr-3 text-left font-normal">Phone</th>
-                  <th className="os-label pb-2 pr-3 text-left font-normal">Email</th>
-                  <th className="os-label pb-2 pr-3 text-left font-normal">City</th>
-                  <th className="os-label pb-2 text-left font-normal">First touch</th>
+                  <th className="os-label pb-2 pr-3 text-left font-normal">Ligne</th>
+                  <th className="os-label pb-2 pr-3 text-left font-normal">Nom</th>
+                  <th className="os-label pb-2 pr-3 text-left font-normal">Téléphone</th>
+                  <th className="os-label pb-2 pr-3 text-left font-normal">E-mail</th>
+                  <th className="os-label pb-2 pr-3 text-left font-normal">Ville</th>
+                  <th className="os-label pb-2 text-left font-normal">Premier contact</th>
                 </tr>
               </thead>
               <tbody>
@@ -325,16 +335,16 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
                   <tr key={row.line} className="border-t border-line">
                     <td className="os-num py-2 pr-3 text-[12px] text-muted">{row.line}</td>
                     <td className="py-2 pr-3 text-[13px]">
-                      {row.values.name || <span className="text-danger">Missing</span>}
+                      {row.values.name || <span className="text-danger">Manquant</span>}
                     </td>
                     <td className="os-num py-2 pr-3 text-[12.5px]">
-                      {row.values.phone || <span className="text-faint">Empty</span>}
+                      {row.values.phone || <span className="text-faint">Vide</span>}
                     </td>
                     <td className="py-2 pr-3 text-[12.5px]">
-                      {row.values.email || <span className="text-faint">Empty</span>}
+                      {row.values.email || <span className="text-faint">Vide</span>}
                     </td>
                     <td className="py-2 pr-3 text-[12.5px]">
-                      {row.values.city || <span className="text-faint">Empty</span>}
+                      {row.values.city || <span className="text-faint">Vide</span>}
                     </td>
                     <td className="py-2 text-[12.5px]">
                       {row.channelId ? (
@@ -343,7 +353,7 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
                           {channel(row.channelId).label}
                         </span>
                       ) : (
-                        <span className="text-danger">{row.values.source || "Empty"}</span>
+                        <span className="text-danger">{row.values.source || "Vide"}</span>
                       )}
                     </td>
                   </tr>
@@ -353,16 +363,16 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
           </div>
           {checked.length > preview.length ? (
             <p className="text-[12px] text-muted">
-              <span className="os-num">{checked.length - preview.length}</span> more rows follow the
-              ones shown here, and the checks run over all of them.
+              <span className="os-num">{checked.length - preview.length}</span> autres lignes
+              suivent celles montrees ici, et les controles portent sur toutes.
             </p>
           ) : null}
           <div className="flex flex-wrap gap-1.5">
             <button type="button" className={PRIMARY_BUTTON} onClick={() => setStep("check")}>
-              Check the rows
+              Controler les lignes
             </button>
             <button type="button" className={PLAIN_BUTTON} onClick={() => setStep("map")}>
-              Back
+              Retour
             </button>
           </div>
         </div>
@@ -371,12 +381,14 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
       {step === "check" ? (
         <div className="flex flex-col gap-3">
           <p className="rounded-[var(--radius-sm)] border border-success/20 bg-success-soft px-3 py-2 text-[12.5px] text-success">
-            <span className="os-num font-semibold">{clean.length}</span> of the{" "}
-            <span className="os-num font-semibold">{checked.length}</span> rows can be imported as
-            they are.
+            <span className="os-num font-semibold">{clean.length}</span> lignes sur{" "}
+            <span className="os-num font-semibold">{checked.length}</span> peuvent etre importees
+            telles quelles.
           </p>
           {blocked.length === 0 ? (
-            <p className="text-[13px] text-muted">Every row passed. Nothing would be skipped.</p>
+            <p className="text-[13px] text-muted">
+              Toutes les lignes passent. Rien ne serait ignore.
+            </p>
           ) : (
             <ul className="flex flex-col gap-2">
               {blocked.map((row) => (
@@ -385,7 +397,7 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
                   className="rounded-[var(--radius-sm)] border border-danger/20 bg-danger-soft px-3 py-2 text-[12.5px] text-danger"
                 >
                   <p className="font-semibold">
-                    <span className="os-num">Row {row.line}</span>, {row.values.name || "no name"}
+                    <span className="os-num">Ligne {row.line}</span>, {row.values.name || "sans nom"}
                   </p>
                   <ul className="mt-1 flex flex-col gap-0.5">
                     {row.problems.map((problem) => (
@@ -397,8 +409,8 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
             </ul>
           )}
           <p className="text-[12px] text-muted">
-            A skipped row is left in the file. Fix it there and open the file again, rather than
-            editing it here.
+            Une ligne ignoree reste dans le fichier. Corrigez-la la-bas et ouvrez le fichier a
+            nouveau, plutot que de la modifier ici.
           </p>
           <div className="flex flex-wrap gap-1.5">
             <button
@@ -407,10 +419,10 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
               disabled={clean.length === 0}
               onClick={() => setStep("confirm")}
             >
-              Continue with {clean.length} rows
+              Continuer avec {clean.length} lignes
             </button>
             <button type="button" className={PLAIN_BUTTON} onClick={() => setStep("preview")}>
-              Back
+              Retour
             </button>
           </div>
         </div>
@@ -420,10 +432,13 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
         <div className="flex flex-col gap-3">
           <div className="rounded-[var(--radius-md)] border border-line bg-surface-2 px-3 py-3">
             <p className="text-[13px]">
-              <span className="os-num font-semibold">{clean.length}</span> contacts would be added.{" "}
-              <span className="os-num font-semibold">{blocked.length}</span> rows would be skipped.
+              <span className="os-num font-semibold">{clean.length}</span> contacts seraient
+              ajoutes. <span className="os-num font-semibold">{blocked.length}</span> lignes
+              seraient ignorees.
             </p>
-            <p className="mt-2 text-[12px] text-muted">Each one would arrive with its own first touch:</p>
+            <p className="mt-2 text-[12px] text-muted">
+              Chacun arriverait avec son propre premier contact :
+            </p>
             <ul className="mt-1.5 flex flex-wrap gap-1.5">
               {[...tally.entries()].map(([channelId, count]) => (
                 <li
@@ -438,22 +453,22 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
             </ul>
           </div>
           <p className="text-[12px] text-muted">
-            Nothing is written. Once the database is behind this screen, this is the step that would
-            add the rows.
+            Rien n'est enregistré. Une fois la base de données derriere cet écran, c'est cette étape
+            qui ajouterait les lignes.
           </p>
           <div className="flex flex-wrap gap-1.5">
             <button type="button" className={PRIMARY_BUTTON} onClick={() => setStep("done")}>
-              Finish the walkthrough
+              Terminer la démonstration
             </button>
             <button
               type="button"
               className={PLAIN_BUTTON}
               onClick={() => {
-                setNotice("The import was cancelled. Nothing was added and the file was left alone.");
+                setNotice("L'import a été annule. Rien n'a été ajouté et le fichier n'a pas été touche.");
                 setStep("file");
               }}
             >
-              Cancel the import
+              Annuler l'import
             </button>
           </div>
         </div>
@@ -462,13 +477,13 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
       {step === "done" ? (
         <div className="flex flex-col gap-3">
           <p role="status" className="rounded-[var(--radius-sm)] border border-accent-line bg-accent-soft px-3 py-2 text-[12.5px] text-accent-ink">
-            Nothing was added. The walkthrough stops at the moment it would write. Once the database
-            is behind it, this is the step that saves the rows, and every contact keeps the source
-            that its own row named.
+            Rien n'a été ajouté. La démonstration s'arrete au moment ou elle ecrirait. Une fois la
+            base de données derriere elle, c'est cette étape qui enregistré les lignes, et chaque
+            contact garde la source que sa propre ligne indiquait.
           </p>
           <div>
             <button type="button" className={PLAIN_BUTTON} onClick={restart}>
-              Walk through it again
+              Recommencer la démonstration
             </button>
           </div>
         </div>

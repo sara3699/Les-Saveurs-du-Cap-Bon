@@ -25,13 +25,13 @@ export function PipelineList({ cards }: { cards: PipelineCard[] }) {
       <table className="w-full min-w-[960px] border-collapse text-sm">
         <thead>
           <tr>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Customer</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Client</th>
             <th className="os-label pb-2.5 pr-3 text-left font-normal">Source</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Stage</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Owner</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Next step</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Age</th>
-            <th className="os-label pb-2.5 text-right font-normal">Value</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Étape</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Responsable</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Prochaine action</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Anciennete</th>
+            <th className="os-label pb-2.5 text-right font-normal">Valeur</th>
           </tr>
         </thead>
         <tbody>
@@ -55,7 +55,9 @@ export function PipelineList({ cards }: { cards: PipelineCard[] }) {
                 ) : null}
               </td>
               <td className="py-2.5 pr-3 text-[13px] text-muted">
-                {card.owner ?? <span className="font-semibold text-danger">Nobody yet</span>}
+                {card.owner ?? (
+                  <span className="font-semibold text-danger">Personne pour l'instant</span>
+                )}
               </td>
               <td className="py-2.5 pr-3 text-[12.5px]">
                 {card.nextStep ? (
@@ -67,17 +69,17 @@ export function PipelineList({ cards }: { cards: PipelineCard[] }) {
                       }`}
                     >
                       {card.nextStep.overdue
-                        ? `Late, was due ${card.nextStep.dueLabel}`
-                        : `Due ${card.nextStep.dueLabel}`}
+                        ? `En retard, échéance ${card.nextStep.dueLabel}`
+                        : `Échéance ${card.nextStep.dueLabel}`}
                     </span>
                   </>
                 ) : (
-                  <span className="text-faint">Nothing written down</span>
+                  <span className="text-faint">Rien de note</span>
                 )}
               </td>
               <td className="py-2.5 pr-3 text-[12.5px] text-muted">
                 <span className="os-num">{card.ageLabel}</span>
-                <span className="block text-[11px]">Opened {card.openedLabel}</span>
+                <span className="block text-[11px]">Le {card.openedLabel}</span>
               </td>
               <td className="os-num py-2.5 text-right text-[12.5px] font-semibold">
                 {card.valueLabel}

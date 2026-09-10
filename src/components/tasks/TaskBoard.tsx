@@ -30,15 +30,15 @@ export function TaskBoard({
   if (rows.length === 0) {
     return filtered ? (
       <EmptyState
-        title="No follow-up matches these filters"
-        body="Follow-ups are not typed in here. You make one from a conversation: open the request in the inbox and use the new task action, and it arrives on this screen with the customer, the channel and the date already attached. Clear a filter to see the ones you have."
-        action={{ label: "Clear the filters", href: "/tasks" }}
+        title="Aucune relance ne correspond a ces filtres"
+        body="Les relances ne se saisissent pas ici. Vous en creez une depuis une conversation. Ouvrez la demande dans la boîte de réception et utilisez l'action nouvelle tache, et elle arrive sur cet écran avec le client, le canal et la date déjà attaches. Retirez un filtre pour voir celles que vous avez."
+        action={{ label: "Retirer les filtres", href: "/tasks" }}
       />
     ) : (
       <EmptyState
-        title="Nothing to follow up"
-        body="Every follow-up starts as a message. Open a request in the inbox and use the new task action, and it appears here with the customer, the channel it came in on and the date you promised."
-        action={{ label: "Open the inbox", href: "/inbox" }}
+        title="Aucune relance en cours"
+        body="Chaque relance commence par un message. Ouvrez une demande dans la boîte de réception et utilisez l'action nouvelle tache, et elle apparait ici avec le client, le canal par lequel elle est arrivée et la date que vous avez promise."
+        action={{ label: "Ouvrir la boîte de réception", href: "/inbox" }}
       />
     );
   }
@@ -62,50 +62,51 @@ export function TaskBoard({
           word, so the strip and the list never look like two different counts. */}
       <div className="flex flex-wrap items-center gap-2" aria-live="polite">
         <span className="inline-flex items-center gap-1.5 rounded-full border border-danger/20 bg-danger-soft px-3 py-1 text-[12.5px] font-semibold text-danger">
-          <span className="os-num">{overdue.length}</span> overdue
+          <span className="os-num">{overdue.length}</span> en retard
         </span>
         <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-[12.5px] font-semibold text-ink">
-          <span className="os-num">{today.length}</span> due today
+          <span className="os-num">{today.length}</span> {"a faire aujourd'hui"}
         </span>
         <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-[12.5px] text-muted">
-          <span className="os-num">{upcoming.length}</span> upcoming
+          <span className="os-num">{upcoming.length}</span> a venir
         </span>
         <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-[12.5px] text-muted">
-          <span className="os-num">{completed.length}</span> completed
+          <span className="os-num">{completed.length}</span> terminées
         </span>
       </div>
 
       <p className="text-xs text-muted">
-        Ticking a box moves a follow-up into completed for this visit only. Nothing is saved yet, so
-        the list comes back as it was on your next refresh.
+        {"Cocher une case deplace une relance dans les terminées pour cette visite seulement. "}
+        {"Rien n'est enregistré pour l'instant, la liste revient telle qu'elle était a votre "}
+        {"prochain rafraichissement."}
       </p>
 
       <Section
-        label="Overdue"
+        label="En retard"
         rows={overdue}
-        empty="Nothing is late. Every follow-up still has time on it."
+        empty="Rien n'est en retard. Chaque relance a encore du temps devant elle."
         alarming
         ticked={ticked}
         onToggle={toggle}
       />
       <Section
-        label="Due today"
+        label="A faire aujourd'hui"
         rows={today}
-        empty="Nothing else is due before tonight."
+        empty="Rien d'autre n'est a faire avant ce soir."
         ticked={ticked}
         onToggle={toggle}
       />
       <Section
-        label="Upcoming"
+        label="A venir"
         rows={upcoming}
-        empty="Nothing is booked after today."
+        empty="Rien n'est prévu après aujourd'hui."
         ticked={ticked}
         onToggle={toggle}
       />
       <Section
-        label="Completed"
+        label="Terminées"
         rows={completed}
-        empty="Nothing has been ticked off yet."
+        empty="Rien n'a encore été coche."
         ticked={ticked}
         onToggle={toggle}
       />
@@ -171,7 +172,9 @@ function TaskLine({
         checked={done}
         disabled={alreadyDone}
         onChange={() => onToggle(row.id)}
-        aria-label={alreadyDone ? `${row.title}, already done` : `Mark done: ${row.title}`}
+        aria-label={
+          alreadyDone ? `${row.title}, déjà terminee` : `Marquer comme terminee, ${row.title}`
+        }
         className="mt-1 h-4 w-4 shrink-0 accent-primary disabled:cursor-not-allowed"
       />
 
@@ -197,14 +200,14 @@ function TaskLine({
                 {row.customerName}
               </Link>
             ) : (
-              <span>Shop work, no customer attached</span>
+              <span>Travail de boutique, aucun client attache</span>
             )}
             {row.channelId ? (
               <SourceBadge channelId={row.channelId} account={row.account} size="sm" />
             ) : null}
             {row.conversationHref ? (
               <Link href={row.conversationHref} className="font-semibold text-primary hover:underline">
-                Open the conversation
+                Ouvrir la conversation
               </Link>
             ) : null}
           </div>
@@ -215,7 +218,7 @@ function TaskLine({
             alreadyDone ? (
               <p className="os-num text-[12px] text-muted">{row.doneLabel}</p>
             ) : (
-              <p className="text-[12px] text-muted">Ticked on this visit</p>
+              <p className="text-[12px] text-muted">Cochee pendant cette visite</p>
             )
           ) : row.lateLabel ? (
             <>

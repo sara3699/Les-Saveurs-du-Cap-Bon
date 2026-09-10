@@ -29,7 +29,7 @@ export interface DayBar {
   abandoned: number;
 }
 
-const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const WEEKDAYS = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"];
 
 export function ordersByDay(orders: Order[], days: number, now: Date): DayBar[] {
   const bars: DayBar[] = [];

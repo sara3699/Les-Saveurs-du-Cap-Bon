@@ -24,7 +24,7 @@ export default async function OrderDetailPage({ params }: { params: Params }) {
   const [contact, team, connections, attributions] = await Promise.all([
     repos.contacts.byId(order.contactId),
     repos.workspace.team(),
-    repos.integrations.list(),
+    repos.intégrations.list(),
     repos.workspace.attributions(),
   ]);
 
@@ -37,48 +37,48 @@ export default async function OrderDetailPage({ params }: { params: Params }) {
     : null;
 
   const facts: { label: string; value: React.ReactNode }[] = [
-    { label: "Channel", value: <SourceBadge channelId={source.channelId} account={source.accountLabel} /> },
+    { label: "Canal", value: <SourceBadge channelId={source.channelId} account={source.accountLabel} /> },
     {
-      label: "Connected account",
+      label: "Compte connecté",
       value: source.accountLabel ?? (
-        <span className="text-muted">None. This order was typed in by your team.</span>
+        <span className="text-muted">Aucun. Cette commande a été saisie par votre équipe.</span>
       ),
     },
     {
-      label: "Provider reference",
+      label: "Référence fournisseur",
       value: source.externalId ? (
         <span className="os-num text-[12px]">{source.externalId}</span>
       ) : (
-        <span className="text-muted">None, there is no provider behind a manual order</span>
+        <span className="text-muted">{"Aucune, il n'y a pas de fournisseur derrière une commande manuelle"}</span>
       ),
     },
-    { label: "Received here", value: formatDateTime(source.receivedAt) },
+    { label: "Reçue ici", value: formatDateTime(source.receivedAt) },
     {
-      label: "Campaign",
-      value: source.campaign ?? <span className="text-muted">Not supplied by {channel(source.channelId).label}</span>,
+      label: "Campagne",
+      value: source.campaign ?? <span className="text-muted">Non transmise par {channel(source.channelId).label}</span>,
     },
     {
-      label: "Page or referrer",
-      value: source.referrer ?? <span className="text-muted">Not supplied</span>,
+      label: "Page ou référent",
+      value: source.referrer ?? <span className="text-muted">Non transmis</span>,
     },
     {
-      label: "Linked conversation",
+      label: "Conversation liée",
       value: order.conversationId ? (
         <Link href={`/inbox?c=${order.conversationId}`} className="font-semibold text-primary hover:underline">
-          Open the conversation
+          Ouvrir la conversation
         </Link>
       ) : (
-        <span className="text-muted">This order did not come out of a conversation</span>
+        <span className="text-muted">{"Cette commande n'est pas issue d'une conversation"}</span>
       ),
     },
     {
-      label: "Linked customer",
+      label: "Client lié",
       value: contact ? (
         <Link href={`/contacts/${contact.id}`} className="font-semibold text-primary hover:underline">
           {contact.name}
         </Link>
       ) : (
-        <span className="text-muted">Unknown</span>
+        <span className="text-muted">Inconnu</span>
       ),
     },
   ];
@@ -87,13 +87,13 @@ export default async function OrderDetailPage({ params }: { params: Params }) {
     <div className="flex flex-col gap-4">
       <div>
         <Link href="/orders" className="text-xs font-semibold text-primary hover:underline">
-          Back to orders
+          Retour aux commandes
         </Link>
       </div>
 
       <PageHeader
         title={order.reference}
-        subtitle={`Placed ${timeAgo(order.placedAt, DEMO_NOW)} by ${contact?.name ?? "an unknown customer"}, ${formatDateTime(order.placedAt)}.`}
+        subtitle={`Passée ${timeAgo(order.placedAt, DEMO_NOW)} par ${contact?.name ?? "un client inconnu"}, ${formatDateTime(order.placedAt)}.`}
         actions={
           <>
             <PaymentPill status={order.paymentStatus} />
@@ -105,15 +105,15 @@ export default async function OrderDetailPage({ params }: { params: Params }) {
 
       <div className="grid gap-3 lg:grid-cols-[1.3fr_1fr]">
         <Card>
-          <CardHead title="What was ordered" hint={`${order.items.length} ${order.items.length === 1 ? "line" : "lines"}, delivery counted below`} />
+          <CardHead title="Ce qui a été commandé" hint={`${order.items.length} ${order.items.length === 1 ? "ligne" : "lignes"}, livraison comptée ci-dessous`} />
           <div className="os-scroll">
             <table className="w-full min-w-[420px] border-collapse text-sm">
               <thead>
                 <tr>
-                  <th className="os-label pb-2 text-left font-normal">Product</th>
-                  <th className="os-label pb-2 text-right font-normal">Quantity</th>
-                  <th className="os-label pb-2 text-right font-normal">Unit</th>
-                  <th className="os-label pb-2 text-right font-normal">Line</th>
+                  <th className="os-label pb-2 text-left font-normal">Produit</th>
+                  <th className="os-label pb-2 text-right font-normal">Quantité</th>
+                  <th className="os-label pb-2 text-right font-normal">Unitaire</th>
+                  <th className="os-label pb-2 text-right font-normal">Ligne</th>
                 </tr>
               </thead>
               <tbody>
@@ -132,13 +132,13 @@ export default async function OrderDetailPage({ params }: { params: Params }) {
               </tbody>
               <tfoot>
                 <tr className="border-t border-line">
-                  <td className="py-2 text-[13px] text-muted" colSpan={3}>Goods</td>
+                  <td className="py-2 text-[13px] text-muted" colSpan={3}>Marchandises</td>
                   <td className="os-num py-2 text-right text-[13px]">{formatTND(goods, { withCurrency: false })}</td>
                 </tr>
                 <tr>
-                  <td className="py-2 text-[13px] text-muted" colSpan={3}>Delivery</td>
+                  <td className="py-2 text-[13px] text-muted" colSpan={3}>Livraison</td>
                   <td className="os-num py-2 text-right text-[13px]">
-                    {order.deliveryFee === 0 ? "Free" : formatTND(order.deliveryFee, { withCurrency: false })}
+                    {order.deliveryFee === 0 ? "Offerte" : formatTND(order.deliveryFee, { withCurrency: false })}
                   </td>
                 </tr>
                 <tr className="border-t border-line">
@@ -152,29 +152,29 @@ export default async function OrderDetailPage({ params }: { params: Params }) {
 
         <div className="flex flex-col gap-3">
           <Card>
-            <CardHead title="Customer" />
+            <CardHead title="Client" />
             {contact ? (
               <dl className="flex flex-col gap-1.5 text-[13px]">
                 <div className="flex justify-between gap-3">
-                  <dt className="text-muted">Name</dt>
+                  <dt className="text-muted">Nom</dt>
                   <dd className="font-medium">{contact.name}</dd>
                 </div>
                 <div className="flex justify-between gap-3">
-                  <dt className="text-muted">Phone</dt>
-                  <dd className="os-num">{contact.phone ?? "Not given"}</dd>
+                  <dt className="text-muted">Téléphone</dt>
+                  <dd className="os-num">{contact.phone ?? "Non renseigné"}</dd>
                 </div>
                 <div className="flex justify-between gap-3">
-                  <dt className="text-muted">City</dt>
-                  <dd>{contact.city ?? "Not given"}</dd>
+                  <dt className="text-muted">Ville</dt>
+                  <dd>{contact.city ?? "Non renseignée"}</dd>
                 </div>
                 <div className="flex justify-between gap-3">
-                  <dt className="text-muted">Owner</dt>
-                  <dd>{assignee?.name ?? <span className="text-danger">Nobody yet</span>}</dd>
+                  <dt className="text-muted">Responsable</dt>
+                  <dd>{assignee?.name ?? <span className="text-danger">{"Personne pour l'instant"}</span>}</dd>
                 </div>
                 {touches?.changed ? (
                   <p className="mt-2 rounded-[var(--radius-sm)] border border-accent-line bg-accent-soft px-3 py-2 text-xs text-accent-ink">
-                    This customer first arrived through {touches.first} and now writes on {touches.latest}. This
-                    order keeps its own source either way.
+                    Ce client est arrivé la première fois par {touches.first} et écrit maintenant sur{" "}
+                    {touches.latest}. Cette commande garde sa propre source dans tous les cas.
                   </p>
                 ) : null}
               </dl>
@@ -183,8 +183,8 @@ export default async function OrderDetailPage({ params }: { params: Params }) {
 
           <Card className="border-primary/25">
             <CardHead
-              title="Where this order came from"
-              hint="Recorded once, when the request arrived, and never rewritten"
+              title="D'où vient cette commande"
+              hint="Enregistré une fois, à l'arrivée de la demande, et jamais réécrit"
             />
             <dl className="flex flex-col gap-2 text-[13px]">
               {facts.map((fact) => (

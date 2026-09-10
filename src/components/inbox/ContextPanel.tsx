@@ -37,31 +37,31 @@ export function ContextPanel(props: ContextPanelProps) {
             {props.name}
           </Link>
           <span className="block text-[11.5px] text-muted">
-            {[props.city, `speaks ${props.language}`].filter(Boolean).join(", ")}
+            {[props.city, `parle ${props.language}`].filter(Boolean).join(", ")}
           </span>
         </span>
       </div>
 
       <dl className="flex flex-col gap-1.5 text-[12px]">
-        <Row label="Phone" value={props.phone ?? "Not given"} mono />
-        <Row label="Email" value={props.email ?? "Not given"} />
-        <Row label="First came from" value={channel(props.firstTouch).label} />
-        <Row label="Most recent" value={channel(props.latestTouch).label} />
-        <Row label="First contact" value={props.firstContactLabel} />
-        <Row label="Stage" value={props.stage} />
-        <Row label="Spent so far" value={props.lifetimeLabel} mono />
+        <Row label="Téléphone" value={props.phone ?? "Non renseigné"} mono />
+        <Row label="E-mail" value={props.email ?? "Non renseigné"} />
+        <Row label="Premier contact" value={channel(props.firstTouch).label} />
+        <Row label="Plus récent" value={channel(props.latestTouch).label} />
+        <Row label="Client depuis" value={props.firstContactLabel} />
+        <Row label="Étape" value={props.stage} />
+        <Row label="Total dépensé" value={props.lifetimeLabel} mono />
       </dl>
 
       {moved ? (
         <p className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-3 py-2 text-[11.5px] text-muted">
-          She arrived through {channel(props.firstTouch).label} and now writes on{" "}
-          {channel(props.latestTouch).label}. The first channel stays on the record.
+          Ce contact est arrivé par {channel(props.firstTouch).label} et écrit maintenant sur{" "}
+          {channel(props.latestTouch).label}. Le premier canal reste inscrit sur la fiche.
         </p>
       ) : null}
 
       <div className="rounded-[var(--radius-md)] border border-accent-line bg-accent-soft px-3 py-2.5">
         <div className="flex items-baseline justify-between">
-          <span className="os-label text-accent-ink">Lead score</span>
+          <span className="os-label text-accent-ink">Score du prospect</span>
           <span className="os-num font-display text-[22px] font-bold text-accent-ink">{props.leadScore}</span>
         </div>
         <ul className="mt-1.5 flex flex-col gap-1 text-[11.5px] text-accent-ink">
@@ -73,7 +73,7 @@ export function ContextPanel(props: ContextPanelProps) {
 
       {props.tags.length > 0 ? (
         <div>
-          <p className="os-label mb-1.5">Tags</p>
+          <p className="os-label mb-1.5">Étiquettes</p>
           <div className="flex flex-wrap gap-1.5">
             {props.tags.map((tag) => (
               <TagChip key={tag} label={tag} />
@@ -83,9 +83,9 @@ export function ContextPanel(props: ContextPanelProps) {
       ) : null}
 
       <div>
-        <p className="os-label mb-1.5">Open tasks</p>
+        <p className="os-label mb-1.5">Tâches en cours</p>
         {props.tasks.length === 0 ? (
-          <p className="text-[12px] text-muted">No follow up is booked for this customer.</p>
+          <p className="text-[12px] text-muted">{"Aucun suivi n'est prévu pour ce client."}</p>
         ) : (
           <ul className="flex flex-col gap-1.5">
             {props.tasks.map((task) => (
@@ -94,7 +94,7 @@ export function ContextPanel(props: ContextPanelProps) {
                 <span>
                   {task.title}
                   <span className={`block text-[11px] ${task.overdue ? "text-danger" : "text-muted"}`}>
-                    {task.overdue ? `Overdue by ${task.dueLabel}` : `Due ${task.dueLabel}`}
+                    {task.overdue ? `En retard de ${task.dueLabel}` : `Échéance ${task.dueLabel}`}
                   </span>
                 </span>
               </li>
@@ -120,14 +120,14 @@ export function ContextPanel(props: ContextPanelProps) {
       ) : null}
 
       <div>
-        <p className="os-label mb-1.5">Across every channel</p>
+        <p className="os-label mb-1.5">Sur tous les canaux</p>
         <ul className="flex flex-col gap-2">
           {props.timeline.map((entry) => (
             <li key={entry.id} className="flex items-start gap-2 text-[12px]">
               {entry.channelId ? (
                 <SourceBadge channelId={entry.channelId} size="sm" />
               ) : (
-                <span className="os-label pt-1">Team</span>
+                <span className="os-label pt-1">Équipe</span>
               )}
               <span className="min-w-0">
                 <span className="block">{entry.label}</span>

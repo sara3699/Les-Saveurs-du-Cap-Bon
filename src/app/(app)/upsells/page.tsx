@@ -10,7 +10,7 @@ import { formatPercent, formatTND, formatTNDCompact } from "@/lib/format";
 import { STORE_PROFILE, type Bundle } from "@/lib/mock/operations";
 import { getRepositories } from "@/lib/repositories";
 
-export const metadata = { title: "Up and cross sells, Les Saveurs du Cap Bon" };
+export const metadata = { title: "Ventes additionnelles, Les Saveurs du Cap Bon" };
 
 type Params = Promise<Record<string, string | string[] | undefined>>;
 
@@ -45,38 +45,38 @@ const KIND_META: Record<
   { chip: string; section: string; hint: string; tone: "primary" | "muted" | "accent" }
 > = {
   bundle: {
-    chip: "Bundle",
-    section: "Bundles, priced together",
-    hint: "Two products offered as one price, lower than the two bought on their own.",
+    chip: "Lot",
+    section: "Lots, au prix groupe",
+    hint: "Deux produits proposes a un prix unique, plus bas que les deux achetes separement.",
     tone: "primary",
   },
   recommendation: {
     chip: "Suggestion",
-    section: "Suggestions, offered beside a product",
-    hint: "A second product is shown at its normal price. Nothing goes into the basket on its own.",
+    section: "Suggestions, proposees a cote d'un produit",
+    hint: "Un deuxieme produit est affiche a son prix normal. Rien ne s'ajoute au panier tout seul.",
     tone: "muted",
   },
   threshold: {
-    chip: "Threshold",
-    section: "Free delivery threshold",
-    hint: "A basket value that changes what the customer pays to have the order delivered.",
+    chip: "Seuil",
+    section: "Seuil de livraison offerte",
+    hint: "Un montant de panier qui change ce que le client paie pour la livraison de sa commande.",
     tone: "accent",
   },
   discount: {
-    chip: "Discount",
-    section: "Discounts",
-    hint: "A percentage comes off the basket when it matches the rule.",
+    chip: "Remise",
+    section: "Remises",
+    hint: "Un pourcentage est retire du panier quand celui-ci correspond a la règle.",
     tone: "muted",
   },
 };
 
 /** `group` names the same set in a sentence, for the empty state. */
 const KIND_FILTERS: { value: string; label: string; group: string }[] = [
-  { value: "", label: "All rules", group: "rules" },
-  { value: "bundle", label: "Bundles", group: "bundles" },
-  { value: "recommendation", label: "Suggestions", group: "suggestions" },
-  { value: "threshold", label: "Free delivery", group: "free delivery rules" },
-  { value: "discount", label: "Discounts", group: "discounts" },
+  { value: "", label: "Toutes les règles", group: "règle" },
+  { value: "bundle", label: "Lots", group: "offre groupee" },
+  { value: "recommendation", label: "Suggestions", group: "suggestion" },
+  { value: "threshold", label: "Livraison offerte", group: "règle de livraison offerte" },
+  { value: "discount", label: "Remises", group: "remise" },
 ];
 
 const SECTION_ORDER: Kind[] = ["bundle", "recommendation", "discount"];
@@ -135,7 +135,7 @@ function RuleCard({ rule, productById }: { rule: Bundle; productById: Map<string
 
       {parts.length > 0 ? (
         <div>
-          <p className="os-label">Products in this rule</p>
+          <p className="os-label">Produits de cette règle</p>
           <ul className="mt-1.5 flex flex-col gap-1">
             {parts.map((product) => (
               <li key={product.id} className="flex items-baseline justify-between gap-3 text-[13px]">
@@ -152,19 +152,19 @@ function RuleCard({ rule, productById }: { rule: Bundle; productById: Map<string
       {rule.bundlePrice !== null && parts.length > 0 ? (
         <div className="grid grid-cols-3 gap-2 rounded-[var(--radius-md)] border border-line bg-surface-2 px-3 py-2.5">
           <div>
-            <p className="os-label">Parts</p>
+            <p className="os-label">Separement</p>
             <p className="os-num mt-1 text-[13px] font-semibold">
               {formatTND(partsTotal, { withCurrency: false })}
             </p>
           </div>
           <div>
-            <p className="os-label">Together</p>
+            <p className="os-label">Ensemble</p>
             <p className="os-num mt-1 text-[13px] font-semibold">
               {formatTND(rule.bundlePrice, { withCurrency: false })}
             </p>
           </div>
           <div>
-            <p className="os-label">Customer saves</p>
+            <p className="os-label">Le client economise</p>
             <p className="os-num mt-1 text-[13px] font-semibold text-success">
               {formatTND(partsTotal - rule.bundlePrice, { withCurrency: false })}
             </p>
@@ -172,31 +172,31 @@ function RuleCard({ rule, productById }: { rule: Bundle; productById: Map<string
         </div>
       ) : parts.length > 0 ? (
         <p className="rounded-[var(--radius-md)] border border-line bg-surface-2 px-3 py-2.5 text-[12.5px] text-muted">
-          No bundle price. Everything stays at its normal price, and the products above come to{" "}
-          <span className="os-num font-semibold text-ink">{formatTND(partsTotal)}</span> together.
+          Pas de prix groupe. Tout reste a son prix normal, et les produits ci-dessus reviennent a{" "}
+          <span className="os-num font-semibold text-ink">{formatTND(partsTotal)}</span> ensemble.
         </p>
       ) : null}
 
       <dl className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <Figure label="Shown" value={String(rule.timesShown)} />
-        <Figure label="Taken" value={String(rule.timesTaken)} />
-        <Figure label="Take-up" value={rate === null ? "None yet" : formatPercent(rate)} />
-        <Figure label="Revenue added" value={formatTNDCompact(rule.revenueAdded)} money />
+        <Figure label="Affichages" value={String(rule.timesShown)} />
+        <Figure label="Acceptations" value={String(rule.timesTaken)} />
+        <Figure label="Taux d'acceptation" value={rate === null ? "Pas encore" : formatPercent(rate)} />
+        <Figure label="Chiffre d'affaires ajouté" value={formatTNDCompact(rule.revenueAdded)} money />
       </dl>
 
       {rate === null ? (
         <p className="text-[12px] text-muted">
-          This rule has never been shown, so it has no figures to compare yet.
+          Cette règle n'a jamais été affichee, elle n'a donc pas encore de chiffres a comparer.
         </p>
       ) : (
         <div className="flex flex-col gap-1.5">
           <ShareBar share={rate} />
           <p className="text-[12px] text-muted">
-            <span className="os-num">{rule.timesTaken}</span> of the{" "}
-            <span className="os-num">{rule.timesShown}</span> customers who saw it took it
+            <span className="os-num">{rule.timesTaken}</span> des{" "}
+            <span className="os-num">{rule.timesShown}</span> clients qui l'ont vue l'ont acceptee
             {perTake ? (
               <>
-                , worth <span className="os-num">{formatTND(perTake)}</span> an order
+                , soit <span className="os-num">{formatTND(perTake)}</span> par commande
               </>
             ) : null}
             .
@@ -220,7 +220,7 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
     repos.workspace.products(),
     repos.orders.list(),
     repos.workspace.attributions(),
-    repos.integrations.list(),
+    repos.intégrations.list(),
   ]);
 
   const index = buildAttributionIndex(attributions, connections);
@@ -249,11 +249,11 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
       label: `${value} TND`,
       share,
       shareLabel: formatPercent(share),
-      reachedLabel: `${reached} of ${baskets.length}`,
+      reachedLabel: `${reached} sur ${baskets.length}`,
       justShortLabel:
         nearMiss.length > 0
-          ? `${nearMiss.length} ${plural(nearMiss.length, "order stops", "orders stop")} within ${NEAR_MISS_BAND} TND of it, on average ${formatTND(averageShort)} short.`
-          : `No order in this demo set stops within ${NEAR_MISS_BAND} TND of it.`,
+          ? `${nearMiss.length} ${plural(nearMiss.length, "commande s'arrete", "commandes s'arretent")} a moins de ${NEAR_MISS_BAND} TND du seuil, en moyenne ${formatTND(averageShort)} en dessous.`
+          : `Aucune commande de ce jeu d'exemple ne s'arrete a moins de ${NEAR_MISS_BAND} TND du seuil.`,
     };
   });
 
@@ -305,53 +305,54 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
   // The empty state has to describe the filter that actually emptied the list,
   // rather than guess at one the owner may not have picked.
   const pickedKind = KIND_FILTERS.find((filter) => filter.value === (kind ?? ""));
-  const groupLabel = pickedKind ? pickedKind.group : "rules of that kind";
-  const stateWord = state === "on" ? "running" : state === "off" ? "switched off" : null;
+  const groupLabel = pickedKind ? pickedKind.group : "règle de ce type";
+  const stateWord = state === "on" ? "active" : state === "off" ? "désactivée" : null;
   const filterSentence = stateWord
-    ? `None of the ${groupLabel} is ${stateWord}.`
-    : `This shop has no ${groupLabel}.`;
+    ? `Aucune ${groupLabel} n'est ${stateWord}.`
+    : `Cette boutique n'utilisé aucune ${groupLabel}.`;
 
   return (
     <div className="flex flex-col gap-5">
       <PageHeader
-        title="Up and cross sells"
-        subtitle="The rules that raise the value of an order: what each one offers, how often customers take it, and what it brought in."
+        title="Ventes additionnelles"
+        subtitle="Les règles qui augmentent la valeur d'une commande : ce que chacune propose, a quelle frequence les clients l'acceptent, et ce qu'elle a rapporte."
         actions={<DemoChip />}
       />
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Stat
-          label="Added by the rules that are running"
+          label="Ajoute par les règles actives"
           value={formatTNDCompact(revenueRunning)}
-          detail={`Across ${running.length} ${plural(running.length, "rule", "rules")}`}
+          détail={`Sur ${running.length} ${plural(running.length, "règle", "règles")}`}
           tone="money"
         />
         <Stat
-          label="Rules running"
-          value={`${running.length} of ${bundles.length}`}
-          detail={`${bundles.length - running.length} switched off`}
+          label="Règles actives"
+          value={`${running.length} sur ${bundles.length}`}
+          détail={`${bundles.length - running.length} desactivees`}
         />
         <Stat
-          label="Times an offer was shown"
+          label="Affichages d'une offre"
           value={String(shownRunning)}
-          detail="On the rules that are running"
+          détail="Sur les règles actives"
         />
         <Stat
-          label="Times an offer was taken"
+          label="Acceptations d'une offre"
           value={String(takenRunning)}
-          detail={`${formatPercent(overallRate)} of the offers shown`}
+          détail={`${formatPercent(overallRate)} des offres affichees`}
         />
       </section>
 
       <p className="max-w-[86ch] text-[13px] leading-relaxed text-muted">
-        Every figure on this screen is demo data. Revenue added counts what the offer itself was
-        worth on the orders where it was taken, not the whole order and not the profit, and it has
-        not been measured against the orders that never saw the rule. The four figures above cover
-        every rule in the shop, so they stay the same whichever filter you pick below.
+        Tous les chiffres de cet écran sont des données d'exemple. Le chiffre d'affaires ajouté
+        compte ce que l'offre elle-même a rapporte sur les commandes ou elle a été acceptee, pas la
+        commande entiere et pas le bénéfice, et il n'a pas été compare aux commandes qui n'ont
+        jamais vu la règle. Les quatre chiffres ci-dessus portent sur toutes les règles de la
+        boutique, ils restent donc les memes quel que soit le filtre choisi ci-dessous.
       </p>
 
       <Card>
-        <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Filter the rules">
+        <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Filtrer les règles">
           {KIND_FILTERS.map((filter) => (
             <Link
               key={filter.value || "all"}
@@ -368,23 +369,23 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
             aria-current={state === "on" ? "true" : undefined}
             className={chipClass(state === "on")}
           >
-            Running
+            Actives
           </Link>
           <Link
             href={keep({ state: state === "off" ? undefined : "off" })}
             aria-current={state === "off" ? "true" : undefined}
             className={chipClass(state === "off")}
           >
-            Switched off
+            Desactivees
           </Link>
         </div>
       </Card>
 
       {visible.length === 0 ? (
         <EmptyState
-          title="No rule matches these filters"
-          body={`${filterSentence} The shop has ${bundles.length} rules in all, ${running.length} of them running.`}
-          action={{ label: "Show every rule", href: "/upsells" }}
+          title="Aucune règle ne correspond a ces filtres"
+          body={`${filterSentence} La boutique compte ${bundles.length} règles en tout, dont ${running.length} actives.`}
+          action={{ label: "Afficher toutes les règles", href: "/upsells" }}
         />
       ) : null}
 
@@ -398,41 +399,42 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
 
           <div className="grid gap-4 lg:grid-cols-3">
             <div className="flex flex-col gap-2">
-              <p className="os-label">Your threshold now</p>
+              <p className="os-label">Votre seuil actuel</p>
               <p className="os-num font-display text-[30px] font-bold leading-none tracking-tight text-accent-ink">
                 {formatTNDCompact(FREE_DELIVERY_FROM)}
               </p>
               <p className="text-[12.5px] leading-relaxed text-muted">
-                Below it the customer pays the delivery fee for their zone. The number lives with
-                your delivery fees on the{" "}
+                En dessous, le client paie les frais de livraison de sa zone. Ce montant est
+                range avec vos frais de livraison sur{" "}
                 <Link href="/store" className="font-semibold text-primary hover:underline">
-                  Store screen
+                  l'écran Boutique
                 </Link>
-                . Changing it from here is designed and not built.
+                . Le modifier depuis cet écran est concu mais pas developpe.
               </p>
               <RuleSwitch ruleName={thresholdRule.name} startsActive={thresholdRule.active} />
             </div>
 
             <div className="flex flex-col gap-2 border-line lg:border-l lg:pl-4">
-              <p className="os-label">Orders that reach it</p>
+              <p className="os-label">Commandes qui l'atteignent</p>
               <p className="os-num font-display text-[30px] font-bold leading-none tracking-tight">
                 {current.shareLabel}
               </p>
               <ShareBar share={current.share} />
               <p className="text-[12.5px] leading-relaxed text-muted">
-                <span className="os-num">{current.reachedLabel}</span> orders in this demo set have{" "}
-                <span className="os-num">{formatTNDCompact(FREE_DELIVERY_FROM)}</span> or more of
-                goods in the basket.{" "}
-                {current.justShortLabel} The near misses are the baskets the reminder is written
-                for.
+                <span className="os-num">{current.reachedLabel}</span> commandes de ce jeu
+                d'exemple ont{" "}
+                <span className="os-num">{formatTNDCompact(FREE_DELIVERY_FROM)}</span> ou plus de
+                marchandises dans le panier.{" "}
+                {current.justShortLabel} Les paniers qui passent juste a cote sont ceux pour
+                lesquels le rappel est ecrit.
               </p>
             </div>
 
             <div className="flex flex-col gap-2 border-line lg:border-l lg:pl-4">
-              <p className="os-label">Where those orders came from</p>
+              <p className="os-label">D'ou viennent ces commandes</p>
               {channelRows.length === 0 ? (
                 <p className="text-[13px] text-muted">
-                  No order in this demo set reaches the threshold yet.
+                  Aucune commande de ce jeu d'exemple n'atteint encore le seuil.
                 </p>
               ) : null}
               <ul className="flex flex-col gap-1.5">
@@ -443,32 +445,33 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
                       {row.label}
                     </span>
                     <span className="os-num shrink-0 text-[12px] text-muted">
-                      {row.count} {plural(row.count, "order", "orders")},{" "}
+                      {row.count} {plural(row.count, "commande", "commandes")},{" "}
                       {formatPercent((row.count / (overThreshold.length || 1)) * 100)}
                     </span>
                   </li>
                 ))}
               </ul>
               <p className="text-[12px] leading-relaxed text-muted">
-                The channel an order arrived on is kept, so a bigger basket on WhatsApp stays a
-                WhatsApp basket here.
+                Le canal par lequel une commande est arrivée est conserve, donc un panier plus
+                gros passe sur WhatsApp reste un panier WhatsApp ici.
               </p>
             </div>
           </div>
 
           <dl className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <Figure label="Shown" value={String(thresholdRule.timesShown)} />
-            <Figure label="Taken" value={String(thresholdRule.timesTaken)} />
+            <Figure label="Affichages" value={String(thresholdRule.timesShown)} />
+            <Figure label="Acceptations" value={String(thresholdRule.timesTaken)} />
             <Figure
-              label="Take-up"
-              value={thresholdRate === null ? "None yet" : formatPercent(thresholdRate)}
+              label="Taux d'acceptation"
+              value={thresholdRate === null ? "Pas encore" : formatPercent(thresholdRate)}
             />
-            <Figure label="Revenue added" value={formatTNDCompact(thresholdRule.revenueAdded)} money />
+            <Figure label="Chiffre d'affaires ajouté" value={formatTNDCompact(thresholdRule.revenueAdded)} money />
           </dl>
           <p className="mt-2 text-[12px] leading-relaxed text-muted">
-            Shown counts the times a basket was told how much was left to reach free delivery, and
-            taken counts the times that basket then reached it. That is a different question from
-            the share above, which looks at every order whether or not the reminder appeared.
+            Les affichages comptent les fois ou un panier a été informe du montant restant pour
+            obtenir la livraison offerte, et les acceptations comptent les fois ou ce panier a
+            ensuite atteint le seuil. C'est une question differente de la part affichee plus haut,
+            qui porte sur toutes les commandes, que le rappel soit apparu ou non.
           </p>
 
           <div className="mt-4">
@@ -501,20 +504,20 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
       {ranked.length > 0 ? (
         <Card>
           <CardHead
-            title="Rules side by side"
-            hint="Ranked by take-up, so a rule that is shown often and taken rarely is easy to spot."
+            title="Les règles cote a cote"
+            hint="Classees par taux d'acceptation, pour reperer vite une règle souvent affichee et rarement acceptee."
           />
           <div className="os-scroll">
             <table className="w-full min-w-[760px] border-collapse text-sm">
               <thead>
                 <tr>
-                  <th className="os-label pb-2.5 pr-3 text-left font-normal">Rule</th>
-                  <th className="os-label pb-2.5 pr-3 text-left font-normal">Kind</th>
-                  <th className="os-label pb-2.5 pr-3 text-left font-normal">State</th>
-                  <th className="os-label pb-2.5 pr-3 text-right font-normal">Shown</th>
-                  <th className="os-label pb-2.5 pr-3 text-right font-normal">Taken</th>
-                  <th className="os-label pb-2.5 pr-3 text-right font-normal">Take-up</th>
-                  <th className="os-label pb-2.5 text-right font-normal">Added, TND</th>
+                  <th className="os-label pb-2.5 pr-3 text-left font-normal">Regle</th>
+                  <th className="os-label pb-2.5 pr-3 text-left font-normal">Type</th>
+                  <th className="os-label pb-2.5 pr-3 text-left font-normal">Etat</th>
+                  <th className="os-label pb-2.5 pr-3 text-right font-normal">Affichages</th>
+                  <th className="os-label pb-2.5 pr-3 text-right font-normal">Acceptations</th>
+                  <th className="os-label pb-2.5 pr-3 text-right font-normal">Taux d'acceptation</th>
+                  <th className="os-label pb-2.5 text-right font-normal">Ajoute, TND</th>
                 </tr>
               </thead>
               <tbody>
@@ -528,15 +531,15 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
                       </td>
                       <td className="py-2.5 pr-3 text-[12.5px]">
                         {rule.active ? (
-                          <span className="font-semibold text-primary">Running</span>
+                          <span className="font-semibold text-primary">Active</span>
                         ) : (
-                          <span className="text-muted">Switched off</span>
+                          <span className="text-muted">Desactivee</span>
                         )}
                       </td>
                       <td className="os-num py-2.5 pr-3 text-right text-[12.5px]">{rule.timesShown}</td>
                       <td className="os-num py-2.5 pr-3 text-right text-[12.5px]">{rule.timesTaken}</td>
                       <td className="os-num py-2.5 pr-3 text-right text-[12.5px]">
-                        {rate === null ? <span className="text-muted">None yet</span> : formatPercent(rate)}
+                        {rate === null ? <span className="text-muted">Pas encore</span> : formatPercent(rate)}
                       </td>
                       <td className="os-num py-2.5 text-right text-[12.5px] font-semibold">
                         {formatTND(rule.revenueAdded, { withCurrency: false })}
@@ -551,9 +554,10 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
       ) : null}
 
       <p className="max-w-[86ch] text-xs leading-relaxed text-muted">
-        Writing a new rule, editing the free delivery number and stopping a rule for real are
-        designed and not built, so the switches on this screen move what you see and nothing else.
-        No account is connected, and nothing here is sent to a customer.
+        Ecrire une nouvelle règle, modifier le montant de la livraison offerte et arreter vraiment
+        une règle sont concus mais pas developpes, donc les interrupteurs de cet écran changent ce
+        que vous voyez et rien d'autre. Aucun compte n'est connecté, et rien ici n'est envoyé a un
+        client.
       </p>
     </div>
   );

@@ -9,7 +9,7 @@ import { formatTND, timeAgo } from "@/lib/format";
 import { DEMO_NOW } from "@/lib/mock/time";
 import { getRepositories } from "@/lib/repositories";
 
-export const metadata = { title: "Calculator, Les Saveurs du Cap Bon" };
+export const metadata = { title: "Calculateur, Les Saveurs du Cap Bon" };
 
 // The sale rows carry relative dates, so the page is rendered per visit rather
 // than frozen into the build.
@@ -41,7 +41,7 @@ export default async function CalculatorPage() {
     repos.workspace.products(),
     repos.orders.list(),
     repos.workspace.attributions(),
-    repos.integrations.list(),
+    repos.intégrations.list(),
     repos.workspace.budgets(),
   ]);
 
@@ -105,30 +105,30 @@ export default async function CalculatorPage() {
   // different number.
   const deliveryFee = commonDeliveryFee(orders.map((order) => order.deliveryFee));
   const deliveryNote = deliveryFee
-    ? "The delivery fee that shows on most of your orders. Change it to what the courier charges you."
-    : "What the courier charges you to send one order.";
+    ? "Les frais de livraison qui apparaissent sur la plupart de vos commandes. Remplacez-les par ce que le livreur vous facture."
+    : "Ce que le livreur vous facture pour envoyer une commande.";
 
-  const productWord = catalogue.length === 1 ? "product" : "products";
+  const productWord = catalogue.length === 1 ? "produit" : "produits";
   const marketing = budgets.budgets.find((budget) => budget.name === "Marketing") ?? null;
   const adShare =
     marketing && catalogue.length > 0 ? Math.round(marketing.used / catalogue.length) : 0;
   const adSpendNote = marketing
-    ? `An even share of the ${formatTND(marketing.used)} spent on marketing in ${marketing.period}, split across your ${catalogue.length} ${productWord}. Put in the real figure for this run.`
-    : "What you plan to spend on advertising for this run, in total.";
+    ? `Une part égale des ${formatTND(marketing.used)} dépensés en marketing sur ${marketing.period}, répartie entre vos ${catalogue.length} ${productWord}. Indiquez le montant réel pour cette opération.`
+    : "Ce que vous prévoyez de dépenser en publicité pour cette opération, au total.";
 
   return (
     <div className="flex flex-col gap-4">
       <PageHeader
-        title="Calculator"
-        subtitle="What is left after the product, the delivery and the advertising are paid for."
+        title="Calculateur"
+        subtitle="Ce qui reste une fois le produit, la livraison et la publicité payés."
         actions={<DemoChip />}
       />
 
       {catalogue.length === 0 ? (
         <EmptyState
-          title="There is no product to price yet"
-          body="The calculator opens on one of your products so you are not starting from an empty form. Add a product first and it will show up in the list here."
-          action={{ label: "Open products", href: "/products" }}
+          title="Aucun produit à chiffrer pour l'instant"
+          body="Le calculateur s'ouvre sur l'un de vos produits pour que vous ne partiez pas d'un formulaire vide. Ajoutez d'abord un produit et il apparaîtra dans la liste ici."
+          action={{ label: "Ouvrir les produits", href: "/products" }}
         />
       ) : (
         <MarginCalculator
@@ -142,9 +142,9 @@ export default async function CalculatorPage() {
       )}
 
       <p className="max-w-[80ch] text-xs text-muted">
-        This screen only works out numbers. It does not change a price, and saving a worked out
-        price back onto a product is designed and not built yet, so a price you settle on here still
-        has to be set on the product itself.
+        Cet écran ne fait que calculer des chiffres. Il ne modifie aucun prix, et l'enregistrement
+        d'un prix calculé sur la fiche du produit est prévu mais pas encore construit, donc un prix
+        retenu ici doit toujours être saisi sur le produit lui-même.
       </p>
     </div>
   );

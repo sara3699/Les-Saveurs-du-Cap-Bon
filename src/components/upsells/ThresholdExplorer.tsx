@@ -32,7 +32,7 @@ export function ThresholdExplorer({
   return (
     <div className="rounded-[var(--radius-md)] border border-line bg-surface-2 p-3">
       <p className="os-label" id={labelId}>
-        Try another number
+        Essayer un autre montant
       </p>
 
       <div className="mt-2 flex flex-wrap gap-1.5" role="group" aria-labelledby={labelId}>
@@ -62,14 +62,14 @@ export function ThresholdExplorer({
 
       <div role="status" className="mt-2 flex flex-col gap-1">
         <p className="text-[13px] leading-relaxed text-muted">
-          At <span className="os-num">{chosen.label}</span>, {chosen.shareLabel} of orders would
-          reach free delivery, <span className="os-num">{chosen.reachedLabel}</span>.{" "}
+          A <span className="os-num">{chosen.label}</span>, {chosen.shareLabel} des commandes
+          atteindraient la livraison offerte, <span className="os-num">{chosen.reachedLabel}</span>.{" "}
           {chosen.justShortLabel}
         </p>
         <p className="text-[11.5px] text-muted">
           {value === currentValue
-            ? "This is the number your shop uses now. Trying another one changes this screen only."
-            : "Trying a number here changes this screen only, nothing is saved yet."}
+            ? "C'est le montant que votre boutique utilisé aujourd'hui. En essayer un autre change cet écran uniquement."
+            : "Essayer un montant ici change cet écran uniquement, rien n'est enregistré."}
         </p>
       </div>
     </div>

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export interface DuplicateMatch {
   id: string;
-  /** "phone number" or "email address", in the owner's words. */
+  /** "numéro de téléphone" or "adresse e-mail", in the owner's words. */
   field: string;
   value: string;
   others: { id: string; name: string }[];
@@ -20,17 +20,17 @@ export function DuplicateBanner({ matches }: { matches: DuplicateMatch[] }) {
   return (
     <section className="rounded-[var(--radius-card)] border border-accent-line bg-accent-soft p-4 text-accent-ink sm:p-5">
       <h2 className="text-[15px] leading-tight text-accent-ink">
-        This person looks like they are in your list twice
+        Cette personne semble figurer deux fois dans votre liste
       </h2>
       <ul className="mt-2 flex flex-col gap-1.5 text-[13px]">
         {matches.map((match) => (
           <li key={match.id}>
-            <span>Another record shares the {match.field} </span>
+            <span>Même {match.field}, </span>
             <span className="os-num font-semibold">{match.value}</span>
-            <span>: </span>
+            <span>, sur une autre fiche : </span>
             {match.others.map((other, position) => (
               <span key={other.id}>
-                {position > 0 ? <span> and </span> : null}
+                {position > 0 ? <span> et </span> : null}
                 <Link
                   href={`/contacts/${other.id}`}
                   className="font-semibold underline underline-offset-2"
@@ -44,8 +44,9 @@ export function DuplicateBanner({ matches }: { matches: DuplicateMatch[] }) {
         ))}
       </ul>
       <p className="mt-3 border-t border-accent-line pt-3 text-[12px]">
-        Merging two records into one arrives with the database, so there is no merge button yet.
-        Until then, work from the record that carries the orders and leave the other one alone.
+        La fusion de deux fiches en une seule arrivera avec la base de données, il n'y a donc pas
+        encore de bouton de fusion. En attendant, travaillez depuis la fiche qui porte les
+        commandes et laissez l'autre de côté.
       </p>
     </section>
   );

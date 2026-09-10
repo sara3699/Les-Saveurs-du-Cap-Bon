@@ -102,12 +102,12 @@ const orders: OrderRepository = {
       return true;
     });
   },
-  async byReference(reference) {
-    return ORDERS.find((o) => o.reference === reference) ?? null;
+  async byReference(référence) {
+    return ORDERS.find((o) => o.reference === référence) ?? null;
   },
 };
 
-const integrations: IntegrationRepository = {
+const intégrations: IntegrationRepository = {
   async list() {
     return CONNECTIONS;
   },
@@ -153,6 +153,6 @@ export const mockRepositories: Repositories = {
   conversations,
   contacts,
   orders,
-  integrations,
+  intégrations,
   workspace,
 };

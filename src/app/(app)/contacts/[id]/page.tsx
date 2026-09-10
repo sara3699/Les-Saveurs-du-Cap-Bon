@@ -37,20 +37,20 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: Params }) {
   const { id } = await params;
   const contact = await getRepositories().contacts.byId(decodeURIComponent(id));
-  return { title: contact ? `${contact.name}, Les Saveurs du Cap Bon` : "Customer, Les Saveurs du Cap Bon" };
+  return { title: contact ? `${contact.name}, Les Saveurs du Cap Bon` : "Client, Les Saveurs du Cap Bon" };
 }
 
 const CONVERSATION_STATE: Record<ConversationStatus, string> = {
-  new: "New, nobody has replied",
-  open: "Open",
-  waiting: "Waiting on the customer",
-  resolved: "Resolved",
-  snoozed: "Snoozed",
+  new: "Nouveau, personne n'a répondu",
+  open: "Ouvert",
+  waiting: "En attente du client",
+  resolved: "Résolu",
+  snoozed: "Reporté",
 };
 
 function joinWords(items: string[]): string {
   if (items.length <= 1) return items[0] ?? "";
-  return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+  return `${items.slice(0, -1).join(", ")} et ${items[items.length - 1]}`;
 }
 
 function shorten(body: string, limit = 120): string {
@@ -59,10 +59,10 @@ function shorten(body: string, limit = 120): string {
 }
 
 function speaker(message: Message, firstName: string, team: Map<string, string>): string {
-  const author = message.authorId ? team.get(message.authorId) ?? "Your team" : "Your team";
-  if (message.direction === "inbound") return `${firstName} wrote`;
-  if (message.direction === "note") return `${author} left a note`;
-  return `${author} replied`;
+  const author = message.authorId ? team.get(message.authorId) ?? "Votre équipe" : "Votre équipe";
+  if (message.direction === "inbound") return `${firstName} a écrit`;
+  if (message.direction === "note") return `${author} a laissé une note`;
+  return `${author} a répondu`;
 }
 
 export default async function ContactDetailPage({ params }: { params: Params }) {
@@ -78,7 +78,7 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
       repos.orders.list(),
       repos.workspace.tasks(),
       repos.workspace.team(),
-      repos.integrations.list(),
+      repos.intégrations.list(),
       repos.workspace.attributions(),
       repos.contacts.duplicates(),
     ]);
@@ -121,7 +121,7 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
       href: `/inbox?c=${conversation.id}`,
       state: CONVERSATION_STATE[conversation.status],
       lastLine: message
-        ? `${speaker(message, firstName, teamById)}: ${shorten(message.body)}`
+        ? `${speaker(message, firstName, teamById)} : ${shorten(message.body)}`
         : null,
     });
   }
@@ -157,13 +157,13 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
       exact: formatDateTime(at),
       title: task.title,
       state: done
-        ? `Done ${timeAgo(at, DEMO_NOW)}`
+        ? `Terminée ${timeAgo(at, DEMO_NOW)}`
         : overdue
-          ? `Overdue, was due ${timeAgo(task.dueAt, DEMO_NOW)}`
-          : `Due ${relativeTime(task.dueAt, DEMO_NOW)}`,
+          ? `En retard, l'échéance était ${timeAgo(task.dueAt, DEMO_NOW)}`
+          : `Échéance ${relativeTime(task.dueAt, DEMO_NOW)}`,
       overdue,
       done,
-      owner: teamById.get(task.assigneeId) ?? "Nobody yet",
+      owner: teamById.get(task.assigneeId) ?? "Personne pour l'instant",
     });
   }
 
@@ -175,7 +175,7 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
       stamp: relativeTime(note.createdAt, DEMO_NOW),
       exact: formatDateTime(note.createdAt),
       body: note.body,
-      author: teamById.get(note.authorId) ?? "Your team",
+      author: teamById.get(note.authorId) ?? "Votre équipe",
     });
   }
 
@@ -210,12 +210,12 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
 
   const mixLine =
     channelsUsed.length === 0
-      ? "Nothing has arrived on this record yet, so there is no source to report."
+      ? "Rien n'est encore arrivé sur cette fiche, il n'y a donc aucune source à indiquer."
       : channelsUsed.length === 1
-        ? `Everything on this record arrived on ${channel(channelsUsed[0]).label}.`
-        : `Messages and orders on this record arrived on ${joinWords(
+        ? `Tout ce qui figure sur cette fiche est arrivé sur ${channel(channelsUsed[0]).label}.`
+        : `Les messages et les commandes de cette fiche sont arrivés sur ${joinWords(
             channelsUsed.map((channelId) => channel(channelId).label),
-          )}. Each one keeps the source it came in on.`;
+          )}. Chacun garde la source sur laquelle il est arrivé.`;
 
   // A record typed in at the counter or over the phone did not arrive on a
   // channel, so it gets its own sentence instead of being told it found the
@@ -224,11 +224,11 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
 
   const arrivalLine = addedByHand
     ? touches.changed
-      ? `${firstName} was typed in by hand rather than arriving on a channel, and writes on ${touches.latest} now. The record keeps both, so it stays clear that no connected channel brought this customer in.`
-      : `${firstName} was typed in by hand rather than arriving on a channel, and nothing has come in on a connected channel since.`
+      ? `Cette fiche a été saisie à la main plutôt que d'arriver sur un canal, et ${firstName} écrit maintenant sur ${touches.latest}. La fiche garde les deux, il reste donc clair qu'aucun canal connecté n'a amené ce client.`
+      : `Cette fiche a été saisie à la main plutôt que d'arriver sur un canal, et rien n'est arrivé depuis sur un canal connecté.`
     : touches.changed
-      ? `${firstName} found the shop on ${touches.first} and writes on ${touches.latest} now. Both are kept on the record, so ${touches.first} still gets the credit for bringing this customer in.`
-      : `${firstName} found the shop on ${touches.first}, and that is still the most recent channel on this record.`;
+      ? `${firstName} a découvert la boutique sur ${touches.first} et écrit maintenant sur ${touches.latest}. La fiche garde les deux, ${touches.first} reste donc le canal qui a amené ce client.`
+      : `${firstName} a découvert la boutique sur ${touches.first}, et c'est toujours le canal le plus récent sur cette fiche.`;
 
   const matches: DuplicateMatch[] = duplicates
     .filter((entry) => entry.contactIds.includes(contact.id))
@@ -236,40 +236,40 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
       const isEmail = entry.value.includes("@");
       return {
         id: entry.value,
-        field: isEmail ? "email address" : "phone number",
+        field: isEmail ? "adresse e-mail" : "numéro de téléphone",
         value: (isEmail ? contact.email : contact.phone) ?? entry.value,
         others: entry.contactIds
           .filter((other) => other !== contact.id)
-          .map((other) => ({ id: other, name: nameById.get(other) ?? "The other record" })),
+          .map((other) => ({ id: other, name: nameById.get(other) ?? "L'autre fiche" })),
       };
     });
 
   const facts: { label: string; value: React.ReactNode; mono?: boolean }[] = [
-    { label: "Phone", value: contact.phone ?? <Missing />, mono: contact.phone !== null },
-    { label: "Email", value: contact.email ?? <Missing /> },
-    { label: "First contact", value: formatDate(contact.firstContactAt) },
+    { label: "Téléphone", value: contact.phone ?? <Missing />, mono: contact.phone !== null },
+    { label: "E-mail", value: contact.email ?? <Missing /> },
+    { label: "Premier contact", value: formatDate(contact.firstContactAt) },
     {
-      label: "Owner",
-      value: owner ?? <span className="text-danger">Nobody yet</span>,
+      label: "Responsable",
+      value: owner ?? <span className="text-danger">Personne pour l'instant</span>,
     },
     // Written the same way as the tile above. One figure, one label, two places
     // on the page: it has to read identically in both.
-    { label: "Lifetime value", value: formatTNDCompact(contact.lifetimeValue), mono: true },
+    { label: "Valeur totale du client", value: formatTNDCompact(contact.lifetimeValue), mono: true },
   ];
 
   return (
     <div className="flex flex-col gap-4">
       <div>
         <Link href="/contacts" className="text-xs font-semibold text-primary hover:underline">
-          Back to contacts
+          Retour aux contacts
         </Link>
       </div>
 
       <PageHeader
         title={contact.name}
-        subtitle={`${[contact.city, `speaks ${contact.language}`]
+        subtitle={`${[contact.city, `parle ${contact.language}`]
           .filter(Boolean)
-          .join(", ")}. On your list since ${formatDate(contact.firstContactAt)}.`}
+          .join(", ")}. Dans votre liste depuis le ${formatDate(contact.firstContactAt)}.`}
         actions={
           <>
             <Pill tone={stage.tone}>{stage.label}</Pill>
@@ -282,41 +282,41 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
 
       <Card>
         <CardHead
-          title="Where this customer came from"
-          hint="The first channel is written once and never changed. The most recent one moves with them."
+          title="D'où vient ce client"
+          hint="Le premier canal est écrit une seule fois et n'est jamais modifié. Le plus récent suit le client."
         />
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-[1fr_1fr_1.2fr]">
           <div>
-            <p className="os-label">First came in on</p>
+            <p className="os-label">Premier canal</p>
             <p className="mt-1.5">
               <SourceBadge channelId={contact.firstTouchChannel} />
             </p>
             <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted">
               {addedByHand
-                ? `Typed in by hand on ${formatDate(contact.firstContactAt)}, not through a connected channel. It stays on the record whatever they use later.`
-                : `Where ${firstName} reached you first, on ${formatDate(contact.firstContactAt)}. It stays on the record whatever they use later.`}
+                ? `Cette fiche a été saisie à la main le ${formatDate(contact.firstContactAt)}, pas via un canal connecté. Cela reste sur la fiche quel que soit le canal utilisé ensuite.`
+                : `Le canal par lequel ${firstName} vous a contacté la première fois, le ${formatDate(contact.firstContactAt)}. Il reste sur la fiche quel que soit le canal utilisé ensuite.`}
             </p>
           </div>
 
           <div>
-            <p className="os-label">Most recent contact</p>
+            <p className="os-label">Contact le plus récent</p>
             <p className="mt-1.5">
               <SourceBadge channelId={contact.latestTouchChannel} />
             </p>
             <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted">
-              The channel this record points at now. It moves when the customer moves, and it never
-              overwrites the first one.
+              Le canal sur lequel pointe cette fiche aujourd'hui. Il change quand le client change
+              de canal, et il n'écrase jamais le premier.
             </p>
           </div>
 
           <div className="rounded-[var(--radius-md)] border border-line bg-surface-2 px-3.5 py-3">
             <div className="flex items-baseline justify-between gap-3">
-              <span className="os-label">Lead score</span>
+              <span className="os-label">Score du prospect</span>
               <span className="os-num font-display text-[24px] font-bold leading-none">
                 {contact.leadScore}
               </span>
             </div>
-            <p className="mt-1 text-[11.5px] text-muted">Out of 100, and here is why:</p>
+            <p className="mt-1 text-[11.5px] text-muted">Sur 100, et voici pourquoi :</p>
             <ul className="mt-2 flex flex-col gap-1 text-[12.5px]">
               {contact.leadScoreReasons.map((reason) => (
                 <li key={reason} className="flex gap-2">
@@ -335,40 +335,40 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Stat
-          label="Lifetime value"
+          label="Valeur totale du client"
           value={formatTNDCompact(contact.lifetimeValue)}
-          detail="Kept on the record, not a sum of the orders"
+          détail="Conservée sur la fiche, ce n'est pas la somme des commandes"
           tone="money"
         />
         <Stat
-          label="Orders"
+          label="Commandes"
           value={String(theirOrders.length)}
-          detail={
+          détail={
             lastOrder
-              ? `Last one ${timeAgo(lastOrder.placedAt, DEMO_NOW)}`
-              : "No order on this record yet"
+              ? `Dernière commande ${timeAgo(lastOrder.placedAt, DEMO_NOW)}`
+              : "Aucune commande sur cette fiche pour l'instant"
           }
         />
         <Stat
-          label="Message threads"
+          label="Conversations"
           value={String(theirConversations.length)}
-          detail={
+          détail={
             theirConversations.length === 0
-              ? "No conversation yet"
+              ? "Aucune conversation pour l'instant"
               : unresolvedThreads === 0
-                ? "All resolved"
-                : `${unresolvedThreads} not resolved yet`
+                ? "Toutes résolues"
+                : `${unresolvedThreads} à résoudre`
           }
         />
         <Stat
-          label="Open tasks"
+          label="Tâches en cours"
           value={String(openTasks.length)}
-          detail={
+          détail={
             overdueTasks.length > 0
-              ? `${overdueTasks.length} overdue`
+              ? `${overdueTasks.length} en retard`
               : openTasks.length === 0
-                ? "Nothing booked"
-                : "None overdue"
+                ? "Rien de prévu"
+                : "Aucune en retard"
           }
         />
       </div>
@@ -376,15 +376,15 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
       <div className="grid gap-3 lg:grid-cols-[1.5fr_1fr]">
         <Card>
           <CardHead
-            title="Activity, newest first"
-            hint="Every thread, order, task and note on this customer, whichever source it arrived on."
+            title="Activité, la plus récente en premier"
+            hint="Chaque conversation, commande, tâche et note de ce client, quelle que soit la source d'arrivée."
           />
           <ActivityTimeline entries={entries} name={contact.name} />
         </Card>
 
         <div className="flex flex-col gap-3">
           <Card>
-            <CardHead title="Details" />
+            <CardHead title="Détails" />
             <dl className="flex flex-col gap-2 text-[13px]">
               {facts.map((fact) => (
                 <div
@@ -402,10 +402,11 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
             </dl>
 
             <div className="mt-3 border-t border-line pt-3">
-              <p className="os-label mb-1.5">Tags</p>
+              <p className="os-label mb-1.5">Étiquettes</p>
               {contact.tags.length === 0 ? (
                 <p className="text-[12.5px] text-muted">
-                  No tag on this record. Tags come from the inbox as your team reads the messages.
+                  Aucune étiquette sur cette fiche. Les étiquettes viennent de la boîte de réception,
+                  au fur et à mesure que votre équipe lit les messages.
                 </p>
               ) : (
                 <div className="flex flex-wrap gap-1.5">
@@ -419,16 +420,17 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
 
           <Card>
             <CardHead
-              title="Orders by source"
+              title="Commandes par source"
               hint={
                 theirOrders.length === 1
-                  ? "1 order on this record"
-                  : `${theirOrders.length} orders on this record`
+                  ? "1 commande sur cette fiche"
+                  : `${theirOrders.length} commandes sur cette fiche`
               }
             />
             {theirOrders.length === 0 ? (
               <p className="text-[13px] text-muted">
-                No order has been placed on this record yet, so there is nothing to split by source.
+                Aucune commande n'a encore été passée sur cette fiche, il n'y a donc rien à répartir
+                par source.
               </p>
             ) : (
               <>
@@ -441,7 +443,7 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
                           {row.label}
                         </span>
                         <span className="os-num text-[12.5px] text-muted">
-                          {row.orders} {row.orders === 1 ? "order" : "orders"}
+                          {row.orders} {row.orders === 1 ? "commande" : "commandes"}
                         </span>
                       </div>
                       <span className="mt-1 block h-1.5 rounded-full bg-surface-2">
@@ -455,19 +457,21 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
                 </ul>
                 <p className="mt-3 border-t border-line pt-3 text-[12.5px] leading-relaxed text-muted">
                   {offFirstTouch > 0
-                    ? `${offFirstTouch} of these orders arrived on a channel other than ${
+                    ? `${offFirstTouch} de ces commandes ${
+                        offFirstTouch === 1 ? "est arrivée" : "sont arrivées"
+                      } sur un canal autre que ${
                         channel(contact.firstTouchChannel).label
-                      }, which is where this customer first came in. Each order keeps its own source.`
-                    : `Every order on this record arrived on ${
+                      }, le canal par lequel ce client est arrivé. Chaque commande garde sa propre source.`
+                    : `Toutes les commandes de cette fiche sont arrivées sur ${
                         channel(contact.firstTouchChannel).label
-                      }, the same channel this customer first came in on.`}
+                      }, le canal par lequel ce client est arrivé.`}
                 </p>
                 <p className="mt-2">
                   <Link
                     href={`/orders?q=${encodeURIComponent(contact.name)}&period=90`}
                     className="text-[13px] font-semibold text-primary hover:underline"
                   >
-                    See every order from {firstName}
+                    Voir toutes les commandes de {firstName}
                   </Link>
                 </p>
               </>
@@ -475,9 +479,9 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
           </Card>
 
           <p className="text-xs leading-relaxed text-muted">
-            Editing this customer, merging two records into one and exporting their history are
-            designed but not built. Nothing on this page changes your data, and no message leaves
-            Les Saveurs du Cap Bon from here.
+            Modifier ce client, fusionner deux fiches en une seule et exporter son historique sont
+            conçus mais pas construits. Rien sur cette page ne modifie vos données, et aucun message
+            ne quitte Les Saveurs du Cap Bon depuis ici.
           </p>
         </div>
       </div>
@@ -486,5 +490,5 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
 }
 
 function Missing() {
-  return <span className="text-muted">Not given</span>;
+  return <span className="text-muted">Non renseigné</span>;
 }

@@ -7,23 +7,23 @@ import { timeAgo } from "@/lib/format";
 import { DEMO_NOW } from "@/lib/mock/time";
 import { getRepositories } from "@/lib/repositories";
 
-export const metadata = { title: "Integrations, Les Saveurs du Cap Bon" };
+export const metadata = { title: "Intégrations, Les Saveurs du Cap Bon" };
 
 // The demo clock moves with the visit, so these pages are rendered per request
 // rather than frozen into the build.
 export const dynamic = "force-dynamic";
 
 function primaryLabel(connection: ChannelConnection): string {
-  if (connection.planned) return "Read what is planned";
+  if (connection.planned) return "Lire ce qui est prévu";
   switch (connection.status) {
     case "connected":
-      return "Setup guide";
+      return "Guide d'installation";
     case "error":
-      return "Reconnect";
+      return "Reconnecter";
     case "warning":
-      return "Fix the warning";
+      return "Corriger l'avertissement";
     default:
-      return "Continue setup";
+      return "Continuer la configuration";
   }
 }
 
@@ -45,21 +45,21 @@ function ConnectorCard({ connection }: { connection: ChannelConnection }) {
       <p className="text-[13px] leading-relaxed text-muted">{connection.summary}</p>
 
       <dl className="flex flex-col gap-1 text-[12px]">
-        <Row label="Needs" value={connection.requires} />
+        <Row label="Prerequis" value={connection.requires} />
         <Row
-          label="Permissions"
-          value={connection.permissions.length ? connection.permissions.join(", ") : "None"}
+          label="Autorisations"
+          value={connection.permissions.length ? connection.permissions.join(", ") : "Aucune"}
           mono={connection.permissions.length > 0}
         />
         <Row
-          label="Last order received"
-          value={connection.lastEventAt ? timeAgo(connection.lastEventAt, DEMO_NOW) : "Never"}
+          label="Dernière commande reçue"
+          value={connection.lastEventAt ? timeAgo(connection.lastEventAt, DEMO_NOW) : "Jamais"}
         />
         <Row
-          label="Last check"
-          value={connection.lastSyncAt ? timeAgo(connection.lastSyncAt, DEMO_NOW) : "Never"}
+          label="Dernière verification"
+          value={connection.lastSyncAt ? timeAgo(connection.lastSyncAt, DEMO_NOW) : "Jamais"}
         />
-        <Row label="Events this week" value={String(connection.eventsThisWeek)} mono />
+        <Row label="Evenements cette semaine" value={String(connection.eventsThisWeek)} mono />
       </dl>
 
       {connection.lastErrorMessage ? (
@@ -73,7 +73,7 @@ function ConnectorCard({ connection }: { connection: ChannelConnection }) {
 
       {connection.outstanding.length > 0 ? (
         <div className="rounded-[var(--radius-sm)] border border-accent-line bg-accent-soft px-3 py-2 text-[12px] text-accent-ink">
-          <p className="font-semibold">Still to do</p>
+          <p className="font-semibold">Reste a faire</p>
           <ul className="mt-1 flex flex-col gap-0.5">
             {connection.outstanding.map((item) => (
               <li key={item}>{item}</li>
@@ -110,7 +110,7 @@ function Row({ label, value, mono = false }: { label: string; value: string; mon
 }
 
 export default async function IntegrationsPage() {
-  const connections = await getRepositories().integrations.list();
+  const connections = await getRepositories().intégrations.list();
   const working = connections.filter((c) => c.status === "connected");
   const needsWork = connections.filter(
     (c) => !c.planned && (c.status === "setup_required" || c.status === "warning" || c.status === "error"),
@@ -120,13 +120,13 @@ export default async function IntegrationsPage() {
   return (
     <div className="flex flex-col gap-5">
       <PageHeader
-        title="Integrations"
-        subtitle="Where your orders come in from, what is connected, and what is half done. No card here claims more than it can do."
+        title="Intégrations"
+        subtitle="D'ou arrivent vos commandes, ce qui est connecté et ce qui reste a moitie fait. Aucune carte ici ne pretend faire plus qu'elle ne sait faire."
         actions={<DemoChip />}
       />
 
       <section className="flex flex-col gap-3">
-        <h2 className="os-label">Needs your attention, {needsWork.length}</h2>
+        <h2 className="os-label">Demande votre attention, {needsWork.length}</h2>
         <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
           {needsWork.map((c) => (
             <ConnectorCard key={c.id} connection={c} />
@@ -135,7 +135,7 @@ export default async function IntegrationsPage() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="os-label">Working, {working.length}</h2>
+        <h2 className="os-label">En service, {working.length}</h2>
         <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
           {working.map((c) => (
             <ConnectorCard key={c.id} connection={c} />
@@ -144,16 +144,16 @@ export default async function IntegrationsPage() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="os-label">Planned, {planned.length}</h2>
+        <h2 className="os-label">Prevus, {planned.length}</h2>
         <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
           {planned.map((c) => (
             <ConnectorCard key={c.id} connection={c} />
           ))}
         </div>
         <p className="max-w-[70ch] text-xs text-muted">
-          Google Business Profile and Gmail are separate connectors from Google Ads on purpose. A
-          review left on your Business Profile is not a lead, and treating them as one source would
-          make the Google row on your dashboard meaningless.
+          Google Business Profile et Gmail sont volontairement des connecteurs distincts de Google
+          Ads. Un avis laisse sur votre fiche Business Profile n'est pas un prospect, et les traiter
+          comme une seule source rendrait la ligne Google de votre tableau de bord vide de sens.
         </p>
       </section>
     </div>

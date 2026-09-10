@@ -5,7 +5,7 @@ import { channel } from "@/lib/domain/channels";
 import type { ChannelId, PipelineStage } from "@/lib/domain/types";
 
 /** The tones Pill accepts. badges.tsx keeps its own union private, so this
- *  repeats it the way the customer detail page does. */
+ *  repeats it the way the customer détail page does. */
 type PillTone = "success" | "danger" | "accent" | "muted" | "primary";
 
 /**
@@ -14,12 +14,12 @@ type PillTone = "success" | "danger" | "accent" | "muted" | "primary";
  * another neutral step.
  */
 export const STAGE_COPY: Record<PipelineStage, { label: string; tone: PillTone }> = {
-  new: { label: "New", tone: "muted" },
-  contacted: { label: "Contacted", tone: "muted" },
-  qualified: { label: "Qualified", tone: "primary" },
-  proposal: { label: "Quote sent", tone: "accent" },
-  won: { label: "Won", tone: "success" },
-  lost: { label: "Lost", tone: "danger" },
+  new: { label: "Nouveau", tone: "muted" },
+  contacted: { label: "Contacté", tone: "muted" },
+  qualified: { label: "Qualifié", tone: "primary" },
+  proposal: { label: "Devis envoyé", tone: "accent" },
+  won: { label: "Gagné", tone: "success" },
+  lost: { label: "Perdu", tone: "danger" },
 };
 
 export interface ContactRow {
@@ -46,9 +46,9 @@ export function ContactsTable({ rows }: { rows: ContactRow[] }) {
   if (rows.length === 0) {
     return (
       <EmptyState
-        title="No customer matches these filters"
-        body="Clear a filter to widen the list. Searching runs over the name, the phone number and the email address, so a partial number finds the record too."
-        action={{ label: "Clear the filters", href: "/contacts" }}
+        title="Aucun client ne correspond a ces filtres"
+        body="Retirez un filtre pour elargir la liste. La recherche porte sur le nom, le numéro de téléphone et l'adresse e-mail, donc un numéro partiel retrouve aussi la fiche."
+        action={{ label: "Effacer les filtres", href: "/contacts" }}
       />
     );
   }
@@ -58,14 +58,14 @@ export function ContactsTable({ rows }: { rows: ContactRow[] }) {
       <table className="w-full min-w-[1040px] border-collapse text-sm">
         <thead>
           <tr>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Customer</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">First touch</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Most recent</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">City</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Phone</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Stage</th>
-            <th className="os-label pb-2.5 pr-3 text-right font-normal">Lifetime value, TND</th>
-            <th className="os-label pb-2.5 text-left font-normal">Owner</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Client</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Premier contact</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Plus recent</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Ville</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Téléphone</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Étape</th>
+            <th className="os-label pb-2.5 pr-3 text-right font-normal">Total dépense, TND</th>
+            <th className="os-label pb-2.5 text-left font-normal">Responsable</th>
           </tr>
         </thead>
         <tbody>
@@ -89,18 +89,18 @@ export function ContactsTable({ rows }: { rows: ContactRow[] }) {
                 <SourceBadge channelId={row.latestTouch} account={row.latestAccount} size="sm" />
                 {row.moved ? (
                   <span className="mt-1 block text-[10.5px] font-semibold text-primary">
-                    Arrived on {channel(row.firstTouch).label}
+                    Arrive par {channel(row.firstTouch).label}
                   </span>
                 ) : null}
               </td>
               <td className="py-2.5 pr-3 text-[13px]">
-                {row.city ?? <span className="text-faint">Not given</span>}
+                {row.city ?? <span className="text-faint">Non renseignee</span>}
               </td>
               <td className="py-2.5 pr-3">
                 {row.phone ? (
                   <span className="os-num text-[12.5px]">{row.phone}</span>
                 ) : (
-                  <span className="text-[12.5px] text-faint">No number yet</span>
+                  <span className="text-[12.5px] text-faint">Pas encore de numéro</span>
                 )}
               </td>
               <td className="py-2.5 pr-3">
@@ -112,7 +112,7 @@ export function ContactsTable({ rows }: { rows: ContactRow[] }) {
                 </span>
               </td>
               <td className="py-2.5 text-[13px] text-muted">
-                {row.owner ?? <span className="text-faint">Nobody yet</span>}
+                {row.owner ?? <span className="text-faint">Personne pour l'instant</span>}
               </td>
             </tr>
           ))}

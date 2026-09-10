@@ -8,7 +8,7 @@ import { STORE } from "@/lib/mock/core";
 import { STORE_PROFILE } from "@/lib/mock/operations";
 import { getRepositories } from "@/lib/repositories";
 
-export const metadata = { title: "Store, Les Saveurs du Cap Bon" };
+export const metadata = { title: "Boutique, Les Saveurs du Cap Bon" };
 
 type Params = Promise<Record<string, string | string[] | undefined>>;
 
@@ -24,9 +24,9 @@ const THEME_SWATCHES: Record<string, string[]> = {
 };
 
 const THEME_NOTES: Record<string, string> = {
-  th_olive: "The look your shop uses today, and the one this screen is drawn in.",
-  th_clay: "A warmer set of colours, saved as a name only.",
-  th_linen: "A paler set of colours, saved as a name only.",
+  th_olive: "L'apparence que votre boutique utilisé aujourd'hui, et celle dans laquelle cet écran est dessine.",
+  th_clay: "Un jeu de couleurs plus chaudes, enregistré comme un nom seulement.",
+  th_linen: "Un jeu de couleurs plus pales, enregistré comme un nom seulement.",
 };
 
 function DetailRow({ label, value, mono = false }: { label: string; value: string; mono?: boolean }) {
@@ -47,7 +47,7 @@ export default async function StorePage({ searchParams }: { searchParams: Params
   const repos = getRepositories();
   const [products, connections] = await Promise.all([
     repos.workspace.products(),
-    repos.integrations.list(),
+    repos.intégrations.list(),
   ]);
 
   const profile = STORE_PROFILE;
@@ -60,7 +60,7 @@ export default async function StorePage({ searchParams }: { searchParams: Params
     : profile.deliveryZones;
 
   const preparationLabel =
-    profile.preparationDays === 1 ? "1 day" : `${profile.preparationDays} days`;
+    profile.preparationDays === 1 ? "1 jour" : `${profile.preparationDays} jours`;
 
   // The best seller stands in for the catalogue in the preview. It is chosen by
   // units sold rather than at random, so the screen looks the same on every visit.
@@ -73,11 +73,11 @@ export default async function StorePage({ searchParams }: { searchParams: Params
   // Every worked example below is a real figure from this shop, so nobody has to
   // wonder whether the formatting was demonstrated on an invented number.
   const currencyExamples = [
-    ...(featured ? [{ amount: featured.price, note: `${featured.name}, your best seller` }] : []),
-    { amount: homeZone.fee, note: `${homeZone.name} delivery fee` },
-    { amount: profile.freeDeliveryFrom, note: "Where delivery becomes free" },
+    ...(featured ? [{ amount: featured.price, note: `${featured.name}, votre meilleure vente` }] : []),
+    { amount: homeZone.fee, note: `Frais de livraison, ${homeZone.name}` },
+    { amount: profile.freeDeliveryFrom, note: "Le seuil a partir duquel la livraison est offerte" },
     ...(priciest && priciest.id !== featured?.id
-      ? [{ amount: priciest.price, note: `${priciest.name}, grouped by thousands` }]
+      ? [{ amount: priciest.price, note: `${priciest.name}, avec les milliers separes` }]
       : []),
   ];
 
@@ -91,67 +91,68 @@ export default async function StorePage({ searchParams }: { searchParams: Params
   return (
     <div className="flex flex-col gap-4">
       <PageHeader
-        title="Store"
-        subtitle={`${profile.displayName}, ${city}. The details your customers see, the currency they pay in, and what delivery costs them.`}
+        title="Boutique"
+        subtitle={`${profile.displayName}, ${city}. Les informations que vos clients voient, la monnaie dans laquelle ils paient et ce que la livraison leur coute.`}
         actions={<DemoChip />}
       />
 
       <p className="rounded-[var(--radius-md)] border border-line bg-surface-2 px-4 py-2.5 text-[13px] text-muted">
-        Everything on this screen is shown, not edited. Changing these details arrives with the
-        database, so nothing here pretends to save. The one box you can type in searches the
-        delivery zones, it does not change them.
+        Tout sur cet écran est affiche, rien ne s'y modifie. La modification de ces informations
+        arrivera avec la base de données, donc rien ici ne pretend enregistrer. Le seul champ ou
+        vous pouvez taper cherche dans les zones de livraison, il ne les change pas.
       </p>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Stat
-          label="Free delivery from"
+          label="Livraison offerte à partir de"
           value={formatTND(profile.freeDeliveryFrom)}
-          detail="Counted on the order, before the fee"
+          détail="Calcule sur la commande, avant les frais"
           tone="money"
         />
         <Stat
-          label="Standard delivery"
+          label="Livraison standard"
           value={formatTND(profile.standardDeliveryFee)}
-          detail={`${homeZone.name}, ${homeZone.days}`}
+          détail={`${homeZone.name}, ${homeZone.days}`}
         />
         <Stat
-          label="Ready to post in"
+          label="Pret a expedier en"
           value={preparationLabel}
-          detail="Before the courier picks it up"
+          détail="Avant le passage du transporteur"
         />
         <Stat
-          label="Delivery zones"
+          label="Zones de livraison"
           value={String(profile.deliveryZones.length)}
-          detail="Each one has its own fee and its own delivery time"
+          détail="Chacune a ses propres frais et son propre délai"
         />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
         <Card>
           <CardHead
-            title="Shop identity"
-            hint="What appears on your site, on an invoice and at the top of a delivery note."
+            title="Identite de la boutique"
+            hint="Ce qui apparait sur votre site, sur une facture et en haut d'un bon de livraison."
           />
           <dl className="flex flex-col">
-            <DetailRow label="Legal name" value={profile.legalName} />
-            <DetailRow label="Display name" value={profile.displayName} />
-            <DetailRow label="Tagline" value={profile.tagline} />
-            <DetailRow label="Address" value={profile.addressLines.join(", ")} />
-            <DetailRow label="Phone" value={profile.phone} mono />
-            <DetailRow label="Email" value={profile.email} />
-            <DetailRow label="Website" value={profile.website} />
-            <DetailRow label="VAT number" value={profile.vatNumber} mono />
+            <DetailRow label="Raison sociale" value={profile.legalName} />
+            <DetailRow label="Nom affiche" value={profile.displayName} />
+            <DetailRow label="Slogan" value={profile.tagline} />
+            <DetailRow label="Adresse" value={profile.addressLines.join(", ")} />
+            <DetailRow label="Téléphone" value={profile.phone} mono />
+            <DetailRow label="E-mail" value={profile.email} />
+            <DetailRow label="Site web" value={profile.website} />
+            <DetailRow label="Numéro de TVA" value={profile.vatNumber} mono />
           </dl>
           <p className="mt-3 text-xs text-muted">
-            The legal name goes on paperwork, the display name goes in front of customers. They are
-            kept apart so an invoice never has to be corrected by hand.
+            La raison sociale figure sur les documents officiels, le nom affiche est celui que
+            voient les clients. Les deux restent separes pour qu'une facture n'ait jamais a etre
+            corrigee a la main.
           </p>
         </Card>
 
         <Card>
           <CardHead
-            title="Storefront preview"
-            hint="How the header and one product read to someone buying from you."
+            title="Apercu de la boutique en ligne"
+            hint="Comment l'en-tete et un produit se presentent a quelqu'un qui acheté chez vous."
           />
           {featured ? (
             <StorefrontPreview
@@ -173,9 +174,9 @@ export default async function StorePage({ searchParams }: { searchParams: Params
             />
           ) : (
             <EmptyState
-              title="Nothing to preview yet"
-              body="The preview borrows your best selling product. Add one product and this panel fills in on its own."
-              action={{ label: "Go to products", href: "/products" }}
+              title="Rien a montrer pour l'instant"
+              body="L'apercu reprend votre produit le plus vendu. Ajoutez un produit et ce panneau se remplit tout seul."
+              action={{ label: "Aller aux produits", href: "/products" }}
             />
           )}
         </Card>
@@ -183,8 +184,8 @@ export default async function StorePage({ searchParams }: { searchParams: Params
 
       <Card>
         <CardHead
-          title="Currency"
-          hint={`${profile.currencyNote}. Every figure in Les Saveurs du Cap Bon is written the same way.`}
+          title="Monnaie"
+          hint={`${profile.currencyNote}. Tous les montants de Les Saveurs du Cap Bon sont ecrits de la même facon.`}
           action={
             <span className="os-num rounded-full border border-line bg-surface-2 px-2.5 py-1 text-xs font-semibold">
               {profile.currency}
@@ -196,9 +197,9 @@ export default async function StorePage({ searchParams }: { searchParams: Params
             <table className="w-full min-w-[360px] border-collapse text-sm">
               <thead>
                 <tr>
-                  <th className="os-label pb-2 text-left font-normal">The number</th>
-                  <th className="os-label pb-2 text-left font-normal">How it reads</th>
-                  <th className="os-label pb-2 text-right font-normal">What it is</th>
+                  <th className="os-label pb-2 text-left font-normal">Le nombre</th>
+                  <th className="os-label pb-2 text-left font-normal">Comment il s'affiche</th>
+                  <th className="os-label pb-2 text-right font-normal">Ce que c'est</th>
                 </tr>
               </thead>
               <tbody>
@@ -217,25 +218,25 @@ export default async function StorePage({ searchParams }: { searchParams: Params
 
           <div className="flex flex-col gap-2 text-[13px] leading-relaxed text-muted">
             <p>
-              One dinar is <span className="os-num">1000</span> millimes, so the three decimals are
-              money and not padding. Thousands are split by a space and the millimes follow a comma,
-              which is how a Tunisian invoice reads.
+              Un dinar vaut <span className="os-num">1000</span> millimes, donc les trois decimales
+              sont de l'argent et pas du remplissage. Les milliers sont separes par une espace et
+              les millimes suivent une virgule, comme sur une facture tunisienne.
             </p>
             {priciest ? (
               <p>
-                A tile that has to fit a large figure drops the millimes to stay readable, the way
-                your most expensive product would read as{" "}
+                Une tuile qui doit faire tenir un grand nombre laisse tomber les millimes pour
+                rester lisible, comme votre produit le plus cher qui s'y lirait{" "}
                 <span className="os-num font-semibold text-ink">
                   {formatTNDCompact(priciest.price)}
-                </span>{" "}
-                on one. Anywhere a customer or an accountant reads the figure, all three decimals
-                come back:{" "}
+                </span>
+                . Partout ou un client ou un comptable lit le montant, les trois decimales
+                reviennent :{" "}
                 <span className="os-num font-semibold text-ink">{formatTND(priciest.price)}</span>.
               </p>
             ) : null}
             <p>
-              Digits stay in English across the interface, including on the Arabic side of a
-              conversation, so a number is never read twice in two ways.
+              Les chiffres restent ecrits en anglais dans toute l'interface, y compris du cote
+              arabe d'une conversation, pour qu'un nombre ne se lise jamais de deux facons.
             </p>
           </div>
         </div>
@@ -243,12 +244,12 @@ export default async function StorePage({ searchParams }: { searchParams: Params
 
       <Card>
         <CardHead
-          title="Delivery rules"
-          hint={`Free from ${formatTND(profile.freeDeliveryFrom)}, and packed within ${preparationLabel} whichever zone the order is going to.`}
+          title="Règles de livraison"
+          hint={`Offerte à partir de ${formatTND(profile.freeDeliveryFrom)}, et preparee en ${preparationLabel} quelle que soit la zone de destination.`}
           action={
             cityQuery ? (
               <Link href="/store" className="text-xs font-semibold text-primary hover:underline">
-                Show all zones
+                Voir toutes les zones
               </Link>
             ) : null
           }
@@ -256,7 +257,7 @@ export default async function StorePage({ searchParams }: { searchParams: Params
 
         <form className="mb-3 flex flex-wrap items-end gap-2">
           <label className="flex flex-1 flex-col gap-1 sm:max-w-[280px]">
-            <span className="os-label">Find the zone for a city</span>
+            <span className="os-label">Trouver la zone d'une ville</span>
             <input
               name="city"
               defaultValue={cityQuery}
@@ -268,15 +269,15 @@ export default async function StorePage({ searchParams }: { searchParams: Params
             type="submit"
             className="rounded-[var(--radius-sm)] bg-primary px-3 py-1.5 text-[13px] font-semibold text-white hover:bg-primary-hi"
           >
-            Look up
+            Rechercher
           </button>
         </form>
 
         {zones.length === 0 ? (
           <EmptyState
-            title="No zone covers that name"
-            body={`The ${profile.deliveryZones.length} zones between them list the cities you post to. Check the spelling, or clear the search to read the whole list.`}
-            action={{ label: "Show all zones", href: "/store" }}
+            title="Aucune zone ne correspond a ce nom"
+            body={`Les ${profile.deliveryZones.length} zones couvrent ensemble les villes que vous livrez. Verifiez l'orthographe, ou effacez la recherche pour lire toute la liste.`}
+            action={{ label: "Voir toutes les zones", href: "/store" }}
           />
         ) : (
           <div className="os-scroll">
@@ -284,9 +285,9 @@ export default async function StorePage({ searchParams }: { searchParams: Params
               <thead>
                 <tr>
                   <th className="os-label pb-2 text-left font-normal">Zone</th>
-                  <th className="os-label pb-2 text-left font-normal">Cities</th>
-                  <th className="os-label pb-2 text-left font-normal">Arrives in</th>
-                  <th className="os-label pb-2 text-right font-normal">Fee, TND</th>
+                  <th className="os-label pb-2 text-left font-normal">Villes</th>
+                  <th className="os-label pb-2 text-left font-normal">Delai</th>
+                  <th className="os-label pb-2 text-right font-normal">Frais, TND</th>
                 </tr>
               </thead>
               <tbody>
@@ -306,17 +307,17 @@ export default async function StorePage({ searchParams }: { searchParams: Params
         )}
 
         <p className="mt-3 max-w-[80ch] text-xs text-muted">
-          The fee is dropped once an order passes{" "}
-          <span className="os-num">{formatTND(profile.freeDeliveryFrom)}</span>, in every zone. The
-          zone still decides how long the order takes, so an order going to {farZone.name} that
-          ships free still takes {farZone.days}.
+          Les frais tombent des qu'une commande depasse{" "}
+          <span className="os-num">{formatTND(profile.freeDeliveryFrom)}</span>, dans toutes les
+          zones. La zone decide toujours du délai, donc une commande vers {farZone.name} livrée
+          sans frais met quand même {farZone.days}.
         </p>
       </Card>
 
       <Card>
         <CardHead
           title="Themes"
-          hint="One look is in use. The other two are names and colours that have been reserved, nothing more."
+          hint="Une seule apparence est utilisée. Les deux autres sont des noms et des couleurs reserves, rien de plus."
         />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {profile.themes.map((theme) => {
@@ -353,26 +354,26 @@ export default async function StorePage({ searchParams }: { searchParams: Params
                   ))}
                 </div>
                 <p className="mt-2.5 text-[12px] leading-relaxed text-muted">
-                  {THEME_NOTES[theme.id] ?? "A set of colours saved as a name only."}
+                  {THEME_NOTES[theme.id] ?? "Un jeu de couleurs enregistré comme un nom seulement."}
                 </p>
               </div>
             );
           })}
         </div>
         <p className="mt-3 max-w-[80ch] text-xs text-muted">
-          Switching between themes is designed and not built, so there is no button here that would
-          do nothing. When it lands, changing the look will repaint the storefront preview above
-          before it repaints anything a customer sees.
+          Le changement de theme est concu mais pas construit, il n'y a donc ici aucun bouton qui
+          ne ferait rien. Quand il arrivera, changer l'apparence repeindra l'apercu de la boutique
+          ci-dessus avant de repeindre quoi que ce soit que voit un client.
         </p>
       </Card>
 
       <Card>
         <CardHead
-          title="Where these details reach customers"
-          hint="The same shop name, phone number and delivery rules, whichever way someone arrives. The badge on each one says whether it is receiving today."
+          title="Ou ces informations atteignent vos clients"
+          hint="Le même nom de boutique, le même téléphone et les memes règles de livraison, quel que soit le chemin par lequel arrive la personne. Le badge de chaque canal dit s'il reçoit aujourd'hui."
           action={
             <Link href="/integrations" className="text-xs font-semibold text-primary hover:underline">
-              See what is set up
+              Voir ce qui est configure
             </Link>
           }
         />
@@ -391,11 +392,11 @@ export default async function StorePage({ searchParams }: { searchParams: Params
           ))}
         </ul>
         <p className="mt-3 max-w-[80ch] text-xs text-muted">
-          A fee you quote on WhatsApp and a fee you quote on the website come from this one list, so
-          the two can never disagree. A channel that is still waiting on setup carries none of it
-          yet, which is what its badge is saying. The order that follows keeps the channel it
-          arrived on, which is why a {homeZone.name} delivery sold over WhatsApp stays a WhatsApp
-          order in every report.
+          Des frais annonces sur WhatsApp et des frais annonces sur le site web viennent de cette
+          seule liste, les deux ne peuvent donc jamais se contredire. Un canal qui attend encore sa
+          configuration n'en porte rien pour l'instant, c'est ce que dit son badge. La commande qui
+          suit garde le canal par lequel elle est arrivée, c'est pourquoi une livraison{" "}
+          {homeZone.name} vendue sur WhatsApp reste une commande WhatsApp dans tous les rapports.
         </p>
       </Card>
     </div>

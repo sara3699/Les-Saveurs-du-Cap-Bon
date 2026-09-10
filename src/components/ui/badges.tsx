@@ -48,7 +48,7 @@ const PAYMENT_COPY: Record<PaymentStatus, { label: string; tone: Tone }> = {
 
 const DELIVERY_COPY: Record<DeliveryStatus, { label: string; tone: Tone }> = {
   preparing: { label: "En préparation", tone: "muted" },
-  dispatched: { label: "En livraison", tone: "primary" },
+  dispatched: { label: "En route", tone: "primary" },
   delivered: { label: "Livrée", tone: "success" },
   returned: { label: "Retournée", tone: "danger" },
   cancelled: { label: "Annulée", tone: "muted" },
@@ -56,7 +56,7 @@ const DELIVERY_COPY: Record<DeliveryStatus, { label: string; tone: Tone }> = {
 
 export const CONNECTION_COPY: Record<ConnectionStatus, { label: string; tone: Tone }> = {
   connected: { label: "Connecté", tone: "success" },
-  setup_required: { label: "Configuration requise", tone: "accent" },
+  setup_required: { label: "Configuration à terminer", tone: "accent" },
   not_connected: { label: "Non connecté", tone: "muted" },
   warning: { label: "À vérifier", tone: "accent" },
   error: { label: "Ne reçoit plus", tone: "danger" },

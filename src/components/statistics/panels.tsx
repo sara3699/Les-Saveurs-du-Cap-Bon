@@ -11,14 +11,14 @@ import { formatTND } from "@/lib/format";
  */
 export function durationLabel(ms: number): string {
   const minutes = Math.round(ms / 60_000);
-  if (minutes < 1) return "Under a minute";
+  if (minutes < 1) return "Moins d'une minute";
   if (minutes < 60) return `${minutes} min`;
   const hours = Math.floor(minutes / 60);
   const restMinutes = minutes % 60;
   if (hours < 24) return restMinutes === 0 ? `${hours} h` : `${hours} h ${restMinutes} min`;
   const days = Math.floor(hours / 24);
   const restHours = hours % 24;
-  return restHours === 0 ? `${days} d` : `${days} d ${restHours} h`;
+  return restHours === 0 ? `${days} j` : `${days} j ${restHours} h`;
 }
 
 export interface ComparisonRow {
@@ -55,20 +55,20 @@ export function ChannelComparison({
   return (
     <Card>
       <CardHead
-        title="How the six sources compare"
-        hint={`${periodLabel}, by the channel each request arrived on, highest revenue first`}
+        title="Comparaison des six sources"
+        hint={`${periodLabel}, par canal d'arrivee de chaque demande, chiffre d'affaires le plus eleve en premier`}
       />
       <div className="os-scroll">
         <table className="w-full min-w-[900px] border-collapse text-sm">
           <thead>
             <tr>
               <th className={`${HEAD} text-left`}>Source</th>
-              <th className={`${HEAD} text-right`}>Revenue, TND</th>
-              <th className={`${HEAD} text-left`}>Share of revenue</th>
-              <th className={`${HEAD} text-right`}>Orders</th>
-              <th className={`${HEAD} text-right`}>Average order, TND</th>
+              <th className={`${HEAD} text-right`}>Chiffre d'affaires, TND</th>
+              <th className={`${HEAD} text-left`}>Part du chiffre d'affaires</th>
+              <th className={`${HEAD} text-right`}>Commandes</th>
+              <th className={`${HEAD} text-right`}>Commande moyenne, TND</th>
               <th className={`${HEAD} text-right`}>Conversion</th>
-              <th className={`${HEAD} text-right`}>First reply</th>
+              <th className={`${HEAD} text-right`}>Première réponse</th>
             </tr>
           </thead>
           <tbody>
@@ -79,7 +79,7 @@ export function ChannelComparison({
                 </td>
                 <td className="os-num py-3 pr-3 text-right text-[13px] font-semibold">
                   {row.orders === 0 ? (
-                    <span className="text-faint">No orders</span>
+                    <span className="text-faint">Aucune commande</span>
                   ) : (
                     formatTND(row.revenue, { withCurrency: false })
                   )}
@@ -101,28 +101,28 @@ export function ChannelComparison({
                 <td className="os-num py-3 pr-3 text-right text-[13px]">{row.orders}</td>
                 <td className="os-num py-3 pr-3 text-right text-[13px]">
                   {row.averageOrder === null ? (
-                    <span className="text-[12px] text-faint">Nothing to average</span>
+                    <span className="text-[12px] text-faint">Pas de moyenne possible</span>
                   ) : (
                     formatTND(row.averageOrder, { withCurrency: false })
                   )}
                 </td>
                 <td className="py-3 pr-3 text-right">
                   {row.conversionRate === null ? (
-                    <span className="text-[12px] text-faint">No conversation</span>
+                    <span className="text-[12px] text-faint">Aucune conversation</span>
                   ) : (
                     <>
                       <span className="os-num block text-[13px] font-semibold">
                         {row.conversionRate.toFixed(0)}%
                       </span>
                       <span className="os-num block text-[11px] text-muted">
-                        {row.converted} of {row.conversations}
+                        {row.converted} sur {row.conversations}
                       </span>
                     </>
                   )}
                 </td>
                 <td className="py-3 text-right">
                   {row.replyMs === null ? (
-                    <span className="text-[12px] text-faint">No answered conversation</span>
+                    <span className="text-[12px] text-faint">Aucune conversation avec réponse</span>
                   ) : (
                     <>
                       <span className="os-num block text-[13px] font-semibold">
@@ -144,21 +144,24 @@ export function ChannelComparison({
 
       <div className="mt-3 flex flex-col gap-2 border-t border-line pt-3 text-xs leading-relaxed text-muted">
         <p>
-          <span className="font-semibold text-ink">Conversion</span> is the conversations that
-          arrived on a channel in this period where the same customer then placed an order, on or
-          after the day that conversation arrived, divided by every conversation on that channel in
-          the period. The count is printed next to it because the numbers behind it are small, and
-          a conversation that arrived this morning has had almost no time to become an order.
+          <span className="font-semibold text-ink">La conversion</span> correspond aux
+          conversations arrivées sur un canal pendant cette période ou le même client a ensuite
+          passe une commande, le jour de l'arrivee de la conversation ou après, divisees par
+          l'ensemble des conversations de ce canal sur la période. Le compte est affiche a cote
+          parce que les nombres derriere sont petits, et une conversation arrivée ce matin n'a eu
+          presque aucun temps pour devenir une commande.
         </p>
         <p>
-          <span className="font-semibold text-ink">First reply</span> is the gap between the first
-          message a customer sent and the first answer sent back after it, averaged over the
-          conversations on that channel that were answered. A conversation nobody has replied to
-          yet is left out of the average rather than counted as instant.
+          <span className="font-semibold text-ink">La première réponse</span> est l'ecart entre le
+          premier message envoyé par un client et la première réponse partie après lui, en moyenne
+          sur les conversations de ce canal qui ont recu une réponse. Une conversation a laquelle
+          personne n'a encore répondu est laissee hors de la moyenne plutot que comptee comme
+          instantanee.
         </p>
         <p>
-          <span className="font-semibold text-ink">Revenue</span> leaves out refused and refunded
-          orders. The order count keeps them, which is why the two columns do not move together.
+          <span className="font-semibold text-ink">Le chiffre d'affaires</span> exclut les
+          commandes refusees et remboursees. Le nombre de commandes les garde, ce qui explique que
+          les deux colonnes ne bougent pas ensemble.
         </p>
       </div>
     </Card>
@@ -274,21 +277,21 @@ export function DeliveryByChannel({
   return (
     <Card>
       <CardHead
-        title="Delivery and returns by channel"
-        hint="What happened to the orders after they were taken, in the same order as the table above"
+        title="Livraison et retours par canal"
+        hint="Ce que sont devenues les commandes après avoir été prises, dans le même ordre que le tableau ci-dessus"
       />
       <div className="os-scroll">
         <table className="w-full min-w-[820px] border-collapse text-sm">
           <thead>
             <tr>
               <th className={`${HEAD} text-left`}>Source</th>
-              <th className={`${HEAD} text-right`}>Orders</th>
-              <th className={`${HEAD} text-right`}>Delivered</th>
-              <th className={`${HEAD} text-right`}>On the way</th>
-              <th className={`${HEAD} text-right`}>Preparing</th>
-              <th className={`${HEAD} text-right`}>Cancelled</th>
-              <th className={`${HEAD} text-right`}>Returned</th>
-              <th className={`${HEAD} text-left`}>Return rate</th>
+              <th className={`${HEAD} text-right`}>Commandes</th>
+              <th className={`${HEAD} text-right`}>Livrees</th>
+              <th className={`${HEAD} text-right`}>En route</th>
+              <th className={`${HEAD} text-right`}>En préparation</th>
+              <th className={`${HEAD} text-right`}>Annulees</th>
+              <th className={`${HEAD} text-right`}>Retournees</th>
+              <th className={`${HEAD} text-left`}>Taux de retour</th>
             </tr>
           </thead>
           <tbody>
@@ -310,14 +313,14 @@ export function DeliveryByChannel({
                 </td>
                 <td className="py-2.5">
                   {row.returnRate === null ? (
-                    <span className="text-[12px] text-faint">No orders</span>
+                    <span className="text-[12px] text-faint">Aucune commande</span>
                   ) : row.orders < minimumOrders ? (
                     <>
                       <span className="os-num block text-[12px] text-muted">
                         {row.returnRate.toFixed(1)}%
                       </span>
                       <span className="block text-[11px] text-faint">
-                        Too few orders to compare
+                        Trop peu de commandes pour comparer
                       </span>
                     </>
                   ) : (
@@ -341,8 +344,8 @@ export function DeliveryByChannel({
       </div>
       <p className="mt-3 text-xs text-muted">
         {worst
-          ? `Returns run highest on ${worst.label}, at ${worst.returnRate!.toFixed(1)} percent of its orders, ${worst.returned} of ${worst.orders}. Channels with fewer than ${minimumOrders} orders in this period are left out of that comparison, because a single return would swing the figure.`
-          : `No channel took ${minimumOrders} orders in this period, so there is no return rate worth comparing yet.`}
+          ? `Les retours sont les plus eleves sur ${worst.label}, a ${worst.returnRate!.toFixed(1)} pour cent de ses commandes, ${worst.returned} sur ${worst.orders}. Les canaux avec moins de ${minimumOrders} commandes sur cette période sont laisses hors de cette comparaison, parce qu'un seul retour ferait basculer le chiffre.`
+          : `Aucun canal n'a pris ${minimumOrders} commandes sur cette période, il n'y a donc pas encore de taux de retour a comparer.`}
       </p>
     </Card>
   );

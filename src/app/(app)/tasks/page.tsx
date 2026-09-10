@@ -16,7 +16,7 @@ import { isOverdue, timeAgo } from "@/lib/format";
 import { DEMO_NOW } from "@/lib/mock/time";
 import { getRepositories } from "@/lib/repositories";
 
-export const metadata = { title: "Tasks, Les Saveurs du Cap Bon" };
+export const metadata = { title: "Tâches, Les Saveurs du Cap Bon" };
 
 // The demo clock moves with the visit, so due dates are worked out per request
 // rather than frozen into the build.
@@ -39,7 +39,7 @@ export default async function TasksPage({ searchParams }: { searchParams: Params
     repos.contacts.list(),
     repos.workspace.team(),
     repos.conversations.list(),
-    repos.integrations.list(),
+    repos.intégrations.list(),
     repos.workspace.attributions(),
   ]);
 
@@ -90,9 +90,9 @@ export default async function TasksPage({ searchParams }: { searchParams: Params
       // Every follow-up carries an owner, so a miss here means the person has
       // left the team list, not that the work is unclaimed. Say that, rather
       // than inventing an unassigned state the data does not have.
-      ownerName: teamById.get(task.assigneeId)?.name ?? "Owner not on the team list",
+      ownerName: teamById.get(task.assigneeId)?.name ?? "Responsable absent de la liste de l'equipe",
       priority: task.priority,
-      doneLabel: task.completedAt ? `Done ${timeAgo(task.completedAt, DEMO_NOW)}` : null,
+      doneLabel: task.completedAt ? `Terminee ${timeAgo(task.completedAt, DEMO_NOW)}` : null,
     };
   });
 
@@ -112,8 +112,8 @@ export default async function TasksPage({ searchParams }: { searchParams: Params
   return (
     <div className="flex flex-col gap-4">
       <PageHeader
-        title="Tasks"
-        subtitle="The follow-ups your team owes a customer, overdue at the top. Each one keeps the conversation it came from, so you can read the promise before you keep it."
+        title="Tâches"
+        subtitle="Les relances que votre équipe doit a un client, les retards en haut. Chacune garde la conversation dont elle vient, pour que vous puissiez relire la promesse avant de la tenir."
         actions={<DemoChip />}
       />
 
@@ -121,7 +121,7 @@ export default async function TasksPage({ searchParams }: { searchParams: Params
         <div className="flex flex-col gap-3">
           <div role="group" aria-labelledby="tasks-owner-filter">
             <p id="tasks-owner-filter" className="os-label mb-1.5">
-              Owner
+              Responsable
             </p>
             <div className="flex flex-wrap gap-1.5">
               <Link
@@ -129,7 +129,7 @@ export default async function TasksPage({ searchParams }: { searchParams: Params
                 aria-current={owner ? undefined : "true"}
                 className={chip(!owner)}
               >
-                Anyone
+                Tout le monde
               </Link>
               {team.map((member) => (
                 <Link
@@ -150,7 +150,7 @@ export default async function TasksPage({ searchParams }: { searchParams: Params
             className="border-t border-line pt-3"
           >
             <p id="tasks-kind-filter" className="os-label mb-1.5">
-              Kind of follow-up
+              Type de relance
             </p>
             <div className="flex flex-wrap gap-1.5">
               <Link
@@ -158,7 +158,7 @@ export default async function TasksPage({ searchParams }: { searchParams: Params
                 aria-current={type ? undefined : "true"}
                 className={chip(!type)}
               >
-                Every kind
+                Tous les types
               </Link>
               {TASK_TYPES.map((id) => (
                 <Link
@@ -180,28 +180,30 @@ export default async function TasksPage({ searchParams }: { searchParams: Params
 
         <aside className="flex flex-col gap-4">
           <Card>
-            <CardHead title="Where a follow-up comes from" />
+            <CardHead title="D'ou vient une relance" />
             <p className="text-[13px] leading-relaxed text-muted">
-              Every line on this screen started as a message. Open the request in the inbox, use the
-              new task action on that conversation, and the follow-up lands here carrying the
-              customer, the channel it arrived on and the date you promised.
+              {"Chaque ligne de cet écran a commence par un message. Ouvrez la demande dans la "}
+              {"boîte de réception, utilisez l'action nouvelle tache sur cette conversation, et la "}
+              {"relance arrive ici avec le client, le canal par lequel elle est arrivée et la date "}
+              {"que vous avez promise."}
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-muted">
-              There is no add button here. Creating a follow-up from this screen is designed but not
-              built, and a form that saved nothing would waste your morning.
+              {"Il n'y a pas de bouton d'ajout ici. Créer une relance depuis cet écran est concu "}
+              {"mais pas construit, et un formulaire qui n'enregistré rien vous ferait perdre "}
+              {"votre matinee."}
             </p>
             <Link
               href="/inbox"
               className="mt-3 inline-block rounded-[var(--radius-md)] bg-primary px-3.5 py-2 text-[13px] font-semibold text-white hover:bg-primary-hi"
             >
-              Open the inbox
+              Ouvrir la boîte de réception
             </Link>
           </Card>
 
           <Card>
             <CardHead
-              title="What the markers mean"
-              hint="Yellow marks the ones with a price attached."
+              title="Ce que veulent dire les marqueurs"
+              hint="Le jaune marque celles qui ont un prix attache."
             />
             <ul className="flex flex-col gap-2.5">
               {TASK_TYPES.map((id) => (

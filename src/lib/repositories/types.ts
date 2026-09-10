@@ -79,6 +79,6 @@ export interface Repositories {
   conversations: ConversationRepository;
   contacts: ContactRepository;
   orders: OrderRepository;
-  integrations: IntegrationRepository;
+  intégrations: IntegrationRepository;
   workspace: WorkspaceRepository;
 }

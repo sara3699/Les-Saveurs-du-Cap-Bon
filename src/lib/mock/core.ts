@@ -67,32 +67,32 @@ export const TEAM_CONVERSION_METRICS: TeamConversionMetric[] = [
 ];
 
 export const TAGS: Tag[] = [
-  { id: "tg_repeat", label: "Client fidèle" },
+  { id: "tg_repeat", label: "Client fidele" },
   { id: "tg_gift", label: "Coffret cadeau" },
   { id: "tg_wholesale", label: "Vente en gros" },
   { id: "tg_delivery", label: "Question livraison" },
   { id: "tg_price", label: "Question prix" },
-  { id: "tg_complaint", label: "Réclamation" },
+  { id: "tg_complaint", label: "Reclamation" },
   { id: "tg_ramadan", label: "Gamme Ramadan" },
   { id: "tg_vip", label: "Client prioritaire" },
 ];
 
 export const PRODUCTS: Product[] = [
-  { id: "pr_pistachio_cream", name: "Crème de pistache", sku: "LMS-PIS-01", price: 42, cost: 22, stock: 18, lowStockAt: 6, unitsSold: 52 },
-  { id: "pr_pistachio_dessert", name: "Dessert à la pistache", sku: "LMS-PIS-02", price: 68, cost: 34, stock: 12, lowStockAt: 5, unitsSold: 41 },
+  { id: "pr_pistachio_cream", name: "Creme de pistache", sku: "LMS-PIS-01", price: 42, cost: 22, stock: 18, lowStockAt: 6, unitsSold: 52 },
+  { id: "pr_pistachio_dessert", name: "Dessert a la pistache", sku: "LMS-PIS-02", price: 68, cost: 34, stock: 12, lowStockAt: 5, unitsSold: 41 },
   { id: "pr_dessert_assortment", name: "Assortiment de desserts", sku: "LMS-DES-01", price: 78, cost: 39, stock: 9, lowStockAt: 5, unitsSold: 37 },
   { id: "pr_artisan_butter", name: "Beurre artisanal", sku: "LMS-BTR-01", price: 26, cost: 13, stock: 21, lowStockAt: 6, unitsSold: 64 },
-  { id: "pr_dairy_selection", name: "Sélection laitière", sku: "LMS-DAI-01", price: 54, cost: 28, stock: 7, lowStockAt: 8, unitsSold: 29 },
+  { id: "pr_dairy_sélection", name: "Sélection laitière", sku: "LMS-DAI-01", price: 54, cost: 28, stock: 7, lowStockAt: 8, unitsSold: 29 },
   { id: "pr_gourmet_box", name: "Coffret gourmand", sku: "LMS-GFT-01", price: 148, cost: 76, stock: 6, lowStockAt: 4, unitsSold: 18 },
   { id: "pr_seasonal_jar", name: "Pot gourmand saisonnier", sku: "LMS-SWT-01", price: 36, cost: 18, stock: 15, lowStockAt: 5, unitsSold: 48 },
-  { id: "pr_discovery_assortment", name: "Assortiment découverte", sku: "LMS-SMP-01", price: 96, cost: 49, stock: 4, lowStockAt: 6, unitsSold: 26 },
-  { id: "pr_celebration_platter", name: "Plateau de fête", sku: "LMS-PLT-01", price: 185, cost: 96, stock: 8, lowStockAt: 3, unitsSold: 14 },
+  { id: "pr_discovery_assortment", name: "Assortiment decouverte", sku: "LMS-SMP-01", price: 96, cost: 49, stock: 4, lowStockAt: 6, unitsSold: 26 },
+  { id: "pr_celebration_platter", name: "Plateau de fete", sku: "LMS-PLT-01", price: 185, cost: 96, stock: 8, lowStockAt: 3, unitsSold: 14 },
 ];
 
 /**
  * Connection states are spread on purpose: one working, one half configured, one
  * never started, one broken, and two that Google has not been asked for yet. The
- * Integrations screen is only honest if it can show all of these.
+ * Intégrations screen is only honest if it can show all of these.
  */
 export const CONNECTIONS: ChannelConnection[] = [
   {
@@ -101,9 +101,9 @@ export const CONNECTIONS: ChannelConnection[] = [
     accountLabel: "Formulaire du site Les Saveurs",
     status: "connected",
     summary:
-      "Les commandes passées sur votre site arrivent ici avec la page d’origine et la question éventuelle envoyée avec la commande.",
-    requires: "Un formulaire sur un site que vous contrôlez",
-    permissions: ["Publier vers l’adresse de réception Les Saveurs du Cap Bon"],
+      "Les commandes passées sur votre site arrivent ici avec la page d'origine et la question eventuelle envoyée avec la commande.",
+    requires: "Un formulaire sur un site que vous controlez",
+    permissions: ["Publier vers l'adresse de reception Les Saveurs du Cap Bon"],
     lastSyncAt: minutesAgo(6),
     lastEventAt: minutesAgo(52),
     lastErrorAt: null,
@@ -119,8 +119,8 @@ export const CONNECTIONS: ChannelConnection[] = [
     accountLabel: "WhatsApp Business Les Saveurs",
     status: "connected",
     summary:
-      "Les commandes prises sur WhatsApp arrivent dans la liste avec le client, les produits et le compte WhatsApp d’origine.",
-    requires: "Une entreprise vérifiée et un numéro qui n’utilise pas l’application WhatsApp",
+      "Les commandes prises sur WhatsApp arrivent dans la liste avec le client, les produits et le compte WhatsApp d'origine.",
+    requires: "Une entreprise vérifiée et un numéro qui n'utilisé pas l'application WhatsApp",
     permissions: ["whatsapp_business_messaging", "whatsapp_business_management"],
     lastSyncAt: minutesAgo(2),
     lastEventAt: minutesAgo(4),
@@ -128,7 +128,7 @@ export const CONNECTIONS: ChannelConnection[] = [
     lastErrorMessage: null,
     outstanding: [],
     reviewNote:
-      "Répondre dans les 24 heures ne demande rien de plus. Après 24 heures de silence, il faut un modèle de message approuvé par Meta.",
+      "Répondre dans les 24 heures ne demande rien de plus. Après 24 heures de silence, il faut un modèle de message approuve par Meta.",
     eventsThisWeek: 148,
     setupGuideHref: "/help#whatsapp",
   },
@@ -138,19 +138,19 @@ export const CONNECTIONS: ChannelConnection[] = [
     accountLabel: "@lesmillesaveursducapbon",
     status: "setup_required",
     summary:
-      "Les commandes qui commencent dans un message Instagram arrivent dans la liste avec la story ou la publication d’origine.",
-    requires: "Un compte professionnel Instagram relié à une page Facebook administrée par vous",
+      "Les commandes qui commencent dans un message Instagram arrivent dans la liste avec la story ou la publication d'origine.",
+    requires: "Un compte professionnel Instagram relie a une page Facebook administree par vous",
     permissions: ["instagram_manage_messages", "pages_manage_metadata"],
     lastSyncAt: daysAgo(11),
     lastEventAt: daysAgo(11),
     lastErrorAt: null,
     lastErrorMessage: null,
     outstanding: [
-      "Accorder l’autorisation de messagerie à @lesmillesaveursducapbon",
+      "Accorder l'autorisation de messagerie a @lesmillesaveursducapbon",
       "Confirmer la page Facebook liée",
     ],
     reviewNote:
-      "Seuls les comptes professionnels peuvent être connectés. Les boîtes personnelles Instagram ne sont disponibles pour aucun produit, y compris celui-ci.",
+      "Seuls les comptes professionnels peuvent etre connectes. Les boites personnelles Instagram ne sont disponibles pour aucun produit, y compris celui-ci.",
     eventsThisWeek: 0,
     setupGuideHref: "/help#instagram",
   },
@@ -160,13 +160,13 @@ export const CONNECTIONS: ChannelConnection[] = [
     accountLabel: "Les Saveurs du Cap Bon, page Facebook",
     status: "error",
     summary: "Les commandes qui commencent sur votre page Facebook arrivent dans la liste avec la conversation jointe.",
-    requires: "Une page Facebook administrée par vous",
+    requires: "Une page Facebook administree par vous",
     permissions: ["pages_messaging", "pages_manage_metadata", "pages_read_engagement"],
     lastSyncAt: daysAgo(7),
     lastEventAt: daysAgo(7),
     lastErrorAt: hoursAgo(3),
-    lastErrorMessage: "L’autorisation de la page a été retirée. Les messages envoyés depuis n’ont pas été reçus.",
-    outstanding: ["Reconnecter la page et accorder à nouveau l’autorisation de messagerie"],
+    lastErrorMessage: "L'autorisation de la page a été retirée. Les messages envoyés depuis n'ont pas été reçus.",
+    outstanding: ["Reconnecter la page et accorder a nouveau l'autorisation de messagerie"],
     reviewNote: null,
     eventsThisWeek: 0,
     setupGuideHref: "/help#facebook",
@@ -177,14 +177,14 @@ export const CONNECTIONS: ChannelConnection[] = [
     accountLabel: "Google Ads Les Saveurs",
     status: "warning",
     summary:
-      "Les commandes issues d’un formulaire Google Ads arrivent ici avec la campagne qui les a générées.",
+      "Les commandes issues d'un formulaire Google Ads arrivent ici avec la campagne qui les a generees.",
     requires: "Un compte Google Ads avec au moins une extension de formulaire",
     permissions: ["adwords"],
     lastSyncAt: hoursAgo(2),
     lastEventAt: hoursAgo(3),
     lastErrorAt: hoursAgo(9),
-    lastErrorMessage: "Deux notifications de prospects ont été refusées car la clé webhook ne correspondait pas.",
-    outstanding: ["Mettre à jour la clé webhook dans Google Ads"],
+    lastErrorMessage: "Deux notifications de prospects ont été refusees car la clé webhook ne correspondait pas.",
+    outstanding: ["Mettre a jour la clé webhook dans Google Ads"],
     reviewNote: null,
     eventsThisWeek: 11,
     setupGuideHref: "/help#google-ads",
@@ -195,14 +195,14 @@ export const CONNECTIONS: ChannelConnection[] = [
     accountLabel: "Google Business Profile",
     status: "not_connected",
     summary:
-      "Orders and enquiries from your Google Business Profile. Kept separate from Google Ads so a review is never counted as an order.",
-    requires: "A verified Google Business Profile",
+      "Les commandes et les demandes qui arrivent par votre fiche Google Business. Tenue a part de Google Ads, pour qu'un avis ne soit jamais compte comme une commande.",
+    requires: "Une fiche Google Business vérifiée",
     permissions: ["business.manage"],
     lastSyncAt: null,
     lastEventAt: null,
     lastErrorAt: null,
     lastErrorMessage: null,
-    outstanding: ["Planned for a later release"],
+    outstanding: ["Prévu pour une version ulterieure"],
     reviewNote: null,
     eventsThisWeek: 0,
     setupGuideHref: "/help#google-business",
@@ -214,14 +214,14 @@ export const CONNECTIONS: ChannelConnection[] = [
     accountLabel: "Gmail",
     status: "not_connected",
     summary:
-      "Turn orders emailed to your shop address into real orders. A separate connector from Google Ads and from your Business Profile.",
-    requires: "A Google Workspace or Gmail account",
+      "Transforme les commandes envoyées par e-mail a l'adresse de la boutique en vraies commandes. Un connecteur distinct de Google Ads et de votre fiche Business.",
+    requires: "Un compte Google Workspace ou Gmail",
     permissions: ["gmail.readonly", "gmail.send"],
     lastSyncAt: null,
     lastEventAt: null,
     lastErrorAt: null,
     lastErrorMessage: null,
-    outstanding: ["Planned for a later release"],
+    outstanding: ["Prévu pour une version ulterieure"],
     reviewNote: null,
     eventsThisWeek: 0,
     setupGuideHref: "/help#gmail",
@@ -230,11 +230,11 @@ export const CONNECTIONS: ChannelConnection[] = [
   {
     id: "cn_manual",
     channelId: "manual",
-    accountLabel: "Typed in by your team",
+    accountLabel: "Saisi par votre équipe",
     status: "connected",
     summary:
-      "Orders you take by phone or at the counter. Always available, and never confused with a platform a customer used.",
-    requires: "Nothing",
+      "Les commandes que vous prenez par téléphone ou au comptoir. Toujours disponible, et jamais confondu avec une plateforme utilisée par un client.",
+    requires: "Rien",
     permissions: [],
     lastSyncAt: hoursAgo(5),
     lastEventAt: hoursAgo(5),

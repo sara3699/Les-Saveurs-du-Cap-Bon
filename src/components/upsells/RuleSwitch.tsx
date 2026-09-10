@@ -22,13 +22,13 @@ export function RuleSwitch({
     <div className="mt-auto flex flex-col gap-1.5 border-t border-line pt-3">
       <div className="flex items-center justify-between gap-3">
         <span className={`text-[12.5px] font-semibold ${on ? "text-primary" : "text-muted"}`}>
-          {on ? "Running" : "Switched off"}
+          {on ? "Active" : "Desactivee"}
         </span>
         <button
           type="button"
           role="switch"
           aria-checked={on}
-          aria-label={`Turn ${ruleName} ${on ? "off" : "on"}`}
+          aria-label={`${on ? "Desactiver" : "Activer"} ${ruleName}`}
           onClick={() => setOn(!on)}
           className={`relative h-6 w-11 shrink-0 rounded-full border transition-colors ${
             on ? "border-primary bg-primary" : "border-line-strong bg-surface-2"
@@ -44,8 +44,8 @@ export function RuleSwitch({
       </div>
       <p role="status" className="text-[11.5px] text-muted">
         {changed
-          ? "Changed on this screen only, nothing is saved yet."
-          : "Moving this switch changes this screen only, nothing is saved yet."}
+          ? "Modifie sur cet écran uniquement, rien n'est enregistré."
+          : "Deplacer cet interrupteur change cet écran uniquement, rien n'est enregistré."}
       </p>
     </div>
   );

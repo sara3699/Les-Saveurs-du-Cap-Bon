@@ -26,15 +26,15 @@ function one(value: string | string[] | undefined): string | undefined {
 const DAY = 24 * 60 * 60 * 1000;
 
 function leadCount(n: number): string {
-  return n === 1 ? "1 lead" : `${n} leads`;
+  return n === 1 ? "1 prospect" : `${n} prospects`;
 }
 
 /** How old the lead is, which is the question an owner actually asks about it. */
 function ageLabel(iso: string): string {
   const days = Math.floor((DEMO_NOW.getTime() - new Date(iso).getTime()) / DAY);
-  if (days <= 0) return "Opened today";
-  if (days === 1) return "1 day old";
-  return `${days} days old`;
+  if (days <= 0) return "Ouvert aujourd'hui";
+  if (days === 1) return "Ouvert il y a 1 jour";
+  return `Ouvert il y a ${days} jours`;
 }
 
 export default async function PipelinePage({ searchParams }: { searchParams: Params }) {
@@ -50,7 +50,7 @@ export default async function PipelinePage({ searchParams }: { searchParams: Par
     repos.workspace.team(),
     repos.workspace.tasks(),
     repos.workspace.attributions(),
-    repos.integrations.list(),
+    repos.intégrations.list(),
   ]);
 
   const index = buildAttributionIndex(attributions, connections);
@@ -114,8 +114,8 @@ export default async function PipelinePage({ searchParams }: { searchParams: Par
 
   const subtitle =
     cards.length === 0
-      ? "Nothing matches the filters you have picked. Clear one to bring the leads back."
-      : `${leadCount(cards.length)} on the board, worth ${formatTND(boardValue)} in total if every one closes. Each card keeps the channel it arrived on.`;
+      ? "Aucun prospect ne correspond aux filtres choisis. Retirez-en un pour les faire revenir."
+      : `${leadCount(cards.length)} sur le tableau, soit ${formatTND(boardValue)} au total si chacun aboutit. Chaque carte garde le canal par lequel elle est arrivée.`;
 
   const keep = (extra: Record<string, string | undefined>) => {
     const next = new URLSearchParams();
@@ -148,8 +148,8 @@ export default async function PipelinePage({ searchParams }: { searchParams: Par
         actions={
           <>
             <span className="flex overflow-hidden rounded-full border border-line bg-surface-2 text-xs font-semibold">
-              {viewLink("board", "Board")}
-              {viewLink("list", "List")}
+              {viewLink("board", "Tableau")}
+              {viewLink("list", "Liste")}
             </span>
             <DemoChip />
           </>
@@ -172,7 +172,7 @@ export default async function PipelinePage({ searchParams }: { searchParams: Par
               source ? "border-line bg-surface-2 text-muted" : "border-primary bg-primary text-white"
             }`}
           >
-            All sources
+            Toutes les sources
           </Link>
           {CHANNEL_ORDER.map((id) => {
             const active = source === id;
@@ -198,7 +198,7 @@ export default async function PipelinePage({ searchParams }: { searchParams: Par
           className="mt-3 flex flex-wrap items-center gap-1.5 border-t border-line pt-3"
         >
           <span id="pipeline-owner-filter" className="os-label mr-1">
-            Owner
+            Responsable
           </span>
           <Link
             href={keep({ owner: undefined })}
@@ -207,7 +207,7 @@ export default async function PipelinePage({ searchParams }: { searchParams: Par
               owner ? "border-line bg-surface-2 text-muted" : "border-primary bg-primary text-white"
             }`}
           >
-            Anyone
+            Tout le monde
           </Link>
           {team.map((member) => (
             <Link
@@ -232,25 +232,25 @@ export default async function PipelinePage({ searchParams }: { searchParams: Par
                 : "border-line bg-surface-2 text-muted"
             }`}
           >
-            Nobody yet, <span className="os-num">{unowned}</span>
+            Personne pour l'instant, <span className="os-num">{unowned}</span>
           </Link>
         </div>
       </Card>
 
       {cards.length === 0 ? (
         <EmptyState
-          title="No lead matches these filters"
-          body="Every lead in the demo data arrived on one of the six sources, so an empty board means the source and the owner you picked do not overlap. Clear one of them."
+          title="Aucun prospect ne correspond a ces filtres"
+          body="Chaque prospect des données d'exemple est arrive par l'une des six sources. Un tableau vide veut donc dire que la source et le responsable choisis ne se croisent pas. Retirez l'un des deux."
           action={{
-            label: "Clear the filters",
+            label: "Retirer les filtres",
             href: keep({ source: undefined, owner: undefined }),
           }}
         />
       ) : view === "list" ? (
         <Card>
           <CardHead
-            title="Every lead, stage by stage"
-            hint="The same leads the board shows, as rows. Cards are moved on the board."
+            title="Tous les prospects, étape par étape"
+            hint="Les memes prospects que sur le tableau, en lignes. Les cartes se deplacent sur le tableau."
           />
           <PipelineList cards={cards} />
         </Card>
@@ -259,9 +259,10 @@ export default async function PipelinePage({ searchParams }: { searchParams: Par
       )}
 
       <p className="max-w-[86ch] text-xs text-muted">
-        A lead becomes a card the moment a first message or a form arrives, and the source badge
-        comes from that arrival rather than from anything typed later. Value is what the lead is
-        worth if it closes, not money received. The list view is the easier one on a phone.
+        Un prospect devient une carte des qu'un premier message ou un formulaire arrive, et la
+        source affichee vient de cette arrivée, pas de ce qui est saisi ensuite. La valeur
+        correspond a ce que le prospect rapportera s'il aboutit, et non a de l'argent déjà
+        encaisse. Sur téléphone, la vue liste est la plus lisible.
       </p>
     </div>
   );

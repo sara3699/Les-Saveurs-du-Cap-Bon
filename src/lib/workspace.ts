@@ -15,7 +15,7 @@ export async function loadChrome() {
     repos.conversations.list(),
     repos.contacts.list(),
     repos.orders.list({ sinceDays: 40 }),
-    repos.integrations.list(),
+    repos.intégrations.list(),
     repos.workspace.attributions(),
     repos.workspace.tasks(),
   ]);
@@ -38,9 +38,9 @@ export async function loadChrome() {
       id: `cn_${c.id}`,
       title:
         c.status === "error"
-          ? `${c.accountLabel} is not receiving`
-          : `${c.accountLabel} needs a look`,
-      detail: c.lastErrorMessage ?? "Open the connector to see what changed.",
+          ? `${c.accountLabel} ne reçoit plus`
+          : `${c.accountLabel} est a vérifier`,
+      détail: c.lastErrorMessage ?? "Ouvrez le connecteur pour voir ce qui a change.",
       href: "/integrations",
       severity: c.status === "error" ? ("error" as const) : ("warning" as const),
     })),
@@ -50,8 +50,8 @@ export async function loadChrome() {
   if (unassigned.length > 0) {
     notices.push({
       id: "unassigned",
-      title: `${unassigned.length} requests with nobody assigned`,
-      detail: "The oldest has been waiting since it arrived.",
+      title: `${unassigned.length} demandes sans responsable`,
+      détail: "La plus ancienne attend depuis son arrivée.",
       href: "/inbox",
       severity: "warning",
     });
@@ -59,8 +59,8 @@ export async function loadChrome() {
   if (openTasks > 0) {
     notices.push({
       id: "overdue",
-      title: `${openTasks} follow ups are overdue`,
-      detail: "Open Tasks to see who owns them.",
+      title: `${openTasks} relances sont en retard`,
+      détail: "Ouvrez Tâches pour voir qui s'en occupe.",
       href: "/tasks",
       severity: "warning",
     });
@@ -78,7 +78,7 @@ export async function loadChrome() {
     ...conversations.map((c) => ({
       id: `s_${c.id}`,
       kind: "Conversation" as const,
-      label: contactName.get(c.contactId) ?? "Unknown",
+      label: contactName.get(c.contactId) ?? "Inconnu",
       sub: c.subject,
       href: `/inbox?c=${c.id}`,
       channelId: resolveSource(c.attributionId, index).channelId,
@@ -87,7 +87,7 @@ export async function loadChrome() {
       id: `s_${o.id}`,
       kind: "Order" as const,
       label: o.reference,
-      sub: contactName.get(o.contactId) ?? "Unknown",
+      sub: contactName.get(o.contactId) ?? "Inconnu",
       href: `/orders?q=${o.reference}`,
       channelId: resolveSource(o.attributionId, index).channelId,
     })),
@@ -101,12 +101,12 @@ export async function loadChrome() {
     storeInitials: STORE.initials,
     userName: owner.name,
     userInitials: owner.initials,
-    userRole: "Owner",
+    userRole: "Propriétaire",
     counts: {
       inbox: unread,
       orders: ordersToday,
       tasks: openTasks,
-      integrations: brokenConnections.length,
+      intégrations: brokenConnections.length,
     },
     search,
     notices,

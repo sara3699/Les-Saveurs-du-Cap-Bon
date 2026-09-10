@@ -10,7 +10,7 @@ import { STORE_PROFILE } from "@/lib/mock/operations";
 import { DEMO_NOW } from "@/lib/mock/time";
 import { getRepositories } from "@/lib/repositories";
 
-export const metadata = { title: "Products, Les Saveurs du Cap Bon" };
+export const metadata = { title: "Produits, Les Saveurs du Cap Bon" };
 
 // The demo clock moves with the visit, so this page is rendered per request
 // rather than frozen into the build.
@@ -19,32 +19,32 @@ export const dynamic = "force-dynamic";
 const IMPORT_COLUMNS = [
   {
     column: "name",
-    holds: "The name a customer reads",
+    holds: "Le nom que le client lit",
     example: "Crème de pistache",
   },
   {
     column: "sku",
-    holds: "Your own code for the product. Two lines cannot share one.",
+    holds: "Votre propre code pour le produit. Deux lignes ne peuvent pas porter le même.",
     example: "LMS-PIS-01",
   },
   {
     column: "price",
-    holds: "What the customer pays, in dinar, millimes after the dot",
+    holds: "Ce que le client paie, en dinar, les millimes après le point",
     example: "89.500",
   },
   {
     column: "cost",
-    holds: "What the product costs you, so the margin can be worked out",
+    holds: "Ce que le produit vous coute, pour pouvoir calculer la marge",
     example: "42.000",
   },
   {
     column: "stock",
-    holds: "Units on the shelf the day you make the file",
+    holds: "Les unités en rayon le jour ou vous creez le fichier",
     example: "4",
   },
   {
     column: "low_stock_at",
-    holds: "The count you want to be warned at",
+    holds: "Le nombre a partir duquel vous voulez une alerte",
     example: "8",
   },
 ];
@@ -55,7 +55,7 @@ export default async function ProductsPage() {
     repos.workspace.products(),
     repos.orders.list(),
     repos.workspace.attributions(),
-    repos.integrations.list(),
+    repos.intégrations.list(),
   ]);
 
   const index = buildAttributionIndex(attributions, connections);
@@ -120,47 +120,49 @@ export default async function ProductsPage() {
     deliveryZone: { name: homeZone.name, days: homeZone.days, fee: homeZone.fee },
     freeDeliveryFrom: profile.freeDeliveryFrom,
     preparationLabel:
-      profile.preparationDays === 1 ? "1 day" : `${profile.preparationDays} days`,
+      profile.preparationDays === 1 ? "1 jour" : `${profile.preparationDays} jours`,
   };
 
   return (
     <div className="flex flex-col gap-5">
       <PageHeader
-        title="Products"
-        subtitle={`Everything ${profile.displayName} sells, what each one costs you, and what is running out.`}
+        title="Produits"
+        subtitle={`Tout ce que ${profile.displayName} vend, ce que chaque produit vous coute, et ce qui commence a manquer.`}
         actions={<DemoChip />}
       />
 
       <div className="rounded-[var(--radius-md)] border border-accent-line bg-accent-soft px-4 py-3 text-[12.5px] leading-relaxed text-accent-ink">
-        Product names are based on visible public Instagram signals. Prices, stock, and SKUs are
-        demo placeholders until an authorised catalog import.
+        Les noms de produits reposent sur des signaux publics visibles sur Instagram. Les prix, le
+        stock et les references produit sont des valeurs d'exemple, en attendant un import de
+        catalogue autorise.
       </div>
 
       <ProductWorkbench rows={rows} shop={shop} />
 
       <Card>
         <CardHead
-          title="Bring your product list in"
-          hint="What a file needs before it can be read"
+          title="Importer votre liste de produits"
+          hint="Ce qu'un fichier doit contenir pour pouvoir etre lu"
           action={
             <span className="rounded-[var(--radius-sm)] border border-dashed border-line-strong bg-surface-2 px-3 py-1.5 text-center text-[12px] font-semibold text-faint">
-              Choosing a file is not built yet
+              Le choix d'un fichier n'est pas encore construit
             </span>
           }
         />
         <p className="max-w-[80ch] text-[13px] leading-relaxed text-muted">
-          Importing is designed and not built, so this page cannot take a file yet. What follows is
-          the shape to prepare in the meantime. One product per line, saved as a CSV file, a comma
-          between the columns, and the first line holding the column names below.
+          L'import est concu mais pas construit, cette page ne peut donc pas encore recevoir de
+          fichier. Voici la forme a preparer en attendant. Un produit par ligne, enregistré dans un
+          fichier CSV, une virgule entre les colonnes, et la première ligne qui porte les noms de
+          colonnes ci-dessous.
         </p>
 
         <div className="os-scroll mt-3">
           <table className="w-full min-w-[620px] border-collapse text-sm">
             <thead>
               <tr>
-                <th className="os-label pb-2.5 pr-3 text-left font-normal">Column</th>
-                <th className="os-label pb-2.5 pr-3 text-left font-normal">What it holds</th>
-                <th className="os-label pb-2.5 text-left font-normal">Example</th>
+                <th className="os-label pb-2.5 pr-3 text-left font-normal">Colonne</th>
+                <th className="os-label pb-2.5 pr-3 text-left font-normal">Ce qu'elle contient</th>
+                <th className="os-label pb-2.5 text-left font-normal">Exemple</th>
               </tr>
             </thead>
             <tbody>
@@ -177,25 +179,24 @@ export default async function ProductsPage() {
 
         <ul className="mt-3 flex max-w-[80ch] list-disc flex-col gap-1 pl-4 text-[13px] leading-relaxed text-muted">
           <li>
-            A line whose product code already exists updates that product. It does not add a second
-            one with the same code.
+            Une ligne dont la référence produit existe déjà met a jour ce produit. Elle n'en ajouté
+            pas un deuxieme avec la même référence.
           </li>
           <li>
-            Units sold is not in the file. It is counted from your orders, so an import never
-            rewrites what you have already sold.
+            Les unités vendues ne figurent pas dans le fichier. Elles sont comptees à partir de vos
+            commandes, un import ne reecrit donc jamais ce que vous avez déjà vendu.
           </li>
           <li>
-            Prices are read as dinar. Write <span className="os-num">89.500</span>, not{" "}
-            <span className="os-num">89,500</span>, because the comma is already doing the job of
-            separating the columns.
+            Les prix sont lus en dinar. Ecrivez <span className="os-num">89.500</span>, et non{" "}
+            <span className="os-num">89,500</span>, car la virgule sert déjà a separer les colonnes.
           </li>
         </ul>
       </Card>
 
       <p className="max-w-[80ch] text-xs leading-relaxed text-muted">
-        Nothing on this screen reaches a shop, a marketplace or a supplier. Editing a product
-        changes what you see for this visit, and the figures come back as they were on the next
-        refresh, because the database arrives in a later step.
+        Rien sur cet écran n'atteint une boutique, une place de marche ou un fournisseur. Modifier
+        un produit change ce que vous voyez pendant cette visite, et les chiffres reviennent tels
+        quels au prochain rafraichissement, car la base de données arrive dans une étape ulterieure.
       </p>
     </div>
   );

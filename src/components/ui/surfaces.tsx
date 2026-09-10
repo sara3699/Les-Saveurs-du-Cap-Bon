@@ -59,11 +59,11 @@ export function PageHeader({
 export function DemoChip({ className = "" }: { className?: string }) {
   return (
     <span
-      title="Données d’exemple. Aucun compte Instagram, WhatsApp, Facebook ou Google n’est connecté et rien ici ne contacte un client."
+      title="Données d'exemple. Aucun compte Instagram, WhatsApp, Facebook ou Google n'est connecté, et rien ici ne contacte un client."
       className={`inline-flex items-center gap-2 rounded-full border border-accent-line bg-accent-soft px-3 py-1 text-xs font-semibold text-accent-ink ${className}`}
     >
       <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
-      Espace de prévisualisation · données d’exemple
+      Données d'exemple, aucun compte n'est connecté
     </span>
   );
 }
@@ -96,12 +96,12 @@ export function EmptyState({
 export function Stat({
   label,
   value,
-  detail,
+  détail,
   tone = "plain",
 }: {
   label: string;
   value: string;
-  detail?: string;
+  détail?: string;
   tone?: "plain" | "money";
 }) {
   const money = tone === "money";
@@ -115,7 +115,7 @@ export function Stat({
       >
         {value}
       </p>
-      {detail ? <p className="mt-1.5 text-xs font-semibold text-muted">{detail}</p> : null}
+      {détail ? <p className="mt-1.5 text-xs font-semibold text-muted">{détail}</p> : null}
     </div>
   );
 }

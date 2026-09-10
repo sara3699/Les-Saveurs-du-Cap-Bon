@@ -55,7 +55,7 @@ export function StorefrontPreview({
   preparationLabel,
 }: StorefrontPreviewProps) {
   const missing = freeDeliveryFrom - product.price;
-  const qualifies = missing <= 0;
+  const qualifiés = missing <= 0;
   const filled =
     freeDeliveryFrom > 0 ? Math.min(100, (product.price / freeDeliveryFrom) * 100) : 100;
 
@@ -88,17 +88,17 @@ export function StorefrontPreview({
           </div>
           <div className="flex items-center gap-3">
             <span className="hidden gap-3 text-[11.5px] text-muted sm:flex">
-              <span>Shop</span>
-              <span>Gifts</span>
-              <span>About</span>
+              <span>Boutique</span>
+              <span>Cadeaux</span>
+              <span>A propos</span>
             </span>
             <span className="os-num text-[11.5px] font-semibold">{phone}</span>
           </div>
         </div>
 
         <p className="border-b border-accent-line bg-accent-soft px-4 py-1.5 text-center text-[11.5px] font-semibold text-accent-ink">
-          Free delivery from <span className="os-num">{formatTND(freeDeliveryFrom)}</span>, posted
-          from {city}.
+          Livraison offerte à partir de <span className="os-num">{formatTND(freeDeliveryFrom)}</span>,
+          expedie depuis {city}.
         </p>
 
         <div className="grid gap-4 p-4 sm:grid-cols-[128px_minmax(0,1fr)]">
@@ -126,7 +126,7 @@ export function StorefrontPreview({
 
             <ul className="flex flex-col gap-0.5 text-[12px] text-muted">
               <li>
-                <span className="os-num">{product.stock}</span> in stock, ready to post in{" "}
+                <span className="os-num">{product.stock}</span> en stock, pret a expedier en{" "}
                 {preparationLabel}
               </li>
               <li>
@@ -136,11 +136,12 @@ export function StorefrontPreview({
 
             <div className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-3 py-2">
               <p className="text-[11.5px] font-semibold">
-                {qualifies ? (
-                  "This one item already reaches free delivery."
+                {qualifiés ? (
+                  "Cet article suffit déjà pour la livraison offerte."
                 ) : (
                   <>
-                    Add <span className="os-num">{formatTND(missing)}</span> more for free delivery.
+                    Ajoutez <span className="os-num">{formatTND(missing)}</span> pour la livraison
+                    offerte.
                   </>
                 )}
               </p>
@@ -156,15 +157,15 @@ export function StorefrontPreview({
               aria-hidden
               className="mt-0.5 inline-flex w-fit items-center rounded-[var(--radius-md)] bg-primary px-4 py-2 text-sm font-semibold text-white"
             >
-              Add to basket
+              Ajouter au panier
             </span>
           </div>
         </div>
       </div>
 
       <figcaption className="text-xs text-muted">
-        A drawing of the customer view, built from the details on this screen and one product from
-        your list. It is a picture, not your live site, and nothing in it can be clicked.
+        Un dessin de la vue client, construit avec les informations de cet écran et un produit de
+        votre liste. C'est une image, pas votre site en ligne, et rien dedans ne peut etre clique.
       </figcaption>
     </figure>
   );

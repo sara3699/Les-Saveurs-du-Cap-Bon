@@ -36,7 +36,7 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
     repos.contacts.list(),
     repos.contacts.duplicates(),
     repos.workspace.team(),
-    repos.integrations.list(),
+    repos.intégrations.list(),
     repos.workspace.attributions(),
   ]);
 
@@ -69,15 +69,17 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
     const members = group.contactIds
       .map((id) => contactById.get(id))
       .filter((contact): contact is Contact => Boolean(contact));
-    const field = group.value.includes("@") ? "email address" : "phone number";
+    const field = group.value.includes("@")
+      ? "la même adresse e-mail"
+      : "le même numéro de téléphone";
     const display =
-      field === "email address"
+      field === "la même adresse e-mail"
         ? members.find((member) => member.email)?.email ?? group.value
         : members.find((member) => member.phone)?.phone ?? group.value;
 
     for (const member of members) {
       const others = members.filter((other) => other.id !== member.id).map((other) => other.name);
-      duplicateNotes.set(member.id, `Shares a ${field} with ${others.join(" and ")}`);
+      duplicateNotes.set(member.id, `Partage ${field} que ${others.join(" et ")}`);
     }
 
     return { key: group.value, field, display, members };
@@ -146,8 +148,8 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
 
   const anyFilter = Boolean(source || stage || owner || query);
   const subtitle = anyFilter
-    ? `${rows.length} of ${contacts.length} customers match these filters. Across the whole list, ${movedCount} now write on a different channel from the one they arrived on.`
-    : `${contacts.length} customers, and ${movedCount} of them now write on a different channel from the one they arrived on.`;
+    ? `${rows.length} clients sur ${contacts.length} correspondent a ces filtres. Sur la liste entiere, ${movedCount} ecrivent maintenant sur un canal different de celui par lequel ils sont arrives.`
+    : `${contacts.length} clients, et ${movedCount} d'entre eux ecrivent maintenant sur un canal different de celui par lequel ils sont arrives.`;
 
   const keep = (extra: Record<string, string | undefined>) => {
     const next = new URLSearchParams();
@@ -168,7 +170,7 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
       />
 
       <Card>
-        <p className="os-label">Filter by the channel they arrived on</p>
+        <p className="os-label">Filtrer par le canal d'arrivee</p>
         <div className="mt-2 flex flex-wrap gap-1.5">
           <Link
             href={keep({ source: undefined })}
@@ -177,7 +179,7 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
               source ? "border-line bg-surface-2 text-muted" : "border-primary bg-primary text-white"
             }`}
           >
-            All sources
+            Toutes les sources
           </Link>
           {CHANNEL_ORDER.map((id) => {
             const active = source === id;
@@ -200,22 +202,22 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
         <form className="mt-3 grid gap-2 border-t border-line pt-3 sm:grid-cols-2 lg:grid-cols-3">
           {source ? <input type="hidden" name="source" value={source} /> : null}
           <label className="flex flex-col gap-1">
-            <span className="os-label">Search</span>
+            <span className="os-label">Recherche</span>
             <input
               name="q"
               defaultValue={query}
-              placeholder="Name, phone number or email"
+              placeholder="Nom, numéro de téléphone ou e-mail"
               className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[13px]"
             />
           </label>
           <label className="flex flex-col gap-1">
-            <span className="os-label">Stage</span>
+            <span className="os-label">Étape</span>
             <select
               name="stage"
               defaultValue={stage ?? ""}
               className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[13px]"
             >
-              <option value="">Any stage</option>
+              <option value="">Toutes les étapes</option>
               {STAGES.map((value) => (
                 <option key={value} value={value}>
                   {STAGE_COPY[value].label}
@@ -224,15 +226,15 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
             </select>
           </label>
           <label className="flex flex-col gap-1">
-            <span className="os-label">Owner</span>
+            <span className="os-label">Responsable</span>
             <span className="flex gap-1.5">
               <select
                 name="owner"
                 defaultValue={owner ?? ""}
                 className="w-full rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[13px]"
               >
-                <option value="">Anyone</option>
-                <option value="none">Nobody yet</option>
+                <option value="">Tout le monde</option>
+                <option value="none">Personne pour l'instant</option>
                 {team.map((member) => (
                   <option key={member.id} value={member.id}>
                     {member.name}
@@ -243,7 +245,7 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
                 type="submit"
                 className="rounded-[var(--radius-sm)] bg-primary px-3 py-1.5 text-[13px] font-semibold text-white hover:bg-primary-hi"
               >
-                Apply
+                Appliquer
               </button>
             </span>
           </label>
@@ -255,16 +257,17 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
       <Card>
         <ContactsTable rows={rows} />
         <p className="mt-3 border-t border-line pt-3 text-xs text-muted">
-          First touch is the channel a customer arrived on and is never rewritten. Most recent moves
-          when the same person writes from somewhere else, which is how you see that Instagram
-          brought someone in even though the order was placed on the website.
+          Le premier contact est le canal par lequel un client est arrive, et il n'est jamais
+          reecrit. Le plus recent change quand la même personne ecrit depuis un autre endroit, et
+          c'est ainsi que vous voyez qu'Instagram a amene quelqu'un même si la commande a été passee
+          sur le site web.
         </p>
       </Card>
 
       <Card>
         <CardHead
-          title="Import contacts from a file"
-          hint="A walkthrough on sample rows, in five steps: the file, the columns, a preview, the checks, then a confirmation you can cancel."
+          title="Importer des contacts depuis un fichier"
+          hint="Une démonstration sur des lignes d'exemple, en cinq étapes : le fichier, les colonnes, un apercu, les controles, puis une confirmation que vous pouvez annuler."
         />
         <ImportWalkthrough
           existing={contacts.map((contact) => ({
@@ -274,8 +277,8 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
           }))}
         />
         <p className="mt-4 border-t border-line pt-3 text-xs text-muted">
-          Exporting this list to a file is designed and arrives later, so there is no export button
-          on this screen yet.
+          L'export de cette liste vers un fichier est concu et arrive plus tard, donc il n'y a pas
+          encore de bouton d'export sur cet écran.
         </p>
       </Card>
     </div>

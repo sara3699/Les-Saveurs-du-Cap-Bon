@@ -28,7 +28,7 @@ import { DEMO_NOW } from "@/lib/mock/time";
 import { getRepositories } from "@/lib/repositories";
 import { toOrderRow } from "@/lib/views";
 
-export const metadata = { title: "Dashboard, Les Saveurs du Cap Bon" };
+export const metadata = { title: "Tableau de bord, Les Saveurs du Cap Bon" };
 
 // The demo clock moves with the visit, so these pages are rendered per request
 // rather than frozen into the build.
@@ -36,9 +36,9 @@ export const dynamic = "force-dynamic";
 
 function greeting(now: Date): string {
   const hour = now.getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
+  if (hour < 12) return "Bonjour";
+  if (hour < 18) return "Bon après-midi";
+  return "Bonsoir";
 }
 
 export default async function DashboardPage() {
@@ -49,7 +49,7 @@ export default async function DashboardPage() {
       repos.contacts.list(),
       repos.workspace.team(),
       repos.workspace.conversionMetrics(),
-      repos.integrations.list(),
+      repos.intégrations.list(),
       repos.workspace.attributions(),
       repos.conversations.list(),
       repos.workspace.tasks(),
@@ -102,7 +102,7 @@ export default async function DashboardPage() {
       waiting,
       connected: connection?.status === "connected",
       status: connection?.status ?? "not_connected",
-      accountLabel: connection?.accountLabel ?? "No account connected yet",
+      accountLabel: connection?.accountLabel ?? "Aucun compte connecté pour l'instant",
       eventsThisWeek: connection?.eventsThisWeek ?? 0,
     };
   });
@@ -139,8 +139,8 @@ export default async function DashboardPage() {
     const oldest = unassigned[unassigned.length - 1];
     attention.push({
       id: "att_unassigned",
-      title: `${unassigned.length} requests with nobody assigned`,
-      detail: `The oldest arrived ${timeAgo(oldest.lastMessageAt, now)}.`,
+      title: `${unassigned.length} demandes sans responsable`,
+      détail: `La plus ancienne est arrivée ${timeAgo(oldest.lastMessageAt, now)}.`,
       href: "/inbox",
       severity: "error",
     });
@@ -148,11 +148,11 @@ export default async function DashboardPage() {
   if (overdue.length > 0) {
     attention.push({
       id: "att_overdue",
-      title: `${overdue.length} follow ups are overdue`,
-      detail: overdue
+      title: `${overdue.length} suivis sont en retard`,
+      détail: overdue
         .slice(0, 2)
-        .map((t) => contactNames.get(t.contactId ?? "") ?? "No customer")
-        .join(" and "),
+        .map((t) => contactNames.get(t.contactId ?? "") ?? "Aucun client")
+        .join(" et "),
       href: "/tasks",
       severity: "warning",
     });
@@ -160,8 +160,8 @@ export default async function DashboardPage() {
   if (lowStock.length > 0) {
     attention.push({
       id: "att_stock",
-      title: `${lowStock[0].name} is down to ${lowStock[0].stock} units`,
-      detail: `It sold ${lowStock[0].unitsSold} in the last two months.`,
+      title: `${lowStock[0].name} n'a plus que ${lowStock[0].stock} unités`,
+      détail: `Il s'en est vendu ${lowStock[0].unitsSold} sur les deux derniers mois.`,
       href: "/products",
       severity: "warning",
     });
@@ -169,8 +169,8 @@ export default async function DashboardPage() {
   for (const broken of brokenConnections) {
     attention.push({
       id: `att_${broken.id}`,
-      title: `${broken.accountLabel} is not receiving messages`,
-      detail: broken.lastErrorMessage ?? "Open the connector to see what changed.",
+      title: `${broken.accountLabel} ne reçoit plus de messages`,
+      détail: broken.lastErrorMessage ?? "Ouvrez le connecteur pour voir ce qui a changé.",
       href: "/integrations",
       severity: "error",
     });
@@ -180,7 +180,7 @@ export default async function DashboardPage() {
     <div className="flex flex-col gap-4">
       <PageHeader
         title={`${greeting(now)}, ${team[0].name}`}
-        subtitle={`Last order ${timeAgo(orders[0].placedAt, now)}, from ${channelOf(orders[0])}. Figures cover the last 30 days.`}
+        subtitle={`Dernière commande ${timeAgo(orders[0].placedAt, now)}, depuis ${channelOf(orders[0])}. Les chiffres portent sur les 30 derniers jours.`}
         actions={
           <>
             <DemoChip />
@@ -188,26 +188,26 @@ export default async function DashboardPage() {
               href="/orders"
               className="rounded-[var(--radius-md)] bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hi"
             >
-              Open orders
+              Ouvrir les commandes
             </Link>
           </>
         }
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat label="Orders today" value={String(today.length)} detail={`${sinceStartOfDay(orders, now).filter((o) => o.paymentStatus === "paid").length} already paid`} />
-        <Stat label="Orders this week" value={String(week.length)} detail={`${formatTNDCompact(revenueOf(week))} taken`} />
-        <Stat label="Orders this month" value={String(month.length)} detail={`${previousMonth.length} in the 30 days before`} />
+        <Stat label="Commandes aujourd'hui" value={String(today.length)} détail={`${sinceStartOfDay(orders, now).filter((o) => o.paymentStatus === "paid").length} déjà payées`} />
+        <Stat label="Commandes cette semaine" value={String(week.length)} détail={`${formatTNDCompact(revenueOf(week))} encaissés`} />
+        <Stat label="Commandes ce mois-ci" value={String(month.length)} détail={`${previousMonth.length} sur les 30 jours précédents`} />
         <Stat
-          label="Revenue this month"
+          label="Chiffre d'affaires ce mois-ci"
           value={formatTNDCompact(revenueOf(month))}
-          detail={`Previous period ${formatTNDCompact(revenueOf(previousMonth))}`}
+          détail={`Période précédente ${formatTNDCompact(revenueOf(previousMonth))}`}
           tone="money"
         />
       </div>
 
       <div className="grid gap-3 xl:grid-cols-[1.4fr_1fr]">
-        <SourcePanel rows={rows} periodLabel="Last 30 days" />
+        <SourcePanel rows={rows} periodLabel="30 derniers jours" />
         <AttentionPanel items={attention} />
       </div>
 
@@ -222,11 +222,11 @@ export default async function DashboardPage() {
 
       <Card>
         <CardHead
-          title="Latest orders"
-          hint="The source column is never blank and never says Online"
+          title="Dernières commandes"
+          hint="La colonne source n'est jamais vide et n'indique jamais un vague « En ligne »"
           action={
             <Link href="/orders" className="text-xs font-semibold text-primary hover:underline">
-              See all {orders.length}
+              Voir toutes les {orders.length}
             </Link>
           }
         />

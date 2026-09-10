@@ -27,14 +27,14 @@ function SourceStrip({ row, limit = 3 }: { row: ProductRow; limit?: number }) {
   if (row.sources.length === 0) {
     return (
       <p className="text-[11.5px] text-muted">
-        No orders on record for this product yet.
+        Aucune commande enregistrée pour ce produit pour l'instant.
       </p>
     );
   }
   const rest = row.sources.length - limit;
   return (
     <div>
-      <p className="os-label">Where its orders come from</p>
+      <p className="os-label">D'ou viennent ses commandes</p>
       <span className="mt-1.5 flex h-1.5 w-full overflow-hidden rounded-full bg-surface-2 ring-1 ring-line">
         {row.sources.map((slice) => (
           <span
@@ -57,7 +57,7 @@ function SourceStrip({ row, limit = 3 }: { row: ProductRow; limit?: number }) {
         ))}
         {rest > 0 ? (
           <span>
-            and <span className="os-num">{rest}</span> more in the bar
+            et <span className="os-num">{rest}</span> de plus dans la barre
           </span>
         ) : null}
       </span>
@@ -68,12 +68,12 @@ function SourceStrip({ row, limit = 3 }: { row: ProductRow; limit?: number }) {
 function Figure({
   label,
   value,
-  detail,
+  détail,
   tone = "plain",
 }: {
   label: string;
   value: string;
-  detail?: React.ReactNode;
+  détail?: React.ReactNode;
   tone?: "plain" | "warning";
 }) {
   return (
@@ -84,7 +84,7 @@ function Figure({
       >
         {value}
       </dd>
-      {detail ? <dd className="text-[11px] text-muted">{detail}</dd> : null}
+      {détail ? <dd className="text-[11px] text-muted">{détail}</dd> : null}
     </div>
   );
 }
@@ -125,7 +125,7 @@ function PreviewLink({ id, onPreview }: { id: string; onPreview: (id: string) =>
       onClick={() => onPreview(id)}
       className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-3 py-1.5 text-[12px] font-semibold text-ink hover:border-line-strong"
     >
-      Preview
+      Apercu
     </a>
   );
 }
@@ -133,7 +133,7 @@ function PreviewLink({ id, onPreview }: { id: string; onPreview: (id: string) =>
 function StockNote({ row, low }: { row: ProductRow; low: boolean }) {
   return (
     <>
-      {low ? "Low, reorder at " : "Warning at "}
+      {low ? "Faible, reapprovisionner a " : "Alerte a "}
       <span className="os-num">{row.lowStockAt}</span>
     </>
   );
@@ -157,30 +157,30 @@ function ProductCard({ row, onEdit, onPreview }: { row: ProductRow } & Omit<View
         {low ? (
           <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-accent-line bg-surface px-2.5 py-1 text-[11.5px] font-semibold text-accent-ink">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
-            Low on stock
+            Stock faible
           </span>
         ) : null}
       </header>
 
       <dl className="grid grid-cols-3 gap-x-3 gap-y-2.5">
-        <Figure label="Price, TND" value={formatTND(row.price, { withCurrency: false })} />
-        <Figure label="Cost, TND" value={formatTND(row.cost, { withCurrency: false })} />
+        <Figure label="Prix, TND" value={formatTND(row.price, { withCurrency: false })} />
+        <Figure label="Coût, TND" value={formatTND(row.cost, { withCurrency: false })} />
         <Figure
-          label="Margin per unit"
+          label="Marge par unité"
           value={formatTND(marginPerUnit(row), { withCurrency: false })}
-          detail={<span className="os-num">{formatPercent(marginShare(row))}</span>}
+          détail={<span className="os-num">{formatPercent(marginShare(row))}</span>}
         />
         <Figure
-          label="In stock"
+          label="En stock"
           value={String(row.stock)}
-          detail={<StockNote row={row} low={low} />}
+          détail={<StockNote row={row} low={low} />}
           tone={low ? "warning" : "plain"}
         />
-        <Figure label="Units sold" value={String(row.unitsSold)} detail="Last two months" />
+        <Figure label="Unités vendues" value={String(row.unitsSold)} détail="Deux derniers mois" />
         <Figure
-          label="Stock value"
+          label="Valeur du stock"
           value={formatTND(row.stock * row.cost, { withCurrency: false })}
-          detail="At cost"
+          détail="Au cout"
         />
       </dl>
 
@@ -188,12 +188,12 @@ function ProductCard({ row, onEdit, onPreview }: { row: ProductRow } & Omit<View
 
       <footer className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
         <span className="text-[11px] text-muted">
-          {row.lastSoldLabel ? `Last sold ${row.lastSoldLabel}` : "Not sold yet"}
+          {row.lastSoldLabel ? `Dernière vente ${row.lastSoldLabel}` : "Pas encore vendu"}
         </span>
         <span className="flex gap-1.5">
           <PreviewLink id={row.id} onPreview={onPreview} />
           <ActionButton onClick={() => onEdit(row.id)} primary>
-            Edit
+            Modifier
           </ActionButton>
         </span>
       </footer>
@@ -217,14 +217,14 @@ export function ProductTable({ rows, onEdit, onPreview }: ViewProps) {
       <table className="w-full min-w-[980px] border-collapse text-sm">
         <thead>
           <tr>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Product</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Sells through</th>
-            <th className="os-label pb-2.5 pr-3 text-right font-normal">Price, TND</th>
-            <th className="os-label pb-2.5 pr-3 text-right font-normal">Cost, TND</th>
-            <th className="os-label pb-2.5 pr-3 text-right font-normal">Margin per unit</th>
-            <th className="os-label pb-2.5 pr-3 text-right font-normal">In stock</th>
-            <th className="os-label pb-2.5 pr-3 text-right font-normal">Units sold</th>
-            <th className="os-label pb-2.5 text-right font-normal">Edit or preview</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Produit</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Canaux de vente</th>
+            <th className="os-label pb-2.5 pr-3 text-right font-normal">Prix, TND</th>
+            <th className="os-label pb-2.5 pr-3 text-right font-normal">Coût, TND</th>
+            <th className="os-label pb-2.5 pr-3 text-right font-normal">Marge par unité</th>
+            <th className="os-label pb-2.5 pr-3 text-right font-normal">En stock</th>
+            <th className="os-label pb-2.5 pr-3 text-right font-normal">Unités vendues</th>
+            <th className="os-label pb-2.5 text-right font-normal">Modifier ou apercu</th>
           </tr>
         </thead>
         <tbody>
@@ -243,7 +243,7 @@ export function ProductTable({ rows, onEdit, onPreview }: ViewProps) {
                 <td className="py-2.5 pr-3">
                   <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11.5px] text-muted">
                     {row.sources.length === 0 ? (
-                      <span>No orders yet</span>
+                      <span>Pas encore de commande</span>
                     ) : (
                       <>
                         {row.sources.slice(0, 3).map((slice) => (
@@ -254,7 +254,7 @@ export function ProductTable({ rows, onEdit, onPreview }: ViewProps) {
                         ))}
                         {rest > 0 ? (
                           <span>
-                            and <span className="os-num">{rest}</span> more
+                            et <span className="os-num">{rest}</span> de plus
                           </span>
                         ) : null}
                       </>
@@ -292,7 +292,7 @@ export function ProductTable({ rows, onEdit, onPreview }: ViewProps) {
                   <span className="flex justify-end gap-1.5">
                     <PreviewLink id={row.id} onPreview={onPreview} />
                     <ActionButton onClick={() => onEdit(row.id)} primary>
-                      Edit
+                      Modifier
                     </ActionButton>
                   </span>
                 </td>

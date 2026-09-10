@@ -27,7 +27,7 @@ export interface ProductRow {
 }
 
 /**
- * The shop's own details, read on the server from the same record the Store
+ * The shop's own détails, read on the server from the same record the Store
  * screen edits and handed down so the customer preview cannot invent a shop
  * name, a delivery fee or a town of its own.
  */
@@ -67,13 +67,13 @@ export function sourceShare(row: ProductRow, slice: ProductSourceSlice): number 
 }
 
 export const SORTS = [
-  { value: "stock_low", label: "Stock, lowest first" },
-  { value: "stock_high", label: "Stock, highest first" },
-  { value: "sold_high", label: "Units sold, most first" },
-  { value: "sold_low", label: "Units sold, fewest first" },
-  { value: "margin_high", label: "Margin per unit, highest first" },
-  { value: "price_high", label: "Price, highest first" },
-  { value: "name", label: "Name, A to Z" },
+  { value: "stock_low", label: "Stock, du plus faible au plus eleve" },
+  { value: "stock_high", label: "Stock, du plus eleve au plus faible" },
+  { value: "sold_high", label: "Unités vendues, du plus grand au plus petit" },
+  { value: "sold_low", label: "Unités vendues, du plus petit au plus grand" },
+  { value: "margin_high", label: "Marge par unité, de la plus elevee a la plus faible" },
+  { value: "price_high", label: "Prix, du plus eleve au plus faible" },
+  { value: "name", label: "Nom, de A a Z" },
 ] as const;
 
 export type SortKey = (typeof SORTS)[number]["value"];

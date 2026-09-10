@@ -16,12 +16,12 @@ export interface StageDefinition {
 }
 
 export const STAGES: StageDefinition[] = [
-  { id: "new", label: "New", hint: "Arrived, nobody has replied yet" },
-  { id: "contacted", label: "Contacted", hint: "You replied, waiting on them" },
-  { id: "qualified", label: "Qualified", hint: "They want it and can pay" },
-  { id: "proposal", label: "Proposal", hint: "A price is with them" },
-  { id: "won", label: "Won", hint: "Closed as a sale" },
-  { id: "lost", label: "Lost", hint: "Closed, the reason is kept" },
+  { id: "new", label: "Nouveau", hint: "Arrive, personne n'a encore répondu" },
+  { id: "contacted", label: "Contacté", hint: "Vous avez répondu, en attente de leur retour" },
+  { id: "qualified", label: "Qualifié", hint: "Ils veulent acheter et peuvent payer" },
+  { id: "proposal", label: "Devis", hint: "Un prix leur a été transmis" },
+  { id: "won", label: "Gagné", hint: "Conclu, c'est une vente" },
+  { id: "lost", label: "Perdu", hint: "Clos, la raison est conservee" },
 ];
 
 export function stageLabel(id: StageId): string {

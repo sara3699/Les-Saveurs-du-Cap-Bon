@@ -31,12 +31,12 @@ export type TaskBucket = "overdue" | "today" | "upcoming";
 export const TASK_TYPES: TaskType[] = ["call", "reply", "meeting", "quote", "reminder", "custom"];
 
 export const TYPE_LABEL: Record<TaskType, string> = {
-  call: "Call",
-  reply: "Reply",
-  meeting: "Meeting",
-  quote: "Quote",
-  reminder: "Reminder",
-  custom: "Custom",
+  call: "Appel",
+  reply: "Réponse",
+  meeting: "Rendez-vous",
+  quote: "Devis",
+  reminder: "Rappel",
+  custom: "Autre",
 };
 
 /**
@@ -54,18 +54,18 @@ export const TYPE_SWATCH: Record<TaskType, string> = {
 };
 
 export const TYPE_MEANING: Record<TaskType, string> = {
-  call: "Pick up the phone. The customer asked for a voice, not a message.",
-  reply: "Answer on the channel the question arrived on.",
-  meeting: "See the customer, at the workshop or at their place.",
-  quote: "Put a price in writing and send it.",
-  reminder: "Something to hold back, keep aside or check before a date.",
-  custom: "Shop work that fits none of the five above.",
+  call: "Prenez le téléphone. Le client a demande une voix, pas un message.",
+  reply: "Repondez sur le canal par lequel la question est arrivée.",
+  meeting: "Voyez le client, a l'atelier ou chez lui.",
+  quote: "Mettez un prix par ecrit et envoyez-le.",
+  reminder: "Quelque chose a mettre de cote, a reserver ou a vérifier avant une date.",
+  custom: "Du travail de boutique qui n'entre dans aucune des cinq catégories ci-dessus.",
 };
 
 export const PRIORITY_LABEL: Record<TaskRow["priority"], string> = {
-  high: "High",
-  normal: "Normal",
-  low: "Low",
+  high: "Haute",
+  normal: "Normale",
+  low: "Basse",
 };
 
 export const PRIORITY_TONE: Record<TaskRow["priority"], "accent" | "muted"> = {
@@ -100,9 +100,9 @@ export function bucketFor(dueAt: string, now: Date): TaskBucket {
 
 export function dueInWords(dueAt: string, now: Date): string {
   const gap = dayGap(dueAt, now);
-  if (gap === 0) return `Today, ${formatClock(dueAt)}`;
-  if (gap === 1) return `Tomorrow, ${formatClock(dueAt)}`;
-  if (gap === -1) return `Yesterday, ${formatClock(dueAt)}`;
+  if (gap === 0) return `Aujourd'hui, ${formatClock(dueAt)}`;
+  if (gap === 1) return `Demain, ${formatClock(dueAt)}`;
+  if (gap === -1) return `Hier, ${formatClock(dueAt)}`;
   return formatDateTime(dueAt);
 }
 
@@ -114,12 +114,12 @@ export function lateInWords(dueAt: string, now: Date): string {
   const diff = now.getTime() - new Date(dueAt).getTime();
   if (diff < HOUR) {
     const minutes = Math.max(1, Math.floor(diff / MINUTE));
-    return `${minutes} ${minutes === 1 ? "minute" : "minutes"} late`;
+    return `${minutes} ${minutes === 1 ? "minute" : "minutes"} de retard`;
   }
   if (diff < DAY) {
     const hours = Math.floor(diff / HOUR);
-    return `${hours} ${hours === 1 ? "hour" : "hours"} late`;
+    return `${hours} ${hours === 1 ? "heure" : "heures"} de retard`;
   }
   const days = Math.floor(diff / DAY);
-  return `${days} ${days === 1 ? "day" : "days"} late`;
+  return `${days} ${days === 1 ? "jour" : "jours"} de retard`;
 }

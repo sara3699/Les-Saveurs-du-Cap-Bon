@@ -26,12 +26,12 @@ export function StorefrontPreview({
   return (
     <Card>
       <CardHead
-        title="How a customer sees it"
-        hint="The same drawing the Store screen shows, filled with the product you pick."
+        title="Ce que voit le client"
+        hint="Le même apercu que celui de l'écran Boutique, rempli avec le produit que vous choisissez."
       />
 
       <label className="mb-3 flex flex-wrap items-center gap-2">
-        <span className="os-label">Product</span>
+        <span className="os-label">Produit</span>
         <select
           value={row.id}
           onChange={(event) => onSelect(event.target.value)}
@@ -59,10 +59,11 @@ export function StorefrontPreview({
       />
 
       <p className="mt-3 max-w-[80ch] text-xs leading-relaxed text-muted">
-        The shop name, the phone number and the delivery figures come from your Store screen. The
-        product name, the price, the product code and what is left in stock are the ones in the
-        list above, including any change you have just made. A picture of the product is not part
-        of the demo data, so the customer view shows a placeholder in its place.
+        Le nom de la boutique, le numéro de téléphone et les chiffres de livraison viennent de votre
+        écran Boutique. Le nom du produit, le prix, la référence produit et ce qui reste en stock
+        sont ceux de la liste ci-dessus, y compris la modification que vous venez de faire. Une
+        photo du produit ne fait pas partie des données d'exemple, la vue client affiche donc un
+        espace réservé a sa place.
       </p>
     </Card>
   );

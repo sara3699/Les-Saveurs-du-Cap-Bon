@@ -19,10 +19,10 @@ export function NextPass({
     <div className="flex flex-col gap-4">
       <PageHeader title={title} subtitle={purpose} actions={<DemoChip />} />
       <section className="os-card max-w-[70ch] p-5">
-        <h2 className="text-[15px]">Not built yet</h2>
+        <h2 className="text-[15px]">Pas encore construit</h2>
         <p className="mt-2 text-sm text-muted">
-          This screen arrives in the next pass, once the four screens carrying source attribution
-          have been reviewed. It will hold:
+          Cet écran arrive au prochain passage, une fois que les quatre écrans qui indiquent la
+          source d'une commande auront été revus. Il contiendra :
         </p>
         <ul className="mt-3 flex flex-col gap-1.5 text-sm">
           {contents.map((item) => (
@@ -37,13 +37,13 @@ export function NextPass({
             href="/dashboard"
             className="rounded-[var(--radius-md)] bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hi"
           >
-            Back to the dashboard
+            Retour au tableau de bord
           </Link>
           <Link
             href="/inbox"
             className="rounded-[var(--radius-md)] border border-line bg-surface px-4 py-2 text-sm font-semibold"
           >
-            Open the inbox
+            Ouvrir la boîte de réception
           </Link>
         </div>
       </section>

@@ -34,12 +34,12 @@ export function ConnectorActions({
           disabled={!canTest}
           onClick={() =>
             setReceipt(
-              `A test ${channelLabel} request was added to the inbox and labelled as a test. Nothing was sent to ${name}.`,
+              `Une demande ${channelLabel} de test a été ajoutée a la boîte de réception et marquee comme test. Rien n'a été envoyé a ${name}.`,
             )
           }
           className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-3 py-1.5 text-[12px] font-medium disabled:cursor-not-allowed disabled:text-faint"
         >
-          Send a test
+          Envoyer un test
         </button>
         {canDisconnect ? (
           <button
@@ -47,35 +47,35 @@ export function ConnectorActions({
             onClick={() => setConfirming(true)}
             className="rounded-[var(--radius-sm)] border border-line bg-surface px-3 py-1.5 text-[12px] font-medium"
           >
-            Disconnect
+            Déconnecter
           </button>
         ) : null}
       </div>
 
       {confirming ? (
         <div className="rounded-[var(--radius-sm)] border border-danger/20 bg-danger-soft px-3 py-2 text-[12px] text-danger">
-          <p className="font-semibold">Disconnect {name}?</p>
+          <p className="font-semibold">Déconnecter {name} ?</p>
           <p className="mt-0.5">
-            New requests stop arriving straight away. Conversations already received stay, and keep
-            their source.
+            Les nouvelles demandes cessent d'arriver immediatement. Les conversations déjà reçues
+            sont conservees et gardent leur source.
           </p>
           <div className="mt-2 flex gap-1.5">
             <button
               type="button"
               onClick={() => {
                 setConfirming(false);
-                setReceipt("Nothing was disconnected. Disconnecting works once a real account is connected.");
+                setReceipt("Rien n'a été déconnecté. La deconnexion fonctionnera une fois qu'un vrai compte sera connecté.");
               }}
               className="rounded-[var(--radius-sm)] border border-danger/30 px-2.5 py-1 font-semibold"
             >
-              Yes, disconnect
+              Oui, déconnecter
             </button>
             <button
               type="button"
               onClick={() => setConfirming(false)}
               className="rounded-[var(--radius-sm)] border border-line bg-surface px-2.5 py-1 text-ink"
             >
-              Keep it
+              Garder
             </button>
           </div>
         </div>

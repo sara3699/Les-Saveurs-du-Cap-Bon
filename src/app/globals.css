@@ -1,0 +1,218 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   OMNISHOP design tokens, jade
+
+   One list, used everywhere. A colour that is not here does not belong in the
+   product. Channel colours sit apart from status colours on purpose: green must
+   never mean both "WhatsApp" and "paid" inside the same table row.
+   ============================================================================ */
+
+@theme {
+  /* surfaces, a neutral carrying a slight jade bias so nothing reads as grey-by-default */
+  --color-canvas:       #EDF4F1;
+  --color-surface:      #FFFFFF;
+  --color-surface-2:    #F6FAF8;
+  --color-line:         #DDE9E4;
+  --color-line-strong:  #C6D9D2;
+
+  /* text */
+  --color-ink:          #16211E;
+  --color-muted:        #5E706A;
+  --color-faint:        #91A39C;
+
+  /* actions */
+  --color-primary:      #0E8A6B;
+  --color-primary-hi:   #0A6E55;
+  --color-primary-soft: #DCF1EA;
+  --color-primary-mute: #8ED0BC;
+
+  /* money, deadlines, opportunities */
+  --color-accent:       #FFC53D;
+  --color-accent-soft:  #FFF3D4;
+  --color-accent-line:  #F2DFAE;
+  --color-accent-ink:   #7A5300;
+
+  /* states. A jade brand means green already reads as good, so the paid and
+     delivered states stay in the same family rather than inventing a second
+     green that would compete with it. */
+  --color-success:      #0B7C5F;
+  --color-success-soft: #DFF2EB;
+  --color-warning:      #C87A00;
+  --color-danger:       #CE3B4A;
+  --color-danger-soft:  #FCE9EB;
+
+  /* channels. WhatsApp keeps its own brand green, which is lighter and more
+     yellow than the jade above, so a channel dot never reads as a button. */
+  --color-ch-website:   #3C63F0;
+  --color-ch-whatsapp:  #25D366;
+  --color-ch-instagram: #D62976;
+  --color-ch-facebook:  #1877F2;
+  --color-ch-google:    #E8453C;
+  --color-ch-manual:    #7A8B85;
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-body:    var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius-card: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+
+  --shadow-card: 0 1px 2px rgba(34, 29, 51, .04), 0 8px 24px -18px rgba(34, 29, 51, .22);
+  --shadow-rail: 0 24px 52px -28px rgba(4, 45, 34, .72), inset 0 1px 0 rgba(255, 255, 255, .2);
+}
+
+html, body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+body { margin: 0; -webkit-font-smoothing: antialiased; }
+
+h1, h2, h3, h4, h5 { font-family: var(--font-display); font-weight: 700; text-wrap: balance; }
+
+/* Keyboard users must always be able to see where they are. */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Small component layer. Everything else is Tailwind utilities; these earn a
+   class because they repeat on every screen and must not drift.
+   --------------------------------------------------------------------------- */
+
+/*
+ * These sit in the components layer on purpose. Unlayered CSS beats every
+ * Tailwind utility, so an .os-card that is not layered silently swallows a
+ * className like border-danger/25 on the card it is applied to.
+ */
+@layer components {
+  .os-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  .os-glass-rail {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    color: rgba(255, 255, 255, .9);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(113, 232, 194, .24), transparent 31%),
+      linear-gradient(165deg, #123d32 0%, #0c2e27 46%, #08231f 100%);
+    box-shadow: var(--shadow-rail);
+  }
+
+  .os-glass-rail::before {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    content: "";
+    opacity: .72;
+    background: linear-gradient(120deg, rgba(255, 255, 255, .15), transparent 26%, transparent 72%, rgba(91, 225, 180, .08));
+  }
+
+  .os-glass-rail > * { position: relative; z-index: 1; }
+
+  .os-rail-brand {
+    border: 1px solid rgba(255, 255, 255, .14);
+    background: linear-gradient(145deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .05));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), 0 10px 22px -18px rgba(0, 0, 0, .72);
+    backdrop-filter: blur(18px);
+  }
+
+  .os-rail-mark {
+    background: linear-gradient(145deg, #9af0d3, #36b58f 56%, #128263);
+    box-shadow: 0 10px 18px -10px rgba(0, 0, 0, .75), inset 0 1px 0 rgba(255, 255, 255, .55);
+  }
+
+  .os-rail-caption,
+  .os-rail-group {
+    color: rgba(213, 255, 240, .56);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+  }
+
+  .os-rail-item {
+    position: relative;
+    margin: 2px 0;
+    transition: transform .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease;
+  }
+
+  .os-rail-item:hover {
+    color: white;
+    background: rgba(255, 255, 255, .08);
+    transform: translateX(2px);
+  }
+
+  .os-rail-item[data-active="true"] {
+    background: linear-gradient(120deg, rgba(104, 226, 183, .8), rgba(31, 144, 112, .54));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 10px 20px -14px rgba(0, 0, 0, .9);
+    transform: translateX(3px);
+  }
+
+  .os-rail-icon {
+    color: rgba(220, 255, 244, .76);
+    background: rgba(255, 255, 255, .09);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .13);
+  }
+
+  .os-rail-item[data-active="true"] .os-rail-icon {
+    color: #07382a;
+    background: rgba(255, 255, 255, .74);
+  }
+
+  .os-channel-tile {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: linear-gradient(145deg, rgba(255, 255, 255, .95), rgba(246, 250, 248, .82));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 10px 24px -22px rgba(9, 66, 50, .56);
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+
+  .os-channel-tile:hover {
+    border-color: var(--color-line-strong);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), 0 14px 26px -21px rgba(9, 66, 50, .72);
+    transform: translateY(-2px);
+  }
+
+  .os-channel-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 999px;
+    padding: 3px 7px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .os-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .os-num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  .os-scroll { overflow-x: auto; }
+}
+
+.os-scroll::-webkit-scrollbar { height: 8px; }
+.os-scroll::-webkit-scrollbar-thumb { background: var(--color-line-strong); border-radius: 999px; }

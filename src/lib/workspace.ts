@@ -1,0 +1,114 @@
+import { getRepositories } from "@/lib/repositories";
+import { buildAttributionIndex, resolveSource } from "@/lib/domain/attribution";
+import { STORE, TEAM } from "@/lib/mock/core";
+import { DEMO_NOW } from "@/lib/mock/time";
+import { isOverdue } from "@/lib/format";
+import type { HealthNotice, SearchEntry } from "@/components/shell/AppChrome";
+
+/**
+ * Everything the shell needs, gathered once on the server. Relative timestamps
+ * and totals are computed here so client components receive plain strings.
+ */
+export async function loadChrome() {
+  const repos = getRepositories();
+  const [conversations, contacts, orders, connections, attributions, tasks] = await Promise.all([
+    repos.conversations.list(),
+    repos.contacts.list(),
+    repos.orders.list({ sinceDays: 40 }),
+    repos.integrations.list(),
+    repos.workspace.attributions(),
+    repos.workspace.tasks(),
+  ]);
+
+  const index = buildAttributionIndex(attributions, connections);
+  const contactName = new Map(contacts.map((c) => [c.id, c.name]));
+
+  const startOfDay = new Date(DEMO_NOW);
+  startOfDay.setHours(0, 0, 0, 0);
+  const ordersToday = orders.filter((o) => new Date(o.placedAt) >= startOfDay).length;
+
+  const unread = conversations.reduce((sum, c) => sum + c.unreadCount, 0);
+  const openTasks = tasks.filter((t) => !t.completedAt && isOverdue(t.dueAt, DEMO_NOW)).length;
+  const brokenConnections = connections.filter(
+    (c) => c.status === "error" || c.status === "warning",
+  );
+
+  const notices: HealthNotice[] = [
+    ...brokenConnections.map((c) => ({
+      id: `cn_${c.id}`,
+      title:
+        c.status === "error"
+          ? `${c.accountLabel} is not receiving`
+          : `${c.accountLabel} needs a look`,
+      detail: c.lastErrorMessage ?? "Open the connector to see what changed.",
+      href: "/integrations",
+      severity: c.status === "error" ? ("error" as const) : ("warning" as const),
+    })),
+  ];
+
+  const unassigned = conversations.filter((c) => !c.assigneeId && c.status !== "resolved");
+  if (unassigned.length > 0) {
+    notices.push({
+      id: "unassigned",
+      title: `${unassigned.length} requests with nobody assigned`,
+      detail: "The oldest has been waiting since it arrived.",
+      href: "/inbox",
+      severity: "warning",
+    });
+  }
+  if (openTasks > 0) {
+    notices.push({
+      id: "overdue",
+      title: `${openTasks} follow ups are overdue`,
+      detail: "Open Tasks to see who owns them.",
+      href: "/tasks",
+      severity: "warning",
+    });
+  }
+
+  const search: SearchEntry[] = [
+    ...contacts.map((c) => ({
+      id: `s_${c.id}`,
+      kind: "Contact" as const,
+      label: c.name,
+      sub: [c.city, c.phone].filter(Boolean).join(", "),
+      href: `/contacts/${c.id}`,
+      channelId: c.latestTouchChannel,
+    })),
+    ...conversations.map((c) => ({
+      id: `s_${c.id}`,
+      kind: "Conversation" as const,
+      label: contactName.get(c.contactId) ?? "Unknown",
+      sub: c.subject,
+      href: `/inbox?c=${c.id}`,
+      channelId: resolveSource(c.attributionId, index).channelId,
+    })),
+    ...orders.slice(0, 60).map((o) => ({
+      id: `s_${o.id}`,
+      kind: "Order" as const,
+      label: o.reference,
+      sub: contactName.get(o.contactId) ?? "Unknown",
+      href: `/orders?q=${o.reference}`,
+      channelId: resolveSource(o.attributionId, index).channelId,
+    })),
+  ];
+
+  const owner = TEAM.find((m) => m.role === "owner")!;
+
+  return {
+    storeName: STORE.name,
+    storeCity: STORE.city,
+    storeInitials: STORE.initials,
+    userName: owner.name,
+    userInitials: owner.initials,
+    userRole: "Owner",
+    counts: {
+      inbox: unread,
+      orders: ordersToday,
+      tasks: openTasks,
+      integrations: brokenConnections.length,
+    },
+    search,
+    notices,
+  };
+}

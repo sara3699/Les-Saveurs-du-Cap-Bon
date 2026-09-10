@@ -34,7 +34,7 @@ export function ConnectorActions({
           disabled={!canTest}
           onClick={() =>
             setReceipt(
-              `Une demande ${channelLabel} de test a été ajoutée a la boîte de réception et marquee comme test. Rien n'a été envoyé a ${name}.`,
+              `Une demande ${channelLabel} de test a été ajoutée à la boîte de réception et marquée comme test. Rien n'a été envoyé à ${name}.`,
             )
           }
           className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-3 py-1.5 text-[12px] font-medium disabled:cursor-not-allowed disabled:text-faint"
@@ -56,15 +56,15 @@ export function ConnectorActions({
         <div className="rounded-[var(--radius-sm)] border border-danger/20 bg-danger-soft px-3 py-2 text-[12px] text-danger">
           <p className="font-semibold">Déconnecter {name} ?</p>
           <p className="mt-0.5">
-            Les nouvelles demandes cessent d'arriver immediatement. Les conversations déjà reçues
-            sont conservees et gardent leur source.
+            Les nouvelles demandes cessent d'arriver immédiatement. Les conversations déjà reçues
+            sont conservées et gardent leur source.
           </p>
           <div className="mt-2 flex gap-1.5">
             <button
               type="button"
               onClick={() => {
                 setConfirming(false);
-                setReceipt("Rien n'a été déconnecté. La deconnexion fonctionnera une fois qu'un vrai compte sera connecté.");
+                setReceipt("Rien n'a été déconnecté. La déconnexion fonctionnera une fois qu'un vrai compte sera connecté.");
               }}
               className="rounded-[var(--radius-sm)] border border-danger/30 px-2.5 py-1 font-semibold"
             >

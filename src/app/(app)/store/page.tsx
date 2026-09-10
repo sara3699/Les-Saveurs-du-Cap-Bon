@@ -24,9 +24,9 @@ const THEME_SWATCHES: Record<string, string[]> = {
 };
 
 const THEME_NOTES: Record<string, string> = {
-  th_olive: "L'apparence que votre boutique utilisé aujourd'hui, et celle dans laquelle cet écran est dessine.",
+  th_olive: "L'apparence que votre boutique utilise aujourd'hui, et celle dans laquelle cet écran est dessiné.",
   th_clay: "Un jeu de couleurs plus chaudes, enregistré comme un nom seulement.",
-  th_linen: "Un jeu de couleurs plus pales, enregistré comme un nom seulement.",
+  th_linen: "Un jeu de couleurs plus pâles, enregistré comme un nom seulement.",
 };
 
 function DetailRow({ label, value, mono = false }: { label: string; value: string; mono?: boolean }) {
@@ -47,7 +47,7 @@ export default async function StorePage({ searchParams }: { searchParams: Params
   const repos = getRepositories();
   const [products, connections] = await Promise.all([
     repos.workspace.products(),
-    repos.intégrations.list(),
+    repos.integrations.list(),
   ]);
 
   const profile = STORE_PROFILE;
@@ -75,9 +75,9 @@ export default async function StorePage({ searchParams }: { searchParams: Params
   const currencyExamples = [
     ...(featured ? [{ amount: featured.price, note: `${featured.name}, votre meilleure vente` }] : []),
     { amount: homeZone.fee, note: `Frais de livraison, ${homeZone.name}` },
-    { amount: profile.freeDeliveryFrom, note: "Le seuil a partir duquel la livraison est offerte" },
+    { amount: profile.freeDeliveryFrom, note: "Le seuil à partir duquel la livraison est offerte" },
     ...(priciest && priciest.id !== featured?.id
-      ? [{ amount: priciest.price, note: `${priciest.name}, avec les milliers separes` }]
+      ? [{ amount: priciest.price, note: `${priciest.name}, avec les milliers séparés` }]
       : []),
   ];
 
@@ -92,13 +92,13 @@ export default async function StorePage({ searchParams }: { searchParams: Params
     <div className="flex flex-col gap-4">
       <PageHeader
         title="Boutique"
-        subtitle={`${profile.displayName}, ${city}. Les informations que vos clients voient, la monnaie dans laquelle ils paient et ce que la livraison leur coute.`}
+        subtitle={`${profile.displayName}, ${city}. Les informations que vos clients voient, la monnaie dans laquelle ils paient et ce que la livraison leur coûte.`}
         actions={<DemoChip />}
       />
 
       <p className="rounded-[var(--radius-md)] border border-line bg-surface-2 px-4 py-2.5 text-[13px] text-muted">
-        Tout sur cet écran est affiche, rien ne s'y modifie. La modification de ces informations
-        arrivera avec la base de données, donc rien ici ne pretend enregistrer. Le seul champ ou
+        Tout sur cet écran est affiché, rien ne s'y modifie. La modification de ces informations
+        arrivera avec la base de données, donc rien ici ne prétend enregistrer. Le seul champ où
         vous pouvez taper cherche dans les zones de livraison, il ne les change pas.
       </p>
 
@@ -106,35 +106,35 @@ export default async function StorePage({ searchParams }: { searchParams: Params
         <Stat
           label="Livraison offerte à partir de"
           value={formatTND(profile.freeDeliveryFrom)}
-          détail="Calcule sur la commande, avant les frais"
+          detail="Calculé sur la commande, avant les frais"
           tone="money"
         />
         <Stat
           label="Livraison standard"
           value={formatTND(profile.standardDeliveryFee)}
-          détail={`${homeZone.name}, ${homeZone.days}`}
+          detail={`${homeZone.name}, ${homeZone.days}`}
         />
         <Stat
-          label="Pret a expedier en"
+          label="Prêt à expédier en"
           value={preparationLabel}
-          détail="Avant le passage du transporteur"
+          detail="Avant le passage du transporteur"
         />
         <Stat
           label="Zones de livraison"
           value={String(profile.deliveryZones.length)}
-          détail="Chacune a ses propres frais et son propre délai"
+          detail="Chacune a ses propres frais et son propre délai"
         />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
         <Card>
           <CardHead
-            title="Identite de la boutique"
-            hint="Ce qui apparait sur votre site, sur une facture et en haut d'un bon de livraison."
+            title="Identité de la boutique"
+            hint="Ce qui apparaît sur votre site, sur une facture et en haut d'un bon de livraison."
           />
           <dl className="flex flex-col">
             <DetailRow label="Raison sociale" value={profile.legalName} />
-            <DetailRow label="Nom affiche" value={profile.displayName} />
+            <DetailRow label="Nom affiché" value={profile.displayName} />
             <DetailRow label="Slogan" value={profile.tagline} />
             <DetailRow label="Adresse" value={profile.addressLines.join(", ")} />
             <DetailRow label="Téléphone" value={profile.phone} mono />
@@ -143,16 +143,16 @@ export default async function StorePage({ searchParams }: { searchParams: Params
             <DetailRow label="Numéro de TVA" value={profile.vatNumber} mono />
           </dl>
           <p className="mt-3 text-xs text-muted">
-            La raison sociale figure sur les documents officiels, le nom affiche est celui que
-            voient les clients. Les deux restent separes pour qu'une facture n'ait jamais a etre
-            corrigee a la main.
+            La raison sociale figure sur les documents officiels, le nom affiché est celui que
+            voient les clients. Les deux restent séparés pour qu'une facture n'ait jamais à être
+            corrigée à la main.
           </p>
         </Card>
 
         <Card>
           <CardHead
-            title="Apercu de la boutique en ligne"
-            hint="Comment l'en-tete et un produit se presentent a quelqu'un qui acheté chez vous."
+            title="Aperçu de la boutique en ligne"
+            hint="Comment l'en-tête et un produit se présentent à quelqu'un qui achète chez vous."
           />
           {featured ? (
             <StorefrontPreview
@@ -174,8 +174,8 @@ export default async function StorePage({ searchParams }: { searchParams: Params
             />
           ) : (
             <EmptyState
-              title="Rien a montrer pour l'instant"
-              body="L'apercu reprend votre produit le plus vendu. Ajoutez un produit et ce panneau se remplit tout seul."
+              title="Rien à montrer pour l'instant"
+              body="L'aperçu reprend votre produit le plus vendu. Ajoutez un produit et ce panneau se remplit tout seul."
               action={{ label: "Aller aux produits", href: "/products" }}
             />
           )}
@@ -185,7 +185,7 @@ export default async function StorePage({ searchParams }: { searchParams: Params
       <Card>
         <CardHead
           title="Monnaie"
-          hint={`${profile.currencyNote}. Tous les montants de Les Saveurs du Cap Bon sont ecrits de la même facon.`}
+          hint={`${profile.currencyNote}. Tous les montants chez Les Saveurs du Cap Bon sont écrits de la même façon.`}
           action={
             <span className="os-num rounded-full border border-line bg-surface-2 px-2.5 py-1 text-xs font-semibold">
               {profile.currency}
@@ -218,8 +218,8 @@ export default async function StorePage({ searchParams }: { searchParams: Params
 
           <div className="flex flex-col gap-2 text-[13px] leading-relaxed text-muted">
             <p>
-              Un dinar vaut <span className="os-num">1000</span> millimes, donc les trois decimales
-              sont de l'argent et pas du remplissage. Les milliers sont separes par une espace et
+              Un dinar vaut <span className="os-num">1000</span> millimes, donc les trois décimales
+              sont de l'argent et pas du remplissage. Les milliers sont séparés par une espace et
               les millimes suivent une virgule, comme sur une facture tunisienne.
             </p>
             {priciest ? (
@@ -229,14 +229,14 @@ export default async function StorePage({ searchParams }: { searchParams: Params
                 <span className="os-num font-semibold text-ink">
                   {formatTNDCompact(priciest.price)}
                 </span>
-                . Partout ou un client ou un comptable lit le montant, les trois decimales
+                . Partout où un client ou un comptable lit le montant, les trois décimales
                 reviennent :{" "}
                 <span className="os-num font-semibold text-ink">{formatTND(priciest.price)}</span>.
               </p>
             ) : null}
             <p>
-              Les chiffres restent ecrits en anglais dans toute l'interface, y compris du cote
-              arabe d'une conversation, pour qu'un nombre ne se lise jamais de deux facons.
+              Les chiffres restent écrits en anglais dans toute l'interface, y compris du côté
+              arabe d'une conversation, pour qu'un nombre ne se lise jamais de deux façons.
             </p>
           </div>
         </div>
@@ -245,7 +245,7 @@ export default async function StorePage({ searchParams }: { searchParams: Params
       <Card>
         <CardHead
           title="Règles de livraison"
-          hint={`Offerte à partir de ${formatTND(profile.freeDeliveryFrom)}, et preparee en ${preparationLabel} quelle que soit la zone de destination.`}
+          hint={`Offerte à partir de ${formatTND(profile.freeDeliveryFrom)}, et préparée en ${preparationLabel} quelle que soit la zone de destination.`}
           action={
             cityQuery ? (
               <Link href="/store" className="text-xs font-semibold text-primary hover:underline">
@@ -275,8 +275,8 @@ export default async function StorePage({ searchParams }: { searchParams: Params
 
         {zones.length === 0 ? (
           <EmptyState
-            title="Aucune zone ne correspond a ce nom"
-            body={`Les ${profile.deliveryZones.length} zones couvrent ensemble les villes que vous livrez. Verifiez l'orthographe, ou effacez la recherche pour lire toute la liste.`}
+            title="Aucune zone ne correspond à ce nom"
+            body={`Les ${profile.deliveryZones.length} zones couvrent ensemble les villes que vous livrez. Vérifiez l'orthographe, ou effacez la recherche pour lire toute la liste.`}
             action={{ label: "Voir toutes les zones", href: "/store" }}
           />
         ) : (
@@ -286,7 +286,7 @@ export default async function StorePage({ searchParams }: { searchParams: Params
                 <tr>
                   <th className="os-label pb-2 text-left font-normal">Zone</th>
                   <th className="os-label pb-2 text-left font-normal">Villes</th>
-                  <th className="os-label pb-2 text-left font-normal">Delai</th>
+                  <th className="os-label pb-2 text-left font-normal">Délai</th>
                   <th className="os-label pb-2 text-right font-normal">Frais, TND</th>
                 </tr>
               </thead>
@@ -307,17 +307,17 @@ export default async function StorePage({ searchParams }: { searchParams: Params
         )}
 
         <p className="mt-3 max-w-[80ch] text-xs text-muted">
-          Les frais tombent des qu'une commande depasse{" "}
+          Les frais tombent dès qu'une commande dépasse{" "}
           <span className="os-num">{formatTND(profile.freeDeliveryFrom)}</span>, dans toutes les
-          zones. La zone decide toujours du délai, donc une commande vers {farZone.name} livrée
+          zones. La zone décide toujours du délai, donc une commande vers {farZone.name} livrée
           sans frais met quand même {farZone.days}.
         </p>
       </Card>
 
       <Card>
         <CardHead
-          title="Themes"
-          hint="Une seule apparence est utilisée. Les deux autres sont des noms et des couleurs reserves, rien de plus."
+          title="Thèmes"
+          hint="Une seule apparence est utilisée. Les deux autres sont des noms et des couleurs réservés, rien de plus."
         />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {profile.themes.map((theme) => {
@@ -361,19 +361,19 @@ export default async function StorePage({ searchParams }: { searchParams: Params
           })}
         </div>
         <p className="mt-3 max-w-[80ch] text-xs text-muted">
-          Le changement de theme est concu mais pas construit, il n'y a donc ici aucun bouton qui
-          ne ferait rien. Quand il arrivera, changer l'apparence repeindra l'apercu de la boutique
+          Le changement de thème est conçu mais pas construit, il n'y a donc ici aucun bouton qui
+          ne ferait rien. Quand il arrivera, changer l'apparence repeindra l'aperçu de la boutique
           ci-dessus avant de repeindre quoi que ce soit que voit un client.
         </p>
       </Card>
 
       <Card>
         <CardHead
-          title="Ou ces informations atteignent vos clients"
-          hint="Le même nom de boutique, le même téléphone et les memes règles de livraison, quel que soit le chemin par lequel arrive la personne. Le badge de chaque canal dit s'il reçoit aujourd'hui."
+          title="Où ces informations atteignent vos clients"
+          hint="Le même nom de boutique, le même téléphone et les mêmes règles de livraison, quel que soit le chemin par lequel arrive la personne. Le badge de chaque canal dit s'il reçoit aujourd'hui."
           action={
             <Link href="/integrations" className="text-xs font-semibold text-primary hover:underline">
-              Voir ce qui est configure
+              Voir ce qui est configuré
             </Link>
           }
         />
@@ -392,7 +392,7 @@ export default async function StorePage({ searchParams }: { searchParams: Params
           ))}
         </ul>
         <p className="mt-3 max-w-[80ch] text-xs text-muted">
-          Des frais annonces sur WhatsApp et des frais annonces sur le site web viennent de cette
+          Des frais annoncés sur WhatsApp et des frais annoncés sur le site web viennent de cette
           seule liste, les deux ne peuvent donc jamais se contredire. Un canal qui attend encore sa
           configuration n'en porte rien pour l'instant, c'est ce que dit son badge. La commande qui
           suit garde le canal par lequel elle est arrivée, c'est pourquoi une livraison{" "}

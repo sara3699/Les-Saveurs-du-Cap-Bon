@@ -21,7 +21,7 @@ export const STAGES: StageDefinition[] = [
   { id: "qualified", label: "Qualifié", hint: "Ils veulent acheter et peuvent payer" },
   { id: "proposal", label: "Devis", hint: "Un prix leur a été transmis" },
   { id: "won", label: "Gagné", hint: "Conclu, c'est une vente" },
-  { id: "lost", label: "Perdu", hint: "Clos, la raison est conservee" },
+  { id: "lost", label: "Perdu", hint: "Clos, la raison est conservée" },
 ];
 
 export function stageLabel(id: StageId): string {

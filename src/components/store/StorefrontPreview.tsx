@@ -90,7 +90,7 @@ export function StorefrontPreview({
             <span className="hidden gap-3 text-[11.5px] text-muted sm:flex">
               <span>Boutique</span>
               <span>Cadeaux</span>
-              <span>A propos</span>
+              <span>À propos</span>
             </span>
             <span className="os-num text-[11.5px] font-semibold">{phone}</span>
           </div>
@@ -98,7 +98,7 @@ export function StorefrontPreview({
 
         <p className="border-b border-accent-line bg-accent-soft px-4 py-1.5 text-center text-[11.5px] font-semibold text-accent-ink">
           Livraison offerte à partir de <span className="os-num">{formatTND(freeDeliveryFrom)}</span>,
-          expedie depuis {city}.
+          expédiée depuis {city}.
         </p>
 
         <div className="grid gap-4 p-4 sm:grid-cols-[128px_minmax(0,1fr)]">
@@ -126,7 +126,7 @@ export function StorefrontPreview({
 
             <ul className="flex flex-col gap-0.5 text-[12px] text-muted">
               <li>
-                <span className="os-num">{product.stock}</span> en stock, pret a expedier en{" "}
+                <span className="os-num">{product.stock}</span> en stock, prêt à expédier en{" "}
                 {preparationLabel}
               </li>
               <li>
@@ -165,7 +165,7 @@ export function StorefrontPreview({
 
       <figcaption className="text-xs text-muted">
         Un dessin de la vue client, construit avec les informations de cet écran et un produit de
-        votre liste. C'est une image, pas votre site en ligne, et rien dedans ne peut etre clique.
+        votre liste. C'est une image, pas votre site en ligne, et rien dedans ne peut être cliqué.
       </figcaption>
     </figure>
   );

@@ -15,7 +15,7 @@ export async function loadChrome() {
     repos.conversations.list(),
     repos.contacts.list(),
     repos.orders.list({ sinceDays: 40 }),
-    repos.intégrations.list(),
+    repos.integrations.list(),
     repos.workspace.attributions(),
     repos.workspace.tasks(),
   ]);
@@ -40,7 +40,7 @@ export async function loadChrome() {
         c.status === "error"
           ? `${c.accountLabel} ne reçoit plus`
           : `${c.accountLabel} est a vérifier`,
-      détail: c.lastErrorMessage ?? "Ouvrez le connecteur pour voir ce qui a change.",
+      detail: c.lastErrorMessage ?? "Ouvrez le connecteur pour voir ce qui a change.",
       href: "/integrations",
       severity: c.status === "error" ? ("error" as const) : ("warning" as const),
     })),
@@ -51,7 +51,7 @@ export async function loadChrome() {
     notices.push({
       id: "unassigned",
       title: `${unassigned.length} demandes sans responsable`,
-      détail: "La plus ancienne attend depuis son arrivée.",
+      detail: "La plus ancienne attend depuis son arrivée.",
       href: "/inbox",
       severity: "warning",
     });
@@ -60,7 +60,7 @@ export async function loadChrome() {
     notices.push({
       id: "overdue",
       title: `${openTasks} relances sont en retard`,
-      détail: "Ouvrez Tâches pour voir qui s'en occupe.",
+      detail: "Ouvrez Tâches pour voir qui s'en occupe.",
       href: "/tasks",
       severity: "warning",
     });
@@ -106,7 +106,7 @@ export async function loadChrome() {
       inbox: unread,
       orders: ordersToday,
       tasks: openTasks,
-      intégrations: brokenConnections.length,
+      integrations: brokenConnections.length,
     },
     search,
     notices,

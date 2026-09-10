@@ -20,25 +20,25 @@ export const CHANNELS: Record<ChannelId, ChannelDefinition> = {
     label: "Site web",
     longLabel: "Formulaire du site web",
     colorVar: "var(--color-ch-website)",
-    composerPlaceholder: (name) => `Répondre a ${name} par e-mail`,
+    composerPlaceholder: (name) => `Répondre à ${name} par e-mail`,
     cannotSendReason:
-      "Le formulaire du site n'est pas connecté, les reponses ne peuvent donc pas partir d'ici.",
+      "Le formulaire du site n'est pas connecté, les réponses ne peuvent donc pas partir d'ici.",
   },
   whatsapp: {
     id: "whatsapp",
     label: "WhatsApp",
     longLabel: "WhatsApp Business",
     colorVar: "var(--color-ch-whatsapp)",
-    composerPlaceholder: (name) => `Ecrire a ${name} sur WhatsApp`,
+    composerPlaceholder: (name) => `Écrire à ${name} sur WhatsApp`,
     cannotSendReason:
-      "La configuration de WhatsApp n'est pas terminee. Ajoutez le numéro professionnel et faites approuver un modèle de message avant l'envoi.",
+      "La configuration de WhatsApp n'est pas terminée. Ajoutez le numéro professionnel et faites approuver un modèle de message avant l'envoi.",
   },
   instagram: {
     id: "instagram",
     label: "Instagram",
     longLabel: "Compte professionnel Instagram",
     colorVar: "var(--color-ch-instagram)",
-    composerPlaceholder: (name) => `Répondre a ${name} sur Instagram`,
+    composerPlaceholder: (name) => `Répondre à ${name} sur Instagram`,
     cannotSendReason:
       "Le compte professionnel Instagram n'est pas connecté, cette réponse ne peut donc pas quitter cet espace.",
   },
@@ -47,25 +47,25 @@ export const CHANNELS: Record<ChannelId, ChannelDefinition> = {
     label: "Facebook",
     longLabel: "Messenger de la page Facebook",
     colorVar: "var(--color-ch-facebook)",
-    composerPlaceholder: (name) => `Répondre a ${name} sur Messenger`,
+    composerPlaceholder: (name) => `Répondre à ${name} sur Messenger`,
     cannotSendReason:
-      "L'autorisation de la page a été retirée, les reponses Messenger echoueraient. Reconnectez d'abord la page.",
+      "L'autorisation de la page a été retirée, les réponses Messenger échoueraient. Reconnectez d'abord la page.",
   },
   google: {
     id: "google",
     label: "Google",
     longLabel: "Formulaire de prospects Google Ads",
     colorVar: "var(--color-ch-google)",
-    composerPlaceholder: (name) => `Répondre a ${name} par e-mail`,
+    composerPlaceholder: (name) => `Répondre à ${name} par e-mail`,
     cannotSendReason:
-      "Les formulaires de prospects Google Ads transmettent les demandes dans un seul sens. Repondez plutot par e-mail ou par téléphone.",
+      "Les formulaires de prospects Google Ads transmettent les demandes dans un seul sens. Répondez plutôt par e-mail ou par téléphone.",
   },
   manual: {
     id: "manual",
     label: "Manuel",
-    longLabel: "Ajoute manuellement",
+    longLabel: "Ajouté manuellement",
     colorVar: "var(--color-ch-manual)",
-    composerPlaceholder: (name) => `Noter ce que vous avez dit a ${name}`,
+    composerPlaceholder: (name) => `Noter ce que vous avez dit à ${name}`,
     cannotSendReason:
       "Cette demande a été saisie manuellement, il n'y a donc aucun canal pour envoyer une réponse.",
   },

@@ -67,13 +67,13 @@ export function sourceShare(row: ProductRow, slice: ProductSourceSlice): number 
 }
 
 export const SORTS = [
-  { value: "stock_low", label: "Stock, du plus faible au plus eleve" },
-  { value: "stock_high", label: "Stock, du plus eleve au plus faible" },
+  { value: "stock_low", label: "Stock, du plus faible au plus élevé" },
+  { value: "stock_high", label: "Stock, du plus élevé au plus faible" },
   { value: "sold_high", label: "Unités vendues, du plus grand au plus petit" },
   { value: "sold_low", label: "Unités vendues, du plus petit au plus grand" },
-  { value: "margin_high", label: "Marge par unité, de la plus elevee a la plus faible" },
-  { value: "price_high", label: "Prix, du plus eleve au plus faible" },
-  { value: "name", label: "Nom, de A a Z" },
+  { value: "margin_high", label: "Marge par unité, de la plus élevée à la plus faible" },
+  { value: "price_high", label: "Prix, du plus élevé au plus faible" },
+  { value: "name", label: "Nom, de A à Z" },
 ] as const;
 
 export type SortKey = (typeof SORTS)[number]["value"];

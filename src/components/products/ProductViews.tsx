@@ -34,7 +34,7 @@ function SourceStrip({ row, limit = 3 }: { row: ProductRow; limit?: number }) {
   const rest = row.sources.length - limit;
   return (
     <div>
-      <p className="os-label">D'ou viennent ses commandes</p>
+      <p className="os-label">D'où viennent ses commandes</p>
       <span className="mt-1.5 flex h-1.5 w-full overflow-hidden rounded-full bg-surface-2 ring-1 ring-line">
         {row.sources.map((slice) => (
           <span
@@ -68,12 +68,12 @@ function SourceStrip({ row, limit = 3 }: { row: ProductRow; limit?: number }) {
 function Figure({
   label,
   value,
-  détail,
+  detail,
   tone = "plain",
 }: {
   label: string;
   value: string;
-  détail?: React.ReactNode;
+  detail?: React.ReactNode;
   tone?: "plain" | "warning";
 }) {
   return (
@@ -84,7 +84,7 @@ function Figure({
       >
         {value}
       </dd>
-      {détail ? <dd className="text-[11px] text-muted">{détail}</dd> : null}
+      {detail ? <dd className="text-[11px] text-muted">{detail}</dd> : null}
     </div>
   );
 }
@@ -125,7 +125,7 @@ function PreviewLink({ id, onPreview }: { id: string; onPreview: (id: string) =>
       onClick={() => onPreview(id)}
       className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-3 py-1.5 text-[12px] font-semibold text-ink hover:border-line-strong"
     >
-      Apercu
+      Aperçu
     </a>
   );
 }
@@ -133,7 +133,7 @@ function PreviewLink({ id, onPreview }: { id: string; onPreview: (id: string) =>
 function StockNote({ row, low }: { row: ProductRow; low: boolean }) {
   return (
     <>
-      {low ? "Faible, reapprovisionner a " : "Alerte a "}
+      {low ? "Faible, réapprovisionner à " : "Alerte à "}
       <span className="os-num">{row.lowStockAt}</span>
     </>
   );
@@ -168,19 +168,19 @@ function ProductCard({ row, onEdit, onPreview }: { row: ProductRow } & Omit<View
         <Figure
           label="Marge par unité"
           value={formatTND(marginPerUnit(row), { withCurrency: false })}
-          détail={<span className="os-num">{formatPercent(marginShare(row))}</span>}
+          detail={<span className="os-num">{formatPercent(marginShare(row))}</span>}
         />
         <Figure
           label="En stock"
           value={String(row.stock)}
-          détail={<StockNote row={row} low={low} />}
+          detail={<StockNote row={row} low={low} />}
           tone={low ? "warning" : "plain"}
         />
-        <Figure label="Unités vendues" value={String(row.unitsSold)} détail="Deux derniers mois" />
+        <Figure label="Unités vendues" value={String(row.unitsSold)} detail="Deux derniers mois" />
         <Figure
           label="Valeur du stock"
           value={formatTND(row.stock * row.cost, { withCurrency: false })}
-          détail="Au cout"
+          detail="Au coût"
         />
       </dl>
 
@@ -224,7 +224,7 @@ export function ProductTable({ rows, onEdit, onPreview }: ViewProps) {
             <th className="os-label pb-2.5 pr-3 text-right font-normal">Marge par unité</th>
             <th className="os-label pb-2.5 pr-3 text-right font-normal">En stock</th>
             <th className="os-label pb-2.5 pr-3 text-right font-normal">Unités vendues</th>
-            <th className="os-label pb-2.5 text-right font-normal">Modifier ou apercu</th>
+            <th className="os-label pb-2.5 text-right font-normal">Modifier ou aperçu</th>
           </tr>
         </thead>
         <tbody>

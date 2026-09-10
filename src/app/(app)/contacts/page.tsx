@@ -36,7 +36,7 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
     repos.contacts.list(),
     repos.contacts.duplicates(),
     repos.workspace.team(),
-    repos.intégrations.list(),
+    repos.integrations.list(),
     repos.workspace.attributions(),
   ]);
 
@@ -148,8 +148,8 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
 
   const anyFilter = Boolean(source || stage || owner || query);
   const subtitle = anyFilter
-    ? `${rows.length} clients sur ${contacts.length} correspondent a ces filtres. Sur la liste entiere, ${movedCount} ecrivent maintenant sur un canal different de celui par lequel ils sont arrives.`
-    : `${contacts.length} clients, et ${movedCount} d'entre eux ecrivent maintenant sur un canal different de celui par lequel ils sont arrives.`;
+    ? `${rows.length} clients sur ${contacts.length} correspondent à ces filtres. Sur la liste entière, ${movedCount} écrivent maintenant sur un canal différent de celui par lequel ils sont arrivés.`
+    : `${contacts.length} clients, et ${movedCount} d'entre eux écrivent maintenant sur un canal différent de celui par lequel ils sont arrivés.`;
 
   const keep = (extra: Record<string, string | undefined>) => {
     const next = new URLSearchParams();
@@ -170,7 +170,7 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
       />
 
       <Card>
-        <p className="os-label">Filtrer par le canal d'arrivee</p>
+        <p className="os-label">Filtrer par le canal d'arrivée</p>
         <div className="mt-2 flex flex-wrap gap-1.5">
           <Link
             href={keep({ source: undefined })}
@@ -257,9 +257,9 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
       <Card>
         <ContactsTable rows={rows} />
         <p className="mt-3 border-t border-line pt-3 text-xs text-muted">
-          Le premier contact est le canal par lequel un client est arrive, et il n'est jamais
-          reecrit. Le plus recent change quand la même personne ecrit depuis un autre endroit, et
-          c'est ainsi que vous voyez qu'Instagram a amene quelqu'un même si la commande a été passee
+          Le premier contact est le canal par lequel un client est arrivé, et il n'est jamais
+          réécrit. Le plus récent change quand la même personne écrit depuis un autre endroit, et
+          c'est ainsi que vous voyez qu'Instagram a amené quelqu'un même si la commande a été passée
           sur le site web.
         </p>
       </Card>
@@ -267,7 +267,7 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
       <Card>
         <CardHead
           title="Importer des contacts depuis un fichier"
-          hint="Une démonstration sur des lignes d'exemple, en cinq étapes : le fichier, les colonnes, un apercu, les controles, puis une confirmation que vous pouvez annuler."
+          hint="Une démonstration sur des lignes d'exemple, en cinq étapes : le fichier, les colonnes, un aperçu, les contrôles, puis une confirmation que vous pouvez annuler."
         />
         <ImportWalkthrough
           existing={contacts.map((contact) => ({
@@ -277,7 +277,7 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
           }))}
         />
         <p className="mt-4 border-t border-line pt-3 text-xs text-muted">
-          L'export de cette liste vers un fichier est concu et arrive plus tard, donc il n'y a pas
+          L'export de cette liste vers un fichier est conçu et arrive plus tard, donc il n'y a pas
           encore de bouton d'export sur cet écran.
         </p>
       </Card>

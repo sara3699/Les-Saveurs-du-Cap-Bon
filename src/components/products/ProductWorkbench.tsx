@@ -58,7 +58,7 @@ export function ProductWorkbench({ rows: initialRows, shop }: { rows: ProductRow
     setEditingId(null);
     setPreviewId(next.id);
     setReceipt(
-      `Le produit ${next.name} a été modifie sur cet écran. Rien n'a été ecrit dans une base de données et aucune boutique n'a été informee, car la base de données arrive dans une étape ulterieure.`,
+      `Le produit ${next.name} a été modifié sur cet écran. Rien n'a été écrit dans une base de données et aucune boutique n'a été informée, car la base de données arrive dans une étape ultérieure.`,
     );
   }
 
@@ -71,9 +71,9 @@ export function ProductWorkbench({ rows: initialRows, shop }: { rows: ProductRow
   return (
     <div className="flex flex-col gap-4">
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat label="Produits" value={String(rows.length)} détail="Tous en vente" />
+        <Stat label="Produits" value={String(rows.length)} detail="Tous en vente" />
         {low.length === 0 ? (
-          <Stat label="Stock faible" value="0" détail="Rien n'est sous son seuil d'alerte" />
+          <Stat label="Stock faible" value="0" detail="Rien n'est sous son seuil d'alerte" />
         ) : (
           <div className="rounded-[var(--radius-card)] border border-accent-line bg-accent-soft p-4">
             <p className="text-xs text-accent-ink">Stock faible</p>
@@ -81,16 +81,16 @@ export function ProductWorkbench({ rows: initialRows, shop }: { rows: ProductRow
               {low.length}
             </p>
             <p className="mt-1.5 text-xs font-semibold text-accent-ink">
-              Au seuil que vous avez fixe ou en dessous
+              Au seuil que vous avez fixé ou en dessous
             </p>
           </div>
         )}
         <Stat
           label="Stock en rayon"
           value={formatTNDCompact(stockValue)}
-          détail="Ce qu'il vous a coute, pas ce qu'il rapporte a la vente"
+          detail="Ce qu'il vous a coûté, pas ce qu'il rapporte à la vente"
         />
-        <Stat label="Unités vendues" value={String(sold)} détail="Sur les deux derniers mois" />
+        <Stat label="Unités vendues" value={String(sold)} detail="Sur les deux derniers mois" />
       </div>
 
       {low.length > 0 ? (
@@ -98,13 +98,13 @@ export function ProductWorkbench({ rows: initialRows, shop }: { rows: ProductRow
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <h2 className="text-[15px] leading-tight text-accent-ink">
-                {low.length === 1 ? "Un produit arrive a court de stock" : `${low.length} produits arrivent a court de stock`}
+                {low.length === 1 ? "Un produit arrive à court de stock" : `${low.length} produits arrivent à court de stock`}
               </h2>
               <ul className="mt-2 flex flex-col gap-1 text-[13px] text-accent-ink">
                 {low.map((row) => (
                   <li key={row.id}>
                     <span className="font-semibold">{row.name}</span>, il reste{" "}
-                    <span className="os-num">{row.stock}</span> unités pour un seuil fixe a{" "}
+                    <span className="os-num">{row.stock}</span> unités pour un seuil fixé à{" "}
                     <span className="os-num">{row.lowStockAt}</span>. Il s'en est vendu{" "}
                     <span className="os-num">{row.unitsSold}</span> sur les deux derniers mois.
                   </li>
@@ -216,7 +216,7 @@ export function ProductWorkbench({ rows: initialRows, shop }: { rows: ProductRow
         <div className="flex flex-col gap-3">
           <EmptyState
             title="Aucun produit ne correspond"
-            body="Rien dans la liste ne correspond a la recherche ou au filtre actif. Effacez-les pour retrouver tous les produits, ou essayez la référence produit plutot que le nom."
+            body="Rien dans la liste ne correspond à la recherche ou au filtre actif. Effacez-les pour retrouver tous les produits, ou essayez la référence produit plutôt que le nom."
           />
           <button
             type="button"
@@ -235,9 +235,9 @@ export function ProductWorkbench({ rows: initialRows, shop }: { rows: ProductRow
       )}
 
       <p className="max-w-[80ch] text-xs leading-relaxed text-muted">
-        La repartition par source sous chaque produit est calculee a partir des commandes qui le
+        La répartition par source sous chaque produit est calculée à partir des commandes qui le
         contiennent, et chaque commande garde le canal par lequel elle est arrivée. Les commandes
-        refusees et remboursees sont exclues de la repartition, la même règle que le tableau de bord
+        refusées et remboursées sont exclues de la répartition, la même règle que le tableau de bord
         applique au chiffre d'affaires.
       </p>
 

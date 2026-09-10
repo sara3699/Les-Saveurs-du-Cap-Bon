@@ -56,7 +56,7 @@ export function ChannelComparison({
     <Card>
       <CardHead
         title="Comparaison des six sources"
-        hint={`${periodLabel}, par canal d'arrivee de chaque demande, chiffre d'affaires le plus eleve en premier`}
+        hint={`${periodLabel}, par canal d'arrivée de chaque demande, chiffre d'affaires le plus élevé en premier`}
       />
       <div className="os-scroll">
         <table className="w-full min-w-[900px] border-collapse text-sm">
@@ -145,22 +145,22 @@ export function ChannelComparison({
       <div className="mt-3 flex flex-col gap-2 border-t border-line pt-3 text-xs leading-relaxed text-muted">
         <p>
           <span className="font-semibold text-ink">La conversion</span> correspond aux
-          conversations arrivées sur un canal pendant cette période ou le même client a ensuite
-          passe une commande, le jour de l'arrivee de la conversation ou après, divisees par
-          l'ensemble des conversations de ce canal sur la période. Le compte est affiche a cote
-          parce que les nombres derriere sont petits, et une conversation arrivée ce matin n'a eu
+          conversations arrivées sur un canal pendant cette période où le même client a ensuite
+          passé une commande, le jour de l'arrivée de la conversation ou après, divisées par
+          l'ensemble des conversations de ce canal sur la période. Le compte est affiché à côté
+          parce que les nombres derrière sont petits, et une conversation arrivée ce matin n'a eu
           presque aucun temps pour devenir une commande.
         </p>
         <p>
-          <span className="font-semibold text-ink">La première réponse</span> est l'ecart entre le
+          <span className="font-semibold text-ink">La première réponse</span> est l'écart entre le
           premier message envoyé par un client et la première réponse partie après lui, en moyenne
-          sur les conversations de ce canal qui ont recu une réponse. Une conversation a laquelle
-          personne n'a encore répondu est laissee hors de la moyenne plutot que comptee comme
-          instantanee.
+          sur les conversations de ce canal qui ont reçu une réponse. Une conversation à laquelle
+          personne n'a encore répondu est laissée hors de la moyenne plutôt que comptée comme
+          instantanée.
         </p>
         <p>
           <span className="font-semibold text-ink">Le chiffre d'affaires</span> exclut les
-          commandes refusees et remboursees. Le nombre de commandes les garde, ce qui explique que
+          commandes refusées et remboursées. Le nombre de commandes les garde, ce qui explique que
           les deux colonnes ne bougent pas ensemble.
         </p>
       </div>
@@ -286,11 +286,11 @@ export function DeliveryByChannel({
             <tr>
               <th className={`${HEAD} text-left`}>Source</th>
               <th className={`${HEAD} text-right`}>Commandes</th>
-              <th className={`${HEAD} text-right`}>Livrees</th>
+              <th className={`${HEAD} text-right`}>Livrées</th>
               <th className={`${HEAD} text-right`}>En route</th>
               <th className={`${HEAD} text-right`}>En préparation</th>
-              <th className={`${HEAD} text-right`}>Annulees</th>
-              <th className={`${HEAD} text-right`}>Retournees</th>
+              <th className={`${HEAD} text-right`}>Annulées</th>
+              <th className={`${HEAD} text-right`}>Retournées</th>
               <th className={`${HEAD} text-left`}>Taux de retour</th>
             </tr>
           </thead>
@@ -344,8 +344,8 @@ export function DeliveryByChannel({
       </div>
       <p className="mt-3 text-xs text-muted">
         {worst
-          ? `Les retours sont les plus eleves sur ${worst.label}, a ${worst.returnRate!.toFixed(1)} pour cent de ses commandes, ${worst.returned} sur ${worst.orders}. Les canaux avec moins de ${minimumOrders} commandes sur cette période sont laisses hors de cette comparaison, parce qu'un seul retour ferait basculer le chiffre.`
-          : `Aucun canal n'a pris ${minimumOrders} commandes sur cette période, il n'y a donc pas encore de taux de retour a comparer.`}
+          ? `Les retours sont les plus élevés sur ${worst.label}, à ${worst.returnRate!.toFixed(1)} pour cent de ses commandes, ${worst.returned} sur ${worst.orders}. Les canaux avec moins de ${minimumOrders} commandes sur cette période sont laissés hors de cette comparaison, parce qu'un seul retour ferait basculer le chiffre.`
+          : `Aucun canal n'a pris ${minimumOrders} commandes sur cette période, il n'y a donc pas encore de taux de retour à comparer.`}
       </p>
     </Card>
   );

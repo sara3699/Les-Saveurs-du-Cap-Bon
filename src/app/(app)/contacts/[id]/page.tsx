@@ -78,7 +78,7 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
       repos.orders.list(),
       repos.workspace.tasks(),
       repos.workspace.team(),
-      repos.intégrations.list(),
+      repos.integrations.list(),
       repos.workspace.attributions(),
       repos.contacts.duplicates(),
     ]);
@@ -337,13 +337,13 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
         <Stat
           label="Valeur totale du client"
           value={formatTNDCompact(contact.lifetimeValue)}
-          détail="Conservée sur la fiche, ce n'est pas la somme des commandes"
+          detail="Conservée sur la fiche, ce n'est pas la somme des commandes"
           tone="money"
         />
         <Stat
           label="Commandes"
           value={String(theirOrders.length)}
-          détail={
+          detail={
             lastOrder
               ? `Dernière commande ${timeAgo(lastOrder.placedAt, DEMO_NOW)}`
               : "Aucune commande sur cette fiche pour l'instant"
@@ -352,7 +352,7 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
         <Stat
           label="Conversations"
           value={String(theirConversations.length)}
-          détail={
+          detail={
             theirConversations.length === 0
               ? "Aucune conversation pour l'instant"
               : unresolvedThreads === 0
@@ -363,7 +363,7 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
         <Stat
           label="Tâches en cours"
           value={String(openTasks.length)}
-          détail={
+          detail={
             overdueTasks.length > 0
               ? `${overdueTasks.length} en retard`
               : openTasks.length === 0

@@ -85,7 +85,7 @@ export function SourcePanel({ rows, periodLabel }: { rows: SourceRow[]; periodLa
 export interface AttentionItem {
   id: string;
   title: string;
-  détail: string;
+  detail: string;
   href: string;
   severity: "warning" | "error";
 }
@@ -113,7 +113,7 @@ export function AttentionPanel({ items }: { items: AttentionItem[] }) {
                 />
                 <span>
                   <span className="block text-[13px] font-semibold leading-snug">{item.title}</span>
-                  <span className="block text-xs text-muted">{item.détail}</span>
+                  <span className="block text-xs text-muted">{item.detail}</span>
                 </span>
               </Link>
             </li>

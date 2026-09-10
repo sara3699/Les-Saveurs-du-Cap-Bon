@@ -27,7 +27,7 @@ export function StorefrontPreview({
     <Card>
       <CardHead
         title="Ce que voit le client"
-        hint="Le même apercu que celui de l'écran Boutique, rempli avec le produit que vous choisissez."
+        hint="Le même aperçu que celui de l'écran Boutique, rempli avec le produit que vous choisissez."
       />
 
       <label className="mb-3 flex flex-wrap items-center gap-2">
@@ -63,7 +63,7 @@ export function StorefrontPreview({
         écran Boutique. Le nom du produit, le prix, la référence produit et ce qui reste en stock
         sont ceux de la liste ci-dessus, y compris la modification que vous venez de faire. Une
         photo du produit ne fait pas partie des données d'exemple, la vue client affiche donc un
-        espace réservé a sa place.
+        espace réservé à sa place.
       </p>
     </Card>
   );

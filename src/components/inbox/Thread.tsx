@@ -1,6 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, useTransition } from "react";
+import {
+  addInternalNote,
+  assignConversation,
+  resolveConversation,
+  snoozeConversation,
+} from "@/app/(app)/inbox/actions";
 import { Pill, SourceBadge, TagChip } from "@/components/ui/badges";
 import type { ChannelId } from "@/lib/domain/types";
 
@@ -23,6 +29,8 @@ export interface ThreadProps {
   composerPlaceholder: string;
   canSend: boolean;
   cannotSendReason: string;
+  /** True only for a signed in account. The demonstration door never writes. */
+  canWrite: boolean;
   messages: ThreadMessage[];
   team: { id: string; name: string }[];
   assigneeId: string | null;
@@ -38,10 +46,31 @@ const STATUS_LABELS: Record<string, string> = {
   snoozed: "Reporté",
 };
 
+/** The three endings of the same sentence, and the only three there are. */
+const PENDING = "Enregistrement en cours.";
+const SAVED = "Enregistré dans la base de données.";
+const DEMO = "Visible pour cette visite seulement, la porte de démonstration n'enregistre rien.";
+
+interface Receipt {
+  text: string;
+  failed: boolean;
+}
+
 /**
- * Demo actions change what is on screen and say so. Nothing here pretends to
- * have reached WhatsApp or Instagram: the strip under the header names exactly
- * what happened and where it stopped.
+ * Every action here says what happened and where it stopped.
+ *
+ * A signed in account writes to the database: the screen changes first so it
+ * stays quick, the server action runs, and the strip under the header then says
+ * the change is saved. If the database refuses, the screen goes back to what it
+ * showed before and the strip carries the refusal, so a failed write can never
+ * be mistaken for a saved one.
+ *
+ * The demonstration door writes nothing at all. Its changes stay in this
+ * component and the strip says so in the same breath. No action is even called,
+ * because the database would refuse it at the row level security layer.
+ *
+ * The reply to the customer is the exception in both modes: no provider account
+ * is connected, so nothing is sent and nothing is written.
  */
 export function Thread(props: ThreadProps) {
   const [messages, setMessages] = useState(props.messages);
@@ -49,32 +78,106 @@ export function Thread(props: ThreadProps) {
   const [draft, setDraft] = useState("");
   const [assigneeId, setAssigneeId] = useState(props.assigneeId);
   const [status, setStatus] = useState(props.status);
-  const [receipt, setReceipt] = useState<string | null>(null);
+  const [receipt, setReceipt] = useState<Receipt | null>(null);
+  const [saving, startSaving] = useTransition();
+
+  // A counter rather than a timestamp: two notes added in the same millisecond
+  // would otherwise share a key.
+  const localCount = useRef(0);
 
   const assignee = props.team.find((m) => m.id === assigneeId) ?? null;
+
+  function say(text: string) {
+    setReceipt({ text, failed: false });
+  }
+
+  /**
+   * The optimistic step is the same in both modes. What differs is what comes
+   * after it: a write and its answer, or a sentence saying there was no write.
+   */
+  function save(done: string, write: () => Promise<{ ok: boolean; error?: string }>, undo: () => void) {
+    if (!props.canWrite) {
+      say(`${done} ${DEMO}`);
+      return;
+    }
+
+    say(`${done} ${PENDING}`);
+    startSaving(async () => {
+      const result = await write();
+      if (result.ok) {
+        say(`${done} ${SAVED}`);
+        return;
+      }
+      undo();
+      setReceipt({
+        text: result.error ?? "Le changement n'a pas pu être enregistré.",
+        failed: true,
+      });
+    });
+  }
+
+  function assign(next: string | null) {
+    const previous = assigneeId;
+    const name = props.team.find((m) => m.id === next)?.name;
+    setAssigneeId(next);
+    save(
+      next ? `Attribué à ${name}.` : "Responsable retiré.",
+      () => assignConversation(props.conversationId, next),
+      () => setAssigneeId(previous),
+    );
+  }
+
+  function changeStatus(next: "resolved" | "snoozed") {
+    const previous = status;
+    setStatus(next);
+    save(
+      next === "resolved" ? "Marqué comme résolu." : "Reporté.",
+      () =>
+        next === "resolved"
+          ? resolveConversation(props.conversationId)
+          : snoozeConversation(props.conversationId),
+      () => setStatus(previous),
+    );
+  }
 
   function submit(event: React.FormEvent) {
     event.preventDefault();
     const body = draft.trim();
     if (!body) return;
-    if (mode === "reply" && !props.canSend) return;
 
+    if (mode === "reply") {
+      // Nothing is sent and nothing is written: no provider account is connected.
+      if (!props.canSend) return;
+      localCount.current += 1;
+      const id = `local_${localCount.current}`;
+      setMessages((current) => [
+        ...current,
+        { id, direction: "outbound", body, stamp: "à l'instant", author: "Vous", attachments: [] },
+      ]);
+      setDraft("");
+      say(
+        "Ajouté à la conversation en mode démonstration. Rien n'a été envoyé au client, car aucun compte fournisseur n'est connecté pour le moment.",
+      );
+      return;
+    }
+
+    localCount.current += 1;
+    const id = `local_${localCount.current}`;
     setMessages((current) => [
       ...current,
-      {
-        id: `local_${current.length + 1}`,
-        direction: mode === "reply" ? "outbound" : "note",
-        body,
-        stamp: "à l'instant",
-        author: "Vous",
-        attachments: [],
-      },
+      { id, direction: "note", body, stamp: "à l'instant", author: "Vous", attachments: [] },
     ]);
     setDraft("");
-    setReceipt(
-      mode === "note"
-        ? "Note ajoutée. Seule votre équipe peut la voir."
-        : "Ajouté à la conversation en mode démonstration. Rien n'a été envoyé au client, car aucun compte fournisseur n'est connecté pour le moment.",
+
+    save(
+      "Note ajoutée. Seule votre équipe peut la voir.",
+      () => addInternalNote(props.conversationId, body),
+      () => {
+        // The note never reached the table, so it leaves the thread, and the text
+        // goes back into the composer rather than being lost.
+        setMessages((current) => current.filter((message) => message.id !== id));
+        setDraft(body);
+      },
     );
   }
 
@@ -92,17 +195,9 @@ export function Thread(props: ThreadProps) {
           <select
             aria-label="Attribuer à"
             value={assigneeId ?? ""}
-            onChange={(e) => {
-              const next = e.target.value || null;
-              setAssigneeId(next);
-              const name = props.team.find((m) => m.id === next)?.name;
-              setReceipt(
-                next
-                  ? `Attribué à ${name}. Enregistré pour cette visite seulement, tant que la base de données n'est pas activée.`
-                  : "Responsable retiré. Cette demande n'a plus de responsable.",
-              );
-            }}
-            className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[12px]"
+            disabled={saving}
+            onChange={(e) => assign(e.target.value || null)}
+            className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[12px] disabled:opacity-60"
           >
             <option value="">Attribuer à</option>
             {props.team.map((m) => (
@@ -111,21 +206,17 @@ export function Thread(props: ThreadProps) {
           </select>
           <button
             type="button"
-            onClick={() => {
-              setStatus("snoozed");
-              setReceipt("Reporté. La conversation revient en haut de la liste demain matin.");
-            }}
-            className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[12px]"
+            disabled={saving}
+            onClick={() => changeStatus("snoozed")}
+            className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[12px] disabled:opacity-60"
           >
             Reporter
           </button>
           <button
             type="button"
-            onClick={() => {
-              setStatus("resolved");
-              setReceipt("Marqué comme résolu. La conversation reste consultable dans Contacts.");
-            }}
-            className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[12px]"
+            disabled={saving}
+            onClick={() => changeStatus("resolved")}
+            className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[12px] disabled:opacity-60"
           >
             Résoudre
           </button>
@@ -147,9 +238,13 @@ export function Thread(props: ThreadProps) {
       {receipt ? (
         <p
           role="status"
-          className="border-b border-accent-line bg-accent-soft px-4 py-2 text-[12px] text-accent-ink"
+          className={`border-b px-4 py-2 text-[12px] ${
+            receipt.failed
+              ? "border-danger/20 bg-danger-soft text-danger"
+              : "border-accent-line bg-accent-soft text-accent-ink"
+          }`}
         >
-          {receipt}
+          {receipt.text}
         </p>
       ) : null}
 
@@ -240,7 +335,7 @@ export function Thread(props: ThreadProps) {
           />
           <button
             type="submit"
-            disabled={mode === "reply" && !props.canSend}
+            disabled={(mode === "reply" && !props.canSend) || (mode === "note" && saving)}
             className="rounded-[var(--radius-md)] bg-primary px-4 py-2.5 text-[13px] font-semibold text-white hover:bg-primary-hi disabled:cursor-not-allowed disabled:bg-line-strong disabled:text-muted"
           >
             {mode === "note" ? "Ajouter la note" : "Envoyer"}

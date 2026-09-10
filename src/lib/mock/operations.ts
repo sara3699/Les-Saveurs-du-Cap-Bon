@@ -4,27 +4,27 @@ import { daysAgo } from "./time";
 export const STORE_PROFILE = {
   legalName: "Les Saveurs du Cap Bon SARL",
   displayName: "Les Saveurs du Cap Bon",
-  tagline: "Epicerie fine, Cap Bon",
-  addressLines: ["Adresse pas encore renseignee", "Nabeul, Cap Bon"],
+  tagline: "Épicerie fine, Cap Bon",
+  addressLines: ["Adresse pas encore renseignée", "Nabeul, Cap Bon"],
   phone: "+216 00 000 000",
   email: "contact@lesmillesaveursducapbon.com",
   website: "lesmillesaveursducapbon.com",
   currency: "TND",
-  currencyNote: "Dinar tunisien, ecrit avec trois decimales",
-  vatNumber: "Pas encore renseigne",
+  currencyNote: "Dinar tunisien, écrit avec trois décimales",
+  vatNumber: "Pas encore renseigné",
   freeDeliveryFrom: 200,
   standardDeliveryFee: 7.5,
   preparationDays: 1,
   themes: [
     { id: "th_pistache", name: "Pistache", state: "Utilisé" },
-    { id: "th_amande", name: "Amande", state: "Reserve" },
-    { id: "th_grenade", name: "Grenade", state: "Reserve" },
+    { id: "th_amande", name: "Amande", state: "Réservé" },
+    { id: "th_grenade", name: "Grenade", state: "Réservé" },
   ],
   deliveryZones: [
-    { id: "dz_tunis", name: "Grand Tunis", fee: 7.5, days: "1 a 2 jours", cities: "Tunis, Ariana, Ben Arous, La Marsa" },
-    { id: "dz_north", name: "Nord", fee: 8.5, days: "2 jours", cities: "Bizerte, Nabeul, Beja" },
-    { id: "dz_sahel", name: "Sahel", fee: 9, days: "2 a 3 jours", cities: "Sousse, Monastir, Mahdia" },
-    { id: "dz_south", name: "Sud", fee: 12, days: "3 jours", cities: "Sfax, Gabes, Djerba" },
+    { id: "dz_tunis", name: "Grand Tunis", fee: 7.5, days: "1 à 2 jours", cities: "Tunis, Ariana, Ben Arous, La Marsa" },
+    { id: "dz_north", name: "Nord", fee: 8.5, days: "2 jours", cities: "Bizerte, Nabeul, Béja" },
+    { id: "dz_sahel", name: "Sahel", fee: 9, days: "2 à 3 jours", cities: "Sousse, Monastir, Mahdia" },
+    { id: "dz_south", name: "Sud", fee: 12, days: "3 jours", cities: "Sfax, Gabès, Djerba" },
   ],
 };
 
@@ -50,25 +50,25 @@ export interface Bundle {
 export const BUNDLES: Bundle[] = [
   {
     id: "bd_pair", name: "Duo pistache", kind: "bundle",
-    description: "Propose quand un client ajouté la creme de pistache et le dessert a la pistache. Le duo coute moins cher que les deux pris separement.",
+    description: "Proposé quand un client ajoute la crème de pistache et le dessert à la pistache. Le duo coûte moins cher que les deux pris séparément.",
     productIds: ["pr_pistachio_cream", "pr_pistachio_dessert"], bundlePrice: 99, active: true,
     timesShown: 214, timesTaken: 47, revenueAdded: 14053,
   },
   {
     id: "bd_gift", name: "Coffret cadeau avec assortiment de desserts", kind: "bundle",
-    description: "Ajoute un assortiment de desserts au coffret gourmand a prix groupe pour les clients qui prennent plus d'un coffret.",
+    description: "Ajoute un assortiment de desserts au coffret gourmand à prix groupé pour les clients qui prennent plus d'un coffret.",
     productIds: ["pr_gourmet_box", "pr_dessert_assortment"], bundlePrice: 214, active: true,
     timesShown: 88, timesTaken: 19, revenueAdded: 20349,
   },
   {
     id: "bd_dairy", name: "Beurre avec chaque sélection laitière", kind: "recommendation",
-    description: "Affiche sous la sélection laitière. Rien n'est ajouté automatiquement, le client choisit.",
-    productIds: ["pr_dairy_sélection", "pr_artisan_butter"], bundlePrice: null, active: true,
+    description: "Affiché sous la sélection laitière. Rien n'est ajouté automatiquement, le client choisit.",
+    productIds: ["pr_dairy_selection", "pr_artisan_butter"], bundlePrice: null, active: true,
     timesShown: 163, timesTaken: 38, revenueAdded: 4484,
   },
   {
-    id: "bd_discovery", name: "Assortiment decouverte avec le coffret de desserts", kind: "recommendation",
-    description: "Propose a la fin de la commande, avant le paiement.",
+    id: "bd_discovery", name: "Assortiment découverte avec le coffret de desserts", kind: "recommendation",
+    description: "Proposé à la fin de la commande, avant le paiement.",
     productIds: ["pr_discovery_assortment", "pr_pistachio_dessert"], bundlePrice: null, active: false,
     timesShown: 41, timesTaken: 4, revenueAdded: 296,
   },
@@ -80,7 +80,7 @@ export const BUNDLES: Bundle[] = [
   },
   {
     id: "bd_ramadan", name: "Dix pour cent à partir de trois articles", kind: "discount",
-    description: "Ne s'applique qu'a la gamme Ramadan, et s'arrete d'elle-même a la fin de la gamme.",
+    description: "Ne s'applique qu'à la gamme Ramadan, et s'arrête d'elle-même à la fin de la gamme.",
     productIds: ["pr_seasonal_jar", "pr_dessert_assortment", "pr_artisan_butter"], bundlePrice: null, active: false,
     timesShown: 0, timesTaken: 0, revenueAdded: 0,
   },
@@ -110,14 +110,14 @@ export const BUDGETS: Budget[] = [
 ];
 
 export const BUDGET_LINES: BudgetLine[] = [
-  { id: "bl_ads_meta", budgetId: "bg_marketing", label: "Publicites Meta", planned: 2200, used: 2040, note: null },
+  { id: "bl_ads_meta", budgetId: "bg_marketing", label: "Publicités Meta", planned: 2200, used: 2040, note: null },
   { id: "bl_ads_google", budgetId: "bg_marketing", label: "Google Ads", planned: 1400, used: 1310, note: "Formulaires de prospects uniquement" },
   { id: "bl_photo", budgetId: "bg_marketing", label: "Photographie produit", planned: 600, used: 260, note: null },
-  { id: "bl_couriers", budgetId: "bg_delivery", label: "Tournees de livraison", planned: 2100, used: 2094, note: "Proche de la limite" },
+  { id: "bl_couriers", budgetId: "bg_delivery", label: "Tournées de livraison", planned: 2100, used: 2094, note: "Proche de la limite" },
   { id: "bl_packaging", budgetId: "bg_delivery", label: "Emballage", planned: 500, used: 395, note: null },
   { id: "bl_rent", budgetId: "bg_operations", label: "Loyer de l'atelier", planned: 1800, used: 1800, note: null },
-  { id: "bl_wages", budgetId: "bg_operations", label: "Aide a temps partiel", planned: 900, used: 640, note: null },
-  { id: "bl_tools", budgetId: "bg_operations", label: "Outils et reparations", planned: 400, used: 300, note: null },
+  { id: "bl_wages", budgetId: "bg_operations", label: "Aide à temps partiel", planned: 900, used: 640, note: null },
+  { id: "bl_tools", budgetId: "bg_operations", label: "Outils et réparations", planned: 400, used: 300, note: null },
 ];
 
 export interface Lead {
@@ -151,7 +151,7 @@ export const LEADS: Lead[] = [
 
 export const LOST_REASONS = [
   { reason: "Prix au-dessus du budget", count: 6 },
-  { reason: "Ne repond plus", count: 4 },
-  { reason: "Voulait une date de livraison impossible a tenir", count: 3 },
+  { reason: "Ne répond plus", count: 4 },
+  { reason: "Voulait une date de livraison impossible à tenir", count: 3 },
   { reason: "A acheté ailleurs", count: 2 },
 ];

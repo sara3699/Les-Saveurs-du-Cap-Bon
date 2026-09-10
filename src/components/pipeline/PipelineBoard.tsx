@@ -1,12 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
+import { moveLeadToStage } from "@/app/(app)/pipeline/actions";
 import { SourceBadge } from "@/components/ui/badges";
 import { formatTND } from "@/lib/format";
 import { STAGES, stageIndex, stageLabel, type PipelineCard, type StageId } from "./types";
 
 interface Move {
+  /** Identifies one entry in the strip, so a refused move removes its own. */
+  key: number;
   cardId: string;
   name: string;
   from: StageId;
@@ -14,19 +17,29 @@ interface Move {
 }
 
 /**
- * Moving a card changes this component's state and nothing else. There is no
- * pipeline table to write to yet, so the screen says that in the undo strip
- * rather than pretending the move was saved.
+ * Moving a card moves it on screen at once, then writes it down.
+ *
+ * A signed in account writes leads.stage and a lead_stage_history row, and the
+ * card stays where it was dropped after a refresh. Undo is a move in its own
+ * right: it walks the lead back and records that walk back as a second history
+ * row, because a move that happened and was undone is two facts, not none.
+ *
+ * The demonstration door writes nothing. The database refuses its writes at the
+ * row level security layer, so nothing is attempted, the card moves in this
+ * component's state only, and the strip says so.
  */
-export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
+export function PipelineBoard({ cards, canWrite }: { cards: PipelineCard[]; canWrite: boolean }) {
   const [placement, setPlacement] = useState<Record<string, StageId>>({});
   const [moves, setMoves] = useState<Move[]>([]);
   const [dragging, setDragging] = useState<string | null>(null);
   const [over, setOver] = useState<StageId | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, startSaving] = useTransition();
   // A card that moves is pulled out of one column and rebuilt in another, so the
   // button that was just pressed no longer exists and the keyboard would be left
   // at the top of the page. This holds the button to hand focus back to.
   const focusAfter = useRef<string | null>(null);
+  const nextKey = useRef(0);
 
   const stageOf = (card: PipelineCard): StageId => placement[card.id] ?? card.stage;
 
@@ -34,8 +47,24 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
     const from = stageOf(card);
     if (from === to) return;
     focusAfter.current = focusKey;
+    const move: Move = { key: nextKey.current++, cardId: card.id, name: card.contactName, from, to };
+
+    // Optimistic: the column changes now, the database catches up after.
     setPlacement((current) => ({ ...current, [card.id]: to }));
-    setMoves((current) => [...current, { cardId: card.id, name: card.contactName, from, to }]);
+    setMoves((current) => [...current, move]);
+    setError(null);
+
+    if (!canWrite) return;
+
+    startSaving(async () => {
+      const result = await moveLeadToStage(card.id, to);
+      if (result.ok) return;
+      // Refused. The card goes back where it stood and the strip loses the line
+      // that claimed the move, so nothing on screen says a saved move happened.
+      setPlacement((current) => ({ ...current, [card.id]: from }));
+      setMoves((current) => current.filter((entry) => entry.key !== move.key));
+      setError(result.error ?? "Le déplacement n'a pas pu être enregistré.");
+    });
   }
 
   function undo() {
@@ -48,6 +77,21 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
     }`;
     setPlacement((current) => ({ ...current, [last.cardId]: last.from }));
     setMoves((current) => current.slice(0, -1));
+    setError(null);
+
+    if (!canWrite) return;
+
+    startSaving(async () => {
+      // The same action as any other move, so the walk back is written down as
+      // its own history row instead of erasing the row for the first move.
+      const result = await moveLeadToStage(last.cardId, last.from);
+      if (result.ok) return;
+      // The undo never reached the database, so the card goes back to where the
+      // move had left it and the strip offers the undo again.
+      setPlacement((current) => ({ ...current, [last.cardId]: last.to }));
+      setMoves((current) => [...current, last]);
+      setError(result.error ?? "L'annulation n'a pas pu être enregistrée.");
+    });
   }
 
   /** Gives focus back to this button when it is the one a move just displaced. */
@@ -69,6 +113,23 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
 
   const last = moves.length > 0 ? moves[moves.length - 1] : null;
 
+  /*
+   * What the strip says about the last move. It is the one sentence on this
+   * screen a reader would act on, so it never calls a move saved before the
+   * database has said so, and the running tally waits for the same answer.
+   */
+  function stripNote(move: Move): string {
+    if (!canWrite) {
+      const note = `Ce déplacement est gardé pour cette visite seulement, l'entrée de démonstration n'enregistre rien dans la base de données. Rien n'a été envoyé à ${move.name}.`;
+      return moves.length > 1 ? `${note} ${moves.length} déplacements sont gardés pour l'instant.` : note;
+    }
+    if (saving) return `Enregistrement en cours. Rien n'a été envoyé à ${move.name}.`;
+    const note = `Ce déplacement est enregistré, il sera encore là après un rafraîchissement. Rien n'a été envoyé à ${move.name}.`;
+    return moves.length > 1
+      ? `${note} ${moves.length} déplacements ont été enregistrés depuis l'ouverture de cet écran.`
+      : note;
+  }
+
   // Counted off where the cards are standing now, so a move changes this line at
   // the same moment it changes the column totals underneath it.
   const openCards = cards.filter((card) => stageOf(card) !== "won" && stageOf(card) !== "lost");
@@ -82,30 +143,42 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
         role="status"
         aria-live="polite"
         className={
-          last
-            ? "flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-card)] border border-primary-mute bg-primary-soft px-3 py-2.5"
+          last || error
+            ? `flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-card)] border px-3 py-2.5 ${
+                error && !last ? "border-danger/20 bg-danger-soft" : "border-primary-mute bg-primary-soft"
+              }`
             : "sr-only"
         }
       >
-        {last ? (
+        {last || error ? (
           <>
             <div className="min-w-0">
-              <p className="text-[13px] font-semibold">
-                {last.name} passe de {stageLabel(last.from)} a {stageLabel(last.to)}.
-              </p>
-              <p className="mt-0.5 max-w-[74ch] text-[12px] text-muted">
-                Ce deplacement est garde pour cette visite seulement, la base de données qui
-                l'enregistrerait viendra plus tard. Rien n'a été envoyé a {last.name}.
-                {moves.length > 1 ? ` ${moves.length} deplacements sont gardes pour l'instant.` : ""}
-              </p>
+              {last ? (
+                <>
+                  <p className="text-[13px] font-semibold">
+                    {last.name} passe de {stageLabel(last.from)} à {stageLabel(last.to)}.
+                  </p>
+                  <p className="mt-0.5 max-w-[74ch] text-[12px] text-muted">{stripNote(last)}</p>
+                </>
+              ) : null}
+              {error ? (
+                <p
+                  className={`max-w-[74ch] text-[12px] font-semibold text-danger ${last ? "mt-1.5" : ""}`}
+                >
+                  {error}
+                </p>
+              ) : null}
             </div>
-            <button
-              type="button"
-              onClick={undo}
-              className="shrink-0 rounded-[var(--radius-md)] bg-primary px-3.5 py-1.5 text-[12px] font-semibold text-white hover:bg-primary-hi"
-            >
-              Annuler
-            </button>
+            {last ? (
+              <button
+                type="button"
+                onClick={undo}
+                disabled={saving}
+                className="shrink-0 rounded-[var(--radius-md)] bg-primary px-3.5 py-1.5 text-[12px] font-semibold text-white hover:bg-primary-hi disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                Annuler
+              </button>
+            ) : null}
           </>
         ) : null}
       </div>
@@ -114,7 +187,7 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
         <span className="os-num">{openCards.length}</span> sur{" "}
         <span className="os-num">{cards.length}</span> encore en cours, soit{" "}
         <span className="os-num">{formatTND(openValue)}</span> si chacun aboutit. Gagné et perdu
-        ne sont pas comptes.
+        ne sont pas comptés.
       </p>
 
       <div className="os-scroll pb-1">
@@ -166,8 +239,8 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
                 <div className="flex flex-col gap-2">
                   {columnCards.length === 0 ? (
                     <p className="rounded-[var(--radius-md)] border border-dashed border-line-strong px-2 py-5 text-center text-[11.5px] leading-snug text-muted">
-                      Rien dans cette colonne. Deposez une carte ici, ou utilisez les boutons de
-                      deplacement d'une carte.
+                      Rien dans cette colonne. Déposez une carte ici, ou utilisez les boutons de
+                      déplacement d'une carte.
                     </p>
                   ) : (
                     columnCards.map((card) => (
@@ -221,7 +294,7 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
 
                         {stageOf(card) === "lost" && card.lostReason ? (
                           <p className="mt-1.5 text-[11.5px] text-muted">
-                            Raison donnee, {card.lostReason.toLowerCase()}
+                            Raison donnée, {card.lostReason.toLowerCase()}
                           </p>
                         ) : null}
 
@@ -253,7 +326,7 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
                             }}
                             aria-label={
                               previous
-                                ? `Ramener ${card.contactName} a ${previous.label}`
+                                ? `Ramener ${card.contactName} à ${previous.label}`
                                 : `${card.contactName} est déjà dans la première colonne`
                             }
                             className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2 py-1 text-[11px] font-semibold hover:bg-surface disabled:cursor-not-allowed disabled:text-faint"
@@ -270,7 +343,7 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
                             }}
                             aria-label={
                               next
-                                ? `Faire passer ${card.contactName} a ${next.label}`
+                                ? `Faire passer ${card.contactName} à ${next.label}`
                                 : `${card.contactName} est déjà dans la dernière colonne`
                             }
                             className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2 py-1 text-[11px] font-semibold hover:bg-surface disabled:cursor-not-allowed disabled:text-faint"
@@ -291,9 +364,10 @@ export function PipelineBoard({ cards }: { cards: PipelineCard[] }) {
       <p className="max-w-[86ch] text-xs text-muted">
         Faites glisser une carte vers une autre colonne, ou utilisez les boutons Gauche et Droite,
         qui font la même chose sans souris. Dans une colonne, les cartes les plus fortes en valeur
-        sont en haut. Chaque deplacement reste en mode démonstration. Il vit sur cet écran le temps
-        de la visite, un rafraichissement remet les six colonnes en place, et aucun message ne part
-        vers le client.
+        sont en haut.{" "}
+        {canWrite
+          ? "Chaque déplacement est enregistré dans la base de données, avec la date et votre nom, et Annuler ramène la carte en écrivant ce retour à son tour. Aucun message ne part vers le client."
+          : "Chaque déplacement reste en mode démonstration. Il vit sur cet écran le temps de la visite, un rafraîchissement remet les six colonnes en place, et aucun message ne part vers le client."}
       </p>
     </div>
   );

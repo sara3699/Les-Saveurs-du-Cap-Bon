@@ -49,7 +49,7 @@ export default async function DashboardPage() {
       repos.contacts.list(),
       repos.workspace.team(),
       repos.workspace.conversionMetrics(),
-      repos.intégrations.list(),
+      repos.integrations.list(),
       repos.workspace.attributions(),
       repos.conversations.list(),
       repos.workspace.tasks(),
@@ -140,7 +140,7 @@ export default async function DashboardPage() {
     attention.push({
       id: "att_unassigned",
       title: `${unassigned.length} demandes sans responsable`,
-      détail: `La plus ancienne est arrivée ${timeAgo(oldest.lastMessageAt, now)}.`,
+      detail: `La plus ancienne est arrivée ${timeAgo(oldest.lastMessageAt, now)}.`,
       href: "/inbox",
       severity: "error",
     });
@@ -149,7 +149,7 @@ export default async function DashboardPage() {
     attention.push({
       id: "att_overdue",
       title: `${overdue.length} suivis sont en retard`,
-      détail: overdue
+      detail: overdue
         .slice(0, 2)
         .map((t) => contactNames.get(t.contactId ?? "") ?? "Aucun client")
         .join(" et "),
@@ -161,7 +161,7 @@ export default async function DashboardPage() {
     attention.push({
       id: "att_stock",
       title: `${lowStock[0].name} n'a plus que ${lowStock[0].stock} unités`,
-      détail: `Il s'en est vendu ${lowStock[0].unitsSold} sur les deux derniers mois.`,
+      detail: `Il s'en est vendu ${lowStock[0].unitsSold} sur les deux derniers mois.`,
       href: "/products",
       severity: "warning",
     });
@@ -170,7 +170,7 @@ export default async function DashboardPage() {
     attention.push({
       id: `att_${broken.id}`,
       title: `${broken.accountLabel} ne reçoit plus de messages`,
-      détail: broken.lastErrorMessage ?? "Ouvrez le connecteur pour voir ce qui a changé.",
+      detail: broken.lastErrorMessage ?? "Ouvrez le connecteur pour voir ce qui a changé.",
       href: "/integrations",
       severity: "error",
     });
@@ -195,13 +195,13 @@ export default async function DashboardPage() {
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat label="Commandes aujourd'hui" value={String(today.length)} détail={`${sinceStartOfDay(orders, now).filter((o) => o.paymentStatus === "paid").length} déjà payées`} />
-        <Stat label="Commandes cette semaine" value={String(week.length)} détail={`${formatTNDCompact(revenueOf(week))} encaissés`} />
-        <Stat label="Commandes ce mois-ci" value={String(month.length)} détail={`${previousMonth.length} sur les 30 jours précédents`} />
+        <Stat label="Commandes aujourd'hui" value={String(today.length)} detail={`${sinceStartOfDay(orders, now).filter((o) => o.paymentStatus === "paid").length} déjà payées`} />
+        <Stat label="Commandes cette semaine" value={String(week.length)} detail={`${formatTNDCompact(revenueOf(week))} encaissés`} />
+        <Stat label="Commandes ce mois-ci" value={String(month.length)} detail={`${previousMonth.length} sur les 30 jours précédents`} />
         <Stat
           label="Chiffre d'affaires ce mois-ci"
           value={formatTNDCompact(revenueOf(month))}
-          détail={`Période précédente ${formatTNDCompact(revenueOf(previousMonth))}`}
+          detail={`Période précédente ${formatTNDCompact(revenueOf(previousMonth))}`}
           tone="money"
         />
       </div>

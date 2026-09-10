@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, useTransition } from "react";
+import { recordCall, undoCall } from "@/app/(app)/team/actions";
 import { Card, CardHead } from "@/components/ui/surfaces";
 import { formatTND, formatTNDCompact } from "@/lib/format";
 import { conversionRate, summarizeConversions } from "@/lib/metrics";
@@ -12,29 +13,75 @@ export interface CallRow {
   metric: TeamConversionMetric;
 }
 
+type Outcome = "won" | "rejected" | "undecided";
+
 interface Recorded {
-  id: number;
+  /** Local to this list, so an entry keeps its place while the row id arrives. */
+  key: string;
+  /** The row in the database, or null on a demonstration visit where there is none. */
+  callId: string | null;
+  memberId: string;
   memberName: string;
   reached: boolean;
-  outcome: "won" | "rejected" | "undecided";
+  outcome: Outcome;
   orderValue: number | null;
+}
+
+/** What one call adds to a member's figures, or takes back when sign is -1. */
+function applyCall(
+  rows: CallRow[],
+  memberId: string,
+  entry: { reached: boolean; outcome: Outcome; orderValue: number | null },
+  sign: 1 | -1,
+): CallRow[] {
+  const won = entry.reached && entry.outcome === "won";
+  const rejected = entry.reached && entry.outcome === "rejected";
+  const ordered = entry.orderValue !== null;
+
+  return rows.map((row) =>
+    row.memberId === memberId
+      ? {
+          ...row,
+          metric: {
+            ...row.metric,
+            callsReceived: row.metric.callsReceived + sign,
+            customersReached: row.metric.customersReached + (entry.reached ? sign : 0),
+            customersWon: row.metric.customersWon + (won ? sign : 0),
+            customersRejected: row.metric.customersRejected + (rejected ? sign : 0),
+            ordersPlaced: row.metric.ordersPlaced + (ordered ? sign : 0),
+            revenue: row.metric.revenue + sign * (entry.orderValue ?? 0),
+          },
+        }
+      : row,
+  );
 }
 
 /**
  * Calls do not arrive through any connector, so this is where they come from:
- * somebody types them in after the call. The figures above the form move as
- * soon as one is recorded, and the strip underneath says plainly that nothing
- * has been saved anywhere yet.
+ * somebody types them in after the call. The figures above the form move as soon
+ * as one is recorded, then the row is written and the strip underneath says so.
+ *
+ * A demonstration visit never sends anything. The database refuses its writes at
+ * the row level security layer, so the call stays in this browser tab and the
+ * strip keeps saying that nothing is saved.
  */
-export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
+export function CallPerformance({
+  rows: initialRows,
+  canWrite,
+}: {
+  rows: CallRow[];
+  canWrite: boolean;
+}) {
   const [rows, setRows] = useState(initialRows);
   const [recorded, setRecorded] = useState<Recorded[]>([]);
   const [memberId, setMemberId] = useState(initialRows[0]?.memberId ?? "");
   const [reached, setReached] = useState(true);
-  const [outcome, setOutcome] = useState<"won" | "rejected" | "undecided">("won");
+  const [outcome, setOutcome] = useState<Outcome>("won");
   const [ordered, setOrdered] = useState(true);
   const [orderValue, setOrderValue] = useState("120");
   const [error, setError] = useState<string | null>(null);
+  const [saving, startSaving] = useTransition();
+  const nextKey = useRef(0);
 
   const summary = summarizeConversions(rows.map((r) => r.metric));
   const ranked = [...rows].sort(
@@ -47,79 +94,84 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
     if (!member) return;
 
     const won = reached && outcome === "won";
-    const rejected = reached && outcome === "rejected";
     const placedOrder = won && ordered;
     const value = placedOrder ? Number(orderValue) : 0;
 
     if (placedOrder && (!Number.isFinite(value) || value <= 0)) {
-      setError("Donnez un montant en dinars a la commande, ou indiquez qu'aucune commande n'a été passee.");
+      setError("Donnez un montant en dinars à la commande, ou indiquez qu'aucune commande n'a été passée.");
       return;
     }
     setError(null);
 
-    setRows((current) =>
-      current.map((row) =>
-        row.memberId === memberId
-          ? {
-              ...row,
-              metric: {
-                ...row.metric,
-                callsReceived: row.metric.callsReceived + 1,
-                customersReached: row.metric.customersReached + (reached ? 1 : 0),
-                customersWon: row.metric.customersWon + (won ? 1 : 0),
-                customersRejected: row.metric.customersRejected + (rejected ? 1 : 0),
-                ordersPlaced: row.metric.ordersPlaced + (placedOrder ? 1 : 0),
-                revenue: row.metric.revenue + value,
-              },
-            }
-          : row,
-      ),
-    );
+    nextKey.current += 1;
+    const entry: Recorded = {
+      key: String(nextKey.current),
+      callId: null,
+      memberId: member.memberId,
+      memberName: member.name,
+      reached,
+      outcome: reached ? outcome : "undecided",
+      orderValue: placedOrder ? value : null,
+    };
 
-    setRecorded((current) => [
-      {
-        id: current.length + 1,
-        memberName: member.name,
-        reached,
-        outcome: reached ? outcome : "undecided",
-        orderValue: placedOrder ? value : null,
-      },
-      ...current,
-    ]);
+    // The screen moves first, so it stays instant whichever way the write goes.
+    setRows((current) => applyCall(current, entry.memberId, entry, 1));
+    setRecorded((current) => [entry, ...current]);
+
+    // A demonstration visit stops here. There is nothing to send, and the strip
+    // underneath says the call lives in this tab only.
+    if (!canWrite) return;
+
+    startSaving(async () => {
+      const result = await recordCall({
+        memberId: entry.memberId,
+        reached: entry.reached,
+        outcome: entry.outcome,
+        orderValue: entry.orderValue,
+      });
+
+      if (result.ok) {
+        // The row id, so this same call can be taken back out by its own id.
+        setRecorded((current) =>
+          current.map((item) => (item.key === entry.key ? { ...item, callId: result.callId } : item)),
+        );
+        return;
+      }
+
+      // Nothing was written, so the figures go back to what the database holds
+      // and the reader is told why.
+      setRows((current) => applyCall(current, entry.memberId, entry, -1));
+      setRecorded((current) => current.filter((item) => item.key !== entry.key));
+      setError(result.error);
+    });
   }
 
   function undoLast() {
     const last = recorded[0];
     if (!last) return;
-    const member = rows.find((r) => r.name === last.memberName);
-    if (!member) return;
 
-    const won = last.reached && last.outcome === "won";
-    const rejected = last.reached && last.outcome === "rejected";
-
-    setRows((current) =>
-      current.map((row) =>
-        row.memberId === member.memberId
-          ? {
-              ...row,
-              metric: {
-                ...row.metric,
-                callsReceived: row.metric.callsReceived - 1,
-                customersReached: row.metric.customersReached - (last.reached ? 1 : 0),
-                customersWon: row.metric.customersWon - (won ? 1 : 0),
-                customersRejected: row.metric.customersRejected - (rejected ? 1 : 0),
-                ordersPlaced: row.metric.ordersPlaced - (last.orderValue ? 1 : 0),
-                revenue: row.metric.revenue - (last.orderValue ?? 0),
-              },
-            }
-          : row,
-      ),
-    );
+    setError(null);
+    setRows((current) => applyCall(current, last.memberId, last, -1));
     setRecorded((current) => current.slice(1));
+
+    // Nothing was ever written for this one, so there is nothing to delete.
+    const callId = last.callId;
+    if (!canWrite || !callId) return;
+
+    startSaving(async () => {
+      // Only the row this entry created, named by the id its insert returned.
+      const result = await undoCall(callId);
+      if (result.ok) return;
+
+      // The row is still there, so the call goes back on the screen too.
+      setRows((current) => applyCall(current, last.memberId, last, 1));
+      setRecorded((current) => [last, ...current]);
+      setError(result.error);
+    });
   }
 
   const tiles = [
-    { label: "Appels reçus", value: summary.callsReceived, note: "total de l'equipe" },
+    { label: "Appels reçus", value: summary.callsReceived, note: "total de l'équipe" },
     { label: "Joints", value: summary.customersReached, note: `${summary.reachRate.toFixed(0)}% de contact` },
     { label: "Gagnés", value: summary.customersWon, note: `${summary.conversionRate.toFixed(0)}% de conversion` },
     { label: "Non qualifiés", value: summary.customersRejected, note: "clients non retenus" },
@@ -182,7 +234,7 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
       </div>
 
       <p className="mt-3 text-xs text-muted">
-        Le taux de conversion, ce sont les clients gagnés divises par les appels reçus. Le chiffre
+        Le taux de conversion, ce sont les clients gagnés divisés par les appels reçus. Le chiffre
         d&apos;affaires de ces commandes issues d&apos;appels totalise{" "}
         {formatTNDCompact(summary.revenue)}.
       </p>
@@ -195,7 +247,10 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
         <p className="mt-0.5 max-w-[78ch] text-xs text-muted">
           Les appels n&apos;arrivent pas par le site web, WhatsApp, Instagram, Facebook ou Google,
           ils sont donc saisis ici après l&apos;appel. Les chiffres ci-dessus bougent dès que vous
-          en ajoutez un.
+          en ajoutez un
+          {canWrite
+            ? ", et l'appel est écrit dans la base de données."
+            : ", sans que rien ne soit enregistré nulle part."}
         </p>
 
         <div className="mt-3 grid gap-3 lg:grid-cols-4">
@@ -243,21 +298,21 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
           </fieldset>
 
           <label className="flex flex-col gap-1">
-            <span className="os-label">Comment cela s&apos;est termine</span>
+            <span className="os-label">Comment cela s&apos;est terminé</span>
             <select
               value={outcome}
               disabled={!reached}
-              onChange={(e) => setOutcome(e.target.value as typeof outcome)}
+              onChange={(e) => setOutcome(e.target.value as Outcome)}
               className="rounded-[var(--radius-sm)] border border-line bg-surface px-2.5 py-1.5 text-[13px] disabled:text-faint"
             >
-              <option value="won">Client gagne</option>
-              <option value="rejected">Non qualifie</option>
-              <option value="undecided">Encore en reflexion</option>
+              <option value="won">Client gagné</option>
+              <option value="rejected">Non qualifié</option>
+              <option value="undecided">Encore en réflexion</option>
             </select>
           </label>
 
           <div className="flex flex-col gap-1">
-            <span className="os-label">Commande passee</span>
+            <span className="os-label">Commande passée</span>
             <div className="flex gap-1.5">
               <label className="flex items-center gap-1.5 text-[12px]">
                 <input
@@ -292,15 +347,17 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <button
             type="submit"
-            className="rounded-[var(--radius-md)] bg-primary px-4 py-2 text-[13px] font-semibold text-white hover:bg-primary-hi"
+            disabled={saving}
+            className="rounded-[var(--radius-md)] bg-primary px-4 py-2 text-[13px] font-semibold text-white hover:bg-primary-hi disabled:opacity-60"
           >
-            Ajouter cet appel
+            {saving ? "Enregistrement en cours" : "Ajouter cet appel"}
           </button>
           {recorded.length > 0 ? (
             <button
               type="button"
               onClick={undoLast}
-              className="rounded-[var(--radius-md)] border border-line bg-surface px-3.5 py-2 text-[13px] font-semibold"
+              disabled={saving}
+              className="rounded-[var(--radius-md)] border border-line bg-surface px-3.5 py-2 text-[13px] font-semibold disabled:opacity-60"
             >
               Annuler le dernier
             </button>
@@ -312,20 +369,32 @@ export function CallPerformance({ rows: initialRows }: { rows: CallRow[] }) {
         {recorded.length > 0 ? (
           <div className="rounded-[var(--radius-md)] border border-primary-mute bg-primary-soft px-3.5 py-2.5">
             <p className="text-[13px] font-semibold">
-              {recorded.length} {recorded.length === 1 ? "appel ajouté" : "appels ajoutes"} sur cette
-              visite
+              {recorded.length}{" "}
+              {canWrite
+                ? recorded.length === 1
+                  ? "appel enregistré"
+                  : "appels enregistrés"
+                : recorded.length === 1
+                  ? "appel ajouté"
+                  : "appels ajoutés"}{" "}
+              sur cette visite
             </p>
             <p className="mt-0.5 max-w-[80ch] text-[12px] text-muted">
-              Rien n&apos;est enregistré. Ces appels vivent dans cet onglet du navigateur et
-              disparaissent quand vous partez, parce que la base de données qui les conserverait
-              arrive dans une étape ulterieure.
+              {canWrite
+                ? "Chaque appel est écrit dans la base de données. Il reste là après un rechargement, et il compte dans l'entonnoir ci-dessus comme dans celui du tableau de bord."
+                : "Rien n'est enregistré. Cette visite passe par l'entrée de démonstration, que la base de données laisse tout lire et rien écrire. Ces appels vivent dans cet onglet du navigateur et disparaissent quand vous partez."}
             </p>
             <ul className="mt-2 flex flex-col gap-1 text-[12px]">
               {recorded.slice(0, 4).map((entry) => (
-                <li key={entry.id}>
+                <li key={entry.key}>
                   {entry.memberName}, {entry.reached ? "joint" : "sans réponse"}
-                  {entry.reached ? `, ${entry.outcome === "won" ? "gagne" : entry.outcome === "rejected" ? "non qualifie" : "encore en reflexion"}` : ""}
+                  {entry.reached ? `, ${entry.outcome === "won" ? "gagné" : entry.outcome === "rejected" ? "non qualifié" : "encore en réflexion"}` : ""}
                   {entry.orderValue ? `, commande de ${formatTND(entry.orderValue)}` : ""}
+                  {/* Written the moment the row comes back, so a line never claims
+                      to be saved while its write is still on the way. */}
+                  {canWrite && !entry.callId ? (
+                    <span className="text-muted">, enregistrement en cours</span>
+                  ) : null}
                 </li>
               ))}
             </ul>

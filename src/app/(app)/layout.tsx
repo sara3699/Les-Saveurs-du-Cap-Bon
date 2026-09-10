@@ -2,28 +2,30 @@ import { redirect } from "next/navigation";
 import { AppChrome } from "@/components/shell/AppChrome";
 import { signOut } from "@/app/connexion/actions";
 import { loadChrome } from "@/lib/workspace";
-import { currentMember, hiddenFor } from "@/lib/session";
+import { currentSession, hiddenFor } from "@/lib/session";
+import type { TeamRole } from "@/lib/domain/types";
 
-const ROLE_LABEL = {
+const ROLE_LABEL: Record<TeamRole, string> = {
   owner: "Propriétaire",
   manager: "Responsable",
   agent: "Agent",
-} as const;
+};
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  // Nobody chosen yet means nobody to show the workspace as, so back to the door.
-  const member = await currentMember();
-  if (!member) redirect("/connexion");
+  // Nobody signed in and nobody chosen means nobody to show the workspace as.
+  const session = await currentSession();
+  if (!session) redirect("/connexion");
 
   const chrome = await loadChrome();
 
   return (
     <AppChrome
       {...chrome}
-      userName={member.name}
-      userInitials={member.initials}
-      userRole={ROLE_LABEL[member.role]}
-      hiddenHrefs={hiddenFor(member.role)}
+      userName={session.member.name}
+      userInitials={session.member.initials}
+      userRole={ROLE_LABEL[session.member.role]}
+      hiddenHrefs={hiddenFor(session.member.role)}
+      canWrite={session.canWrite}
       signOut={signOut}
     >
       {children}

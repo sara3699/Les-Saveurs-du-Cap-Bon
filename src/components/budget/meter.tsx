@@ -28,8 +28,8 @@ export function spendTone(used: number, planned: number): SpendTone {
 
 /** Wording, so a line that is exactly spent is not described as close to it. */
 export function limitLabel(used: number, planned: number): string {
-  if (used > planned) return "Depassement du plan";
-  if (used === planned) return "Entierement utilisé";
+  if (used > planned) return "Dépassement du plan";
+  if (used === planned) return "Entièrement utilisé";
   return "Proche de la limite";
 }
 

@@ -19,7 +19,7 @@ export interface SearchEntry {
 export interface HealthNotice {
   id: string;
   title: string;
-  détail: string;
+  detail: string;
   href: string;
   severity: "warning" | "error";
 }
@@ -31,9 +31,11 @@ export interface ChromeProps {
   userName: string;
   userInitials: string;
   userRole: string;
-  counts: Partial<Record<"inbox" | "orders" | "tasks" | "intégrations", number>>;
+  counts: Partial<Record<"inbox" | "orders" | "tasks" | "integrations", number>>;
   /** Screens this person's role cannot open, hidden from both navigations. */
   hiddenHrefs: string[];
+  /** False for the demonstration door, where the database refuses every write. */
+  canWrite: boolean;
   search: SearchEntry[];
   notices: HealthNotice[];
   /** Server action that clears the demo session and returns to the sign-in screen. */
@@ -106,7 +108,7 @@ export function AppChrome(props: ChromeProps) {
                 {group.items.filter((item) => !props.hiddenHrefs.includes(item.href)).map((item) => {
                   const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
                   const count = badgeValue(item, props.counts);
-                  const warn = item.badge === "intégrations" && errorCount > 0;
+                  const warn = item.badge === "integrations" && errorCount > 0;
                   return (
                     <Link
                       key={item.href}
@@ -246,7 +248,7 @@ export function AppChrome(props: ChromeProps) {
                       />
                       <span>
                         <span className="block text-[13px] font-semibold">{n.title}</span>
-                        <span className="block text-[11.5px] text-muted">{n.détail}</span>
+                        <span className="block text-[11.5px] text-muted">{n.detail}</span>
                       </span>
                     </Link>
                   ))
@@ -286,8 +288,9 @@ export function AppChrome(props: ChromeProps) {
                     </button>
                   </form>
                   <span className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[12px] text-muted">
-                    Démonstration, sans mot de passe. Les vrais comptes arriveront avec la base de
-                    données.
+                    {props.canWrite
+                      ? "Compte réel. Ce que vous faites ici est enregistré."
+                      : "Entrée de démonstration. Vous pouvez tout consulter, rien n'est enregistré."}
                   </span>
                 </div>
               </div>

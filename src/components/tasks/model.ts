@@ -54,11 +54,11 @@ export const TYPE_SWATCH: Record<TaskType, string> = {
 };
 
 export const TYPE_MEANING: Record<TaskType, string> = {
-  call: "Prenez le téléphone. Le client a demande une voix, pas un message.",
-  reply: "Repondez sur le canal par lequel la question est arrivée.",
-  meeting: "Voyez le client, a l'atelier ou chez lui.",
-  quote: "Mettez un prix par ecrit et envoyez-le.",
-  reminder: "Quelque chose a mettre de cote, a reserver ou a vérifier avant une date.",
+  call: "Prenez le téléphone. Le client a demandé une voix, pas un message.",
+  reply: "Répondez sur le canal par lequel la question est arrivée.",
+  meeting: "Voyez le client, à l'atelier ou chez lui.",
+  quote: "Mettez un prix par écrit et envoyez-le.",
+  reminder: "Quelque chose à mettre de côté, à réserver ou à vérifier avant une date.",
   custom: "Du travail de boutique qui n'entre dans aucune des cinq catégories ci-dessus.",
 };
 

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
+import { setTaskCompleted } from "@/app/(app)/tasks/actions";
 import { Pill, SourceBadge } from "@/components/ui/badges";
 import { Card, EmptyState } from "@/components/ui/surfaces";
 import { TypeMarker } from "./TypeMarker";
@@ -9,51 +10,94 @@ import { PRIORITY_LABEL, PRIORITY_TONE, type TaskRow } from "./model";
 
 /**
  * Four sections, overdue first, because that is the part of the list the owner
- * loses money on. Ticking a box moves a row into completed in the browser only;
- * nothing is written back, and the screen says so rather than implying a save.
+ * loses money on.
+ *
+ * A signed in account writes: ticking a box records the completion time in the
+ * database and unticking it clears it again. The row moves into its new section
+ * straight away, before the answer comes back, and moves back if the write is
+ * refused. A demonstration visit writes nothing: ticking moves a row for this
+ * visit only, and the line under the counts says so.
  */
 export function TaskBoard({
   rows,
   filtered,
+  canWrite,
 }: {
   rows: TaskRow[];
   filtered: boolean;
+  canWrite: boolean;
 }) {
-  const [tickedHere, setTickedHere] = useState<string[]>([]);
+  // What this visit has changed, newest last, on top of what the server sent.
+  const [ticks, setTicks] = useState<Tick[]>([]);
+  // The follow-ups whose write is still in flight, one entry per row.
+  const [saving, setSaving] = useState<string[]>([]);
+  const [failure, setFailure] = useState<string | null>(null);
+  const [, startSaving] = useTransition();
 
-  function toggle(id: string) {
-    setTickedHere((current) =>
-      current.includes(id) ? current.filter((other) => other !== id) : [...current, id],
-    );
+  const tickById = new Map(ticks.map((tick) => [tick.id, tick.done]));
+  const isDone = (row: TaskRow) => tickById.get(row.id) ?? Boolean(row.doneLabel);
+
+  function toggle(row: TaskRow) {
+    const next = !isDone(row);
+    const before = ticks.find((tick) => tick.id === row.id);
+
+    // The screen moves first, whichever door this is.
+    setTicks((current) => withTick(current, row.id, next));
+
+    // The demonstration door changes nothing beyond this browser, and the line
+    // under the counts already promises exactly that.
+    if (!canWrite) return;
+
+    setFailure(null);
+    setSaving((current) => [...current, row.id]);
+    startSaving(async () => {
+      const result = await setTaskCompleted(row.id, next);
+      setSaving((current) => current.filter((id) => id !== row.id));
+      if (result.ok) return;
+
+      // Refused. Put the box back exactly where it was, and say why, rather than
+      // leaving a tick on screen that the database never accepted.
+      setTicks((current) =>
+        before ? withTick(current, row.id, before.done) : withoutTick(current, row.id),
+      );
+      setFailure(result.error);
+    });
   }
 
   if (rows.length === 0) {
     return filtered ? (
       <EmptyState
-        title="Aucune relance ne correspond a ces filtres"
-        body="Les relances ne se saisissent pas ici. Vous en creez une depuis une conversation. Ouvrez la demande dans la boîte de réception et utilisez l'action nouvelle tache, et elle arrive sur cet écran avec le client, le canal et la date déjà attaches. Retirez un filtre pour voir celles que vous avez."
+        title="Aucune relance ne correspond à ces filtres"
+        body="Les relances ne se saisissent pas ici. Vous en créez une depuis une conversation. Ouvrez la demande dans la boîte de réception et utilisez l'action nouvelle tâche, et elle arrive sur cet écran avec le client, le canal et la date déjà attachés. Retirez un filtre pour voir celles que vous avez."
         action={{ label: "Retirer les filtres", href: "/tasks" }}
       />
     ) : (
       <EmptyState
         title="Aucune relance en cours"
-        body="Chaque relance commence par un message. Ouvrez une demande dans la boîte de réception et utilisez l'action nouvelle tache, et elle apparait ici avec le client, le canal par lequel elle est arrivée et la date que vous avez promise."
+        body="Chaque relance commence par un message. Ouvrez une demande dans la boîte de réception et utilisez l'action nouvelle tâche, et elle apparaît ici avec le client, le canal par lequel elle est arrivée et la date que vous avez promise."
         action={{ label: "Ouvrir la boîte de réception", href: "/inbox" }}
       />
     );
   }
 
-  const ticked = new Set(tickedHere);
-  const open = rows.filter((row) => !row.doneLabel && !ticked.has(row.id));
+  const open = rows.filter((row) => !isDone(row));
   const overdue = open.filter((row) => row.bucket === "overdue");
   const today = open.filter((row) => row.bucket === "today");
   const upcoming = open.filter((row) => row.bucket === "upcoming");
 
-  const justTicked = [...tickedHere]
+  // Ticked during this visit at the top, most recent first, then the ones that
+  // were already finished when the screen was built.
+  const tickedHere = [...ticks]
     .reverse()
-    .map((id) => rows.find((row) => row.id === id))
+    .filter((tick) => tick.done)
+    .map((tick) => rows.find((row) => row.id === tick.id))
     .filter((row): row is TaskRow => Boolean(row));
-  const completed = [...justTicked, ...rows.filter((row) => row.doneLabel)];
+  const completed = [
+    ...tickedHere,
+    ...rows.filter((row) => isDone(row) && !tickById.has(row.id)),
+  ];
+
+  const savingIds = new Set(saving);
 
   return (
     <div className="flex flex-col gap-4">
@@ -65,10 +109,10 @@ export function TaskBoard({
           <span className="os-num">{overdue.length}</span> en retard
         </span>
         <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-[12.5px] font-semibold text-ink">
-          <span className="os-num">{today.length}</span> {"a faire aujourd'hui"}
+          <span className="os-num">{today.length}</span> {"à faire aujourd'hui"}
         </span>
         <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-[12.5px] text-muted">
-          <span className="os-num">{upcoming.length}</span> a venir
+          <span className="os-num">{upcoming.length}</span> à venir
         </span>
         <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-[12.5px] text-muted">
           <span className="os-num">{completed.length}</span> terminées
@@ -76,42 +120,77 @@ export function TaskBoard({
       </div>
 
       <p className="text-xs text-muted">
-        {"Cocher une case deplace une relance dans les terminées pour cette visite seulement. "}
-        {"Rien n'est enregistré pour l'instant, la liste revient telle qu'elle était a votre "}
-        {"prochain rafraichissement."}
+        {canWrite
+          ? "Cocher une case enregistre la relance comme terminée, et la décocher la remet en cours. "
+          : "Cocher une case déplace une relance dans les terminées pour cette visite seulement. "}
+        {canWrite
+          ? "Le changement part dans la base de données et il est encore là à votre prochain rafraîchissement."
+          : "Rien n'est enregistré pour l'instant, la liste revient telle qu'elle était à votre prochain rafraîchissement."}
       </p>
+
+      {/* Announced, because a refused write is the one thing on this screen the
+          reader must not miss. */}
+      <div aria-live="assertive">
+        {failure ? (
+          <p className="rounded-[var(--radius-md)] border border-danger/20 bg-danger-soft px-3 py-2 text-[12.5px] font-semibold text-danger">
+            {failure}
+          </p>
+        ) : null}
+      </div>
 
       <Section
         label="En retard"
         rows={overdue}
         empty="Rien n'est en retard. Chaque relance a encore du temps devant elle."
         alarming
-        ticked={ticked}
+        canWrite={canWrite}
+        isDone={isDone}
+        savingIds={savingIds}
         onToggle={toggle}
       />
       <Section
-        label="A faire aujourd'hui"
+        label="À faire aujourd'hui"
         rows={today}
-        empty="Rien d'autre n'est a faire avant ce soir."
-        ticked={ticked}
+        empty="Rien d'autre n'est à faire avant ce soir."
+        canWrite={canWrite}
+        isDone={isDone}
+        savingIds={savingIds}
         onToggle={toggle}
       />
       <Section
-        label="A venir"
+        label="À venir"
         rows={upcoming}
         empty="Rien n'est prévu après aujourd'hui."
-        ticked={ticked}
+        canWrite={canWrite}
+        isDone={isDone}
+        savingIds={savingIds}
         onToggle={toggle}
       />
       <Section
         label="Terminées"
         rows={completed}
-        empty="Rien n'a encore été coche."
-        ticked={ticked}
+        empty="Rien n'a encore été coché."
+        canWrite={canWrite}
+        isDone={isDone}
+        savingIds={savingIds}
         onToggle={toggle}
       />
     </div>
   );
+}
+
+/** One change made during this visit. The newest entry for a row wins. */
+interface Tick {
+  id: string;
+  done: boolean;
+}
+
+function withTick(list: Tick[], id: string, done: boolean): Tick[] {
+  return [...list.filter((tick) => tick.id !== id), { id, done }];
+}
+
+function withoutTick(list: Tick[], id: string): Tick[] {
+  return list.filter((tick) => tick.id !== id);
 }
 
 function Section({
@@ -119,15 +198,19 @@ function Section({
   rows,
   empty,
   alarming = false,
-  ticked,
+  canWrite,
+  isDone,
+  savingIds,
   onToggle,
 }: {
   label: string;
   rows: TaskRow[];
   empty: string;
   alarming?: boolean;
-  ticked: Set<string>;
-  onToggle: (id: string) => void;
+  canWrite: boolean;
+  isDone: (row: TaskRow) => boolean;
+  savingIds: Set<string>;
+  onToggle: (row: TaskRow) => void;
 }) {
   return (
     <section className="flex flex-col gap-2">
@@ -143,7 +226,9 @@ function Section({
               <TaskLine
                 key={row.id}
                 row={row}
-                done={Boolean(row.doneLabel) || ticked.has(row.id)}
+                done={isDone(row)}
+                saving={savingIds.has(row.id)}
+                canWrite={canWrite}
                 onToggle={onToggle}
               />
             ))}
@@ -157,24 +242,29 @@ function Section({
 function TaskLine({
   row,
   done,
+  saving,
+  canWrite,
   onToggle,
 }: {
   row: TaskRow;
   done: boolean;
-  onToggle: (id: string) => void;
+  saving: boolean;
+  canWrite: boolean;
+  onToggle: (row: TaskRow) => void;
 }) {
-  const alreadyDone = Boolean(row.doneLabel);
+  // A demonstration visit cannot reopen a follow-up that was already finished:
+  // that would need a write, and it has none. A signed in account can, and its
+  // box only locks while its own change is being written.
+  const locked = canWrite ? saving : Boolean(row.doneLabel);
 
   return (
     <li className="flex gap-3 border-t border-line px-4 py-3 first:border-t-0 hover:bg-surface-2">
       <input
         type="checkbox"
         checked={done}
-        disabled={alreadyDone}
-        onChange={() => onToggle(row.id)}
-        aria-label={
-          alreadyDone ? `${row.title}, déjà terminee` : `Marquer comme terminee, ${row.title}`
-        }
+        disabled={locked}
+        onChange={() => onToggle(row)}
+        aria-label={ariaLabel(row, done, saving, canWrite)}
         className="mt-1 h-4 w-4 shrink-0 accent-primary disabled:cursor-not-allowed"
       />
 
@@ -200,7 +290,7 @@ function TaskLine({
                 {row.customerName}
               </Link>
             ) : (
-              <span>Travail de boutique, aucun client attache</span>
+              <span>Travail de boutique, aucun client attaché</span>
             )}
             {row.channelId ? (
               <SourceBadge channelId={row.channelId} account={row.account} size="sm" />
@@ -214,11 +304,15 @@ function TaskLine({
         </div>
 
         <div className="flex shrink-0 flex-col items-start gap-1 sm:items-end">
-          {done ? (
-            alreadyDone ? (
+          {saving ? (
+            <p className="text-[12px] text-muted">Enregistrement en cours</p>
+          ) : done ? (
+            row.doneLabel ? (
               <p className="os-num text-[12px] text-muted">{row.doneLabel}</p>
+            ) : canWrite ? (
+              <p className="text-[12px] text-muted">Terminée, enregistrée</p>
             ) : (
-              <p className="text-[12px] text-muted">Cochee pendant cette visite</p>
+              <p className="text-[12px] text-muted">Cochée pendant cette visite</p>
             )
           ) : row.lateLabel ? (
             <>
@@ -237,4 +331,10 @@ function TaskLine({
       </div>
     </li>
   );
+}
+
+function ariaLabel(row: TaskRow, done: boolean, saving: boolean, canWrite: boolean): string {
+  if (saving) return `Enregistrement en cours, ${row.title}`;
+  if (!canWrite && row.doneLabel) return `${row.title}, déjà terminée`;
+  return done ? `Rouvrir la relance, ${row.title}` : `Marquer comme terminée, ${row.title}`;
 }

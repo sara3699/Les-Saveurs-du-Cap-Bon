@@ -15,6 +15,7 @@ import { buildAttributionIndex, resolveSource } from "@/lib/domain/attribution";
 import { isOverdue, timeAgo } from "@/lib/format";
 import { DEMO_NOW } from "@/lib/mock/time";
 import { getRepositories } from "@/lib/repositories";
+import { currentSession } from "@/lib/session";
 
 export const metadata = { title: "Tâches, Les Saveurs du Cap Bon" };
 
@@ -34,14 +35,18 @@ export default async function TasksPage({ searchParams }: { searchParams: Params
   const requestedType = one(params.type);
 
   const repos = getRepositories();
-  const [tasks, contacts, team, conversations, connections, attributions] = await Promise.all([
-    repos.workspace.tasks(),
-    repos.contacts.list(),
-    repos.workspace.team(),
-    repos.conversations.list(),
-    repos.intégrations.list(),
-    repos.workspace.attributions(),
-  ]);
+  const [tasks, contacts, team, conversations, connections, attributions, session] =
+    await Promise.all([
+      repos.workspace.tasks(),
+      repos.contacts.list(),
+      repos.workspace.team(),
+      repos.conversations.list(),
+      repos.integrations.list(),
+      repos.workspace.attributions(),
+      // Only a real account can tick a box and have it saved. The board says
+      // which of the two visits this is, and the action checks it again itself.
+      currentSession(),
+    ]);
 
   // A filter value no chip on this screen can produce is ignored rather than
   // obeyed. A hand typed or stale link then shows the whole list, instead of an
@@ -90,9 +95,9 @@ export default async function TasksPage({ searchParams }: { searchParams: Params
       // Every follow-up carries an owner, so a miss here means the person has
       // left the team list, not that the work is unclaimed. Say that, rather
       // than inventing an unassigned state the data does not have.
-      ownerName: teamById.get(task.assigneeId)?.name ?? "Responsable absent de la liste de l'equipe",
+      ownerName: teamById.get(task.assigneeId)?.name ?? "Responsable absent de la liste de l'équipe",
       priority: task.priority,
-      doneLabel: task.completedAt ? `Terminee ${timeAgo(task.completedAt, DEMO_NOW)}` : null,
+      doneLabel: task.completedAt ? `Terminée ${timeAgo(task.completedAt, DEMO_NOW)}` : null,
     };
   });
 
@@ -113,7 +118,7 @@ export default async function TasksPage({ searchParams }: { searchParams: Params
     <div className="flex flex-col gap-4">
       <PageHeader
         title="Tâches"
-        subtitle="Les relances que votre équipe doit a un client, les retards en haut. Chacune garde la conversation dont elle vient, pour que vous puissiez relire la promesse avant de la tenir."
+        subtitle="Les relances que votre équipe doit à un client, les retards en haut. Chacune garde la conversation dont elle vient, pour que vous puissiez relire la promesse avant de la tenir."
         actions={<DemoChip />}
       />
 
@@ -176,21 +181,25 @@ export default async function TasksPage({ searchParams }: { searchParams: Params
       </Card>
 
       <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
-        <TaskBoard rows={rows} filtered={Boolean(owner || type)} />
+        <TaskBoard
+          rows={rows}
+          filtered={Boolean(owner || type)}
+          canWrite={session?.canWrite ?? false}
+        />
 
         <aside className="flex flex-col gap-4">
           <Card>
-            <CardHead title="D'ou vient une relance" />
+            <CardHead title="D'où vient une relance" />
             <p className="text-[13px] leading-relaxed text-muted">
-              {"Chaque ligne de cet écran a commence par un message. Ouvrez la demande dans la "}
-              {"boîte de réception, utilisez l'action nouvelle tache sur cette conversation, et la "}
+              {"Chaque ligne de cet écran a commencé par un message. Ouvrez la demande dans la "}
+              {"boîte de réception, utilisez l'action nouvelle tâche sur cette conversation, et la "}
               {"relance arrive ici avec le client, le canal par lequel elle est arrivée et la date "}
               {"que vous avez promise."}
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-muted">
-              {"Il n'y a pas de bouton d'ajout ici. Créer une relance depuis cet écran est concu "}
-              {"mais pas construit, et un formulaire qui n'enregistré rien vous ferait perdre "}
-              {"votre matinee."}
+              {"Il n'y a pas de bouton d'ajout ici. Créer une relance depuis cet écran est conçu "}
+              {"mais pas construit, et un formulaire qui n'enregistre rien vous ferait perdre "}
+              {"votre matinée."}
             </p>
             <Link
               href="/inbox"
@@ -203,7 +212,7 @@ export default async function TasksPage({ searchParams }: { searchParams: Params
           <Card>
             <CardHead
               title="Ce que veulent dire les marqueurs"
-              hint="Le jaune marque celles qui ont un prix attache."
+              hint="Le jaune marque celles qui ont un prix attaché."
             />
             <ul className="flex flex-col gap-2.5">
               {TASK_TYPES.map((id) => (

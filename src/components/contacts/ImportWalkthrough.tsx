@@ -14,15 +14,15 @@ const FIELDS: { value: Field; label: string }[] = [
   { value: "phone", label: "Téléphone" },
   { value: "email", label: "E-mail" },
   { value: "city", label: "Ville" },
-  { value: "source", label: "D'ou ils viennent" },
+  { value: "source", label: "D'où ils viennent" },
   { value: "skip", label: "Ne pas importer cette colonne" },
 ];
 
 const STEPS: { id: Step; label: string }[] = [
   { id: "file", label: "Fichier" },
   { id: "map", label: "Colonnes" },
-  { id: "preview", label: "Apercu" },
-  { id: "check", label: "Controles" },
+  { id: "preview", label: "Aperçu" },
+  { id: "check", label: "Contrôles" },
   { id: "confirm", label: "Confirmation" },
 ];
 
@@ -39,14 +39,14 @@ const PREVIEW_ROWS = 5;
  * is not Tunisian, and two rows that already exist under another spelling.
  */
 const ROWS: string[][] = [
-  ["Fatma Riahi", "+216 55 210 447", "fatma.riahi@gmail.com", "Tunis", "Instagram", "Rencontree au marche de Sidi Bou"],
-  ["Nizar Hamdi", "+216 27 663 190", "nizar.hamdi@gmail.com", "Sousse", "Facebook", "A demande la creme de pistache"],
-  ["", "+216 98 445 213", "", "Nabeul", "WhatsApp", "A laisse un message vocal, nom non note"],
-  ["Sami Gharsalli", "06 78 12 34 56", "sami.gharsalli@gmail.com", "Tunis", "Site web", "Numéro recopie sur une ancienne feuille"],
-  ["Rania Trabelsi", "+216 20 114 882", "", "Ariana", "WhatsApp", "Cliente fidele"],
-  ["Karim Belaid", "+216 24 900 990", "karim.belaid@gmail.com", "Tunis", "Site web", "Deuxieme feuille, plateau de desserts"],
+  ["Fatma Riahi", "+216 55 210 447", "fatma.riahi@gmail.com", "Tunis", "Instagram", "Rencontrée au marché de Sidi Bou"],
+  ["Nizar Hamdi", "+216 27 663 190", "nizar.hamdi@gmail.com", "Sousse", "Facebook", "A demandé la crème de pistache"],
+  ["", "+216 98 445 213", "", "Nabeul", "WhatsApp", "A laissé un message vocal, nom non noté"],
+  ["Sami Gharsalli", "06 78 12 34 56", "sami.gharsalli@gmail.com", "Tunis", "Site web", "Numéro recopié sur une ancienne feuille"],
+  ["Rania Trabelsi", "+216 20 114 882", "", "Ariana", "WhatsApp", "Cliente fidèle"],
+  ["Karim Belaid", "+216 24 900 990", "karim.belaid@gmail.com", "Tunis", "Site web", "Deuxième feuille, plateau de desserts"],
   ["Hedi Sliti", "+216 92 118 440", "hedi.sliti@topnet.tn", "Bizerte", "Site web", "Veut douze assortiments de desserts"],
-  ["Awatef Mzoughi", "+216 29 771 502", "awatef.mzoughi@gmail.com", "Ben Arous", "Ajoute a la main", "A téléphone a la boutique"],
+  ["Awatef Mzoughi", "+216 29 771 502", "awatef.mzoughi@gmail.com", "Ben Arous", "Ajouté à la main", "A téléphoné à la boutique"],
 ];
 
 const CHANNEL_WORDS: Record<string, ChannelId> = {
@@ -63,7 +63,7 @@ const CHANNEL_WORDS: Record<string, ChannelId> = {
   google: "google",
   "google ads": "google",
   "added by hand": "manual",
-  "ajouté a la main": "manual",
+  "ajouté à la main": "manual",
   "walk-in": "manual",
   "en boutique": "manual",
   shop: "manual",
@@ -116,12 +116,12 @@ function checkRows(mapping: Field[], existing: ExistingContact[]): CheckedRow[] 
     const problems: string[] = [];
 
     if (!values.name) {
-      problems.push("Il n'y a pas de nom, la fiche n'aurait donc rien sous quoi etre classee.");
+      problems.push("Il n'y a pas de nom, la fiche n'aurait donc rien sous quoi être classée.");
     }
 
     if (values.phone && !isTunisianNumber(values.phone)) {
       problems.push(
-        `${values.phone} n'est pas un numéro tunisien, donc personne ne pourrait etre rappele dessus.`,
+        `${values.phone} n'est pas un numéro tunisien, donc personne ne pourrait être rappelé dessus.`,
       );
     }
 
@@ -146,7 +146,7 @@ function checkRows(mapping: Field[], existing: ExistingContact[]): CheckedRow[] 
     const channelId = values.source ? toChannel(values.source) : null;
     if (!values.source) {
       problems.push(
-        "La colonne de la source est vide sur cette ligne, rien ne dirait donc d'ou vient ce client.",
+        "La colonne de la source est vide sur cette ligne, rien ne dirait donc d'où vient ce client.",
       );
     } else if (!channelId) {
       problems.push(
@@ -242,7 +242,7 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
               <span className="os-num block text-[13px] font-semibold">{FILE_NAME}</span>
               <span className="block text-[12px] text-muted">
                 <span className="os-num">{ROWS.length}</span> lignes,{" "}
-                <span className="os-num">{COLUMNS.length}</span> colonnes, gardees a l'interieur de
+                <span className="os-num">{COLUMNS.length}</span> colonnes, gardées à l'intérieur de
                 cet écran
               </span>
             </span>
@@ -291,7 +291,7 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
           </ul>
           {!nameMapped || !sourceMapped ? (
             <p className="rounded-[var(--radius-sm)] border border-accent-line bg-accent-soft px-3 py-2 text-[12px] text-accent-ink">
-              Associez une colonne au nom et une autre a d'ou ils viennent. Un contact importe sans
+              Associez une colonne au nom et une autre à d'où ils viennent. Un contact importé sans
               source resterait sur chaque écran sans canal en face de lui, et c'est la seule chose
               que ce produit refuse de faire.
             </p>
@@ -303,7 +303,7 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
               disabled={!nameMapped || !sourceMapped}
               onClick={() => setStep("preview")}
             >
-              Voir l'apercu des lignes
+              Voir l'aperçu des lignes
             </button>
             <button type="button" className={PLAIN_BUTTON} onClick={() => setStep("file")}>
               Retour
@@ -315,7 +315,7 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
       {step === "preview" ? (
         <div className="flex flex-col gap-3">
           <p className="text-[13px] text-muted">
-            Les <span className="os-num">{preview.length}</span> premieres lignes, lues avec les
+            Les <span className="os-num">{preview.length}</span> premières lignes, lues avec les
             colonnes que vous avez choisies. Rien n'a encore été ajouté.
           </p>
           <div className="os-scroll">
@@ -364,12 +364,12 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
           {checked.length > preview.length ? (
             <p className="text-[12px] text-muted">
               <span className="os-num">{checked.length - preview.length}</span> autres lignes
-              suivent celles montrees ici, et les controles portent sur toutes.
+              suivent celles montrées ici, et les contrôles portent sur toutes.
             </p>
           ) : null}
           <div className="flex flex-wrap gap-1.5">
             <button type="button" className={PRIMARY_BUTTON} onClick={() => setStep("check")}>
-              Controler les lignes
+              Contrôler les lignes
             </button>
             <button type="button" className={PLAIN_BUTTON} onClick={() => setStep("map")}>
               Retour
@@ -382,12 +382,12 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
         <div className="flex flex-col gap-3">
           <p className="rounded-[var(--radius-sm)] border border-success/20 bg-success-soft px-3 py-2 text-[12.5px] text-success">
             <span className="os-num font-semibold">{clean.length}</span> lignes sur{" "}
-            <span className="os-num font-semibold">{checked.length}</span> peuvent etre importees
+            <span className="os-num font-semibold">{checked.length}</span> peuvent être importées
             telles quelles.
           </p>
           {blocked.length === 0 ? (
             <p className="text-[13px] text-muted">
-              Toutes les lignes passent. Rien ne serait ignore.
+              Toutes les lignes passent. Rien ne serait ignoré.
             </p>
           ) : (
             <ul className="flex flex-col gap-2">
@@ -409,8 +409,8 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
             </ul>
           )}
           <p className="text-[12px] text-muted">
-            Une ligne ignoree reste dans le fichier. Corrigez-la la-bas et ouvrez le fichier a
-            nouveau, plutot que de la modifier ici.
+            Une ligne ignorée reste dans le fichier. Corrigez-la là-bas et ouvrez le fichier à
+            nouveau, plutôt que de la modifier ici.
           </p>
           <div className="flex flex-wrap gap-1.5">
             <button
@@ -433,8 +433,8 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
           <div className="rounded-[var(--radius-md)] border border-line bg-surface-2 px-3 py-3">
             <p className="text-[13px]">
               <span className="os-num font-semibold">{clean.length}</span> contacts seraient
-              ajoutes. <span className="os-num font-semibold">{blocked.length}</span> lignes
-              seraient ignorees.
+              ajoutés. <span className="os-num font-semibold">{blocked.length}</span> lignes
+              seraient ignorées.
             </p>
             <p className="mt-2 text-[12px] text-muted">
               Chacun arriverait avec son propre premier contact :
@@ -453,7 +453,7 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
             </ul>
           </div>
           <p className="text-[12px] text-muted">
-            Rien n'est enregistré. Une fois la base de données derriere cet écran, c'est cette étape
+            Rien n'est enregistré. Une fois la base de données derrière cet écran, c'est cette étape
             qui ajouterait les lignes.
           </p>
           <div className="flex flex-wrap gap-1.5">
@@ -464,7 +464,7 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
               type="button"
               className={PLAIN_BUTTON}
               onClick={() => {
-                setNotice("L'import a été annule. Rien n'a été ajouté et le fichier n'a pas été touche.");
+                setNotice("L'import a été annulé. Rien n'a été ajouté et le fichier n'a pas été touché.");
                 setStep("file");
               }}
             >
@@ -477,8 +477,8 @@ export function ImportWalkthrough({ existing }: { existing: ExistingContact[] })
       {step === "done" ? (
         <div className="flex flex-col gap-3">
           <p role="status" className="rounded-[var(--radius-sm)] border border-accent-line bg-accent-soft px-3 py-2 text-[12.5px] text-accent-ink">
-            Rien n'a été ajouté. La démonstration s'arrete au moment ou elle ecrirait. Une fois la
-            base de données derriere elle, c'est cette étape qui enregistré les lignes, et chaque
+            Rien n'a été ajouté. La démonstration s'arrête au moment où elle écrirait. Une fois la
+            base de données derrière elle, c'est cette étape qui enregistre les lignes, et chaque
             contact garde la source que sa propre ligne indiquait.
           </p>
           <div>

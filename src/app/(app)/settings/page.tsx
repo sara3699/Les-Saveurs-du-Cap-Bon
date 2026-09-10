@@ -22,17 +22,17 @@ export const dynamic = "force-dynamic";
 
 const SECTIONS = [
   { id: "workspace", label: "Espace de travail" },
-  { id: "regional", label: "Regional" },
+  { id: "regional", label: "Régional" },
   { id: "notifications", label: "Notifications" },
-  { id: "data", label: "Données et confidentialite" },
-  { id: "accounts", label: "Comptes connectes" },
+  { id: "data", label: "Données et confidentialité" },
+  { id: "accounts", label: "Comptes connectés" },
 ];
 
 const ROLE_COPY: Record<TeamRole, { label: string; can: string; settings: string }> = {
   owner: {
     label: "Propriétaire",
     can: "Voit toute la boutique, les chiffres d'argent compris, et c'est la seule personne qui peut ajouter quelqu'un ou le retirer.",
-    settings: "Les modifie, le jour ou elles seront modifiables",
+    settings: "Les modifie, le jour où elles seront modifiables",
   },
   manager: {
     label: "Responsable",
@@ -50,72 +50,72 @@ const NOTIFY_EVENTS = [
   {
     id: "silent",
     title: "Un canal n'apporte plus rien",
-    body: "WhatsApp, Instagram, Facebook, Google ou le formulaire de votre site se tait alors qu'il ne devrait pas. C'est le seul cas qui merite d'interrompre votre journee, parce que rien ne s'accumule tant que la panne dure.",
-    reaches: "Vous, dès que c'est constate",
+    body: "WhatsApp, Instagram, Facebook, Google ou le formulaire de votre site se tait alors qu'il ne devrait pas. C'est le seul cas qui mérite d'interrompre votre journée, parce que rien ne s'accumule tant que la panne dure.",
+    reaches: "Vous, dès que c'est constaté",
   },
   {
     id: "waiting",
     title: "Une demande attend depuis deux heures sans personne dessus",
-    body: "Quelqu'un a ecrit, personne ne l'a prise, et deux heures ont passe. Compte a partir du dernier message de la demande, pas du moment ou l'un de vous a ouvert la liste pour la première fois.",
+    body: "Quelqu'un a écrit, personne ne l'a prise, et deux heures ont passé. Compté à partir du dernier message de la demande, pas du moment où l'un de vous a ouvert la liste pour la première fois.",
     reaches: "Vous et votre responsable",
   },
   {
     id: "overdue",
-    title: "Une relance depasse son échéance",
-    body: "Un appel ou un prix a envoyer promis pour aujourd'hui n'est toujours pas fait.",
+    title: "Une relance dépasse son échéance",
+    body: "Un appel ou un prix à envoyer promis pour aujourd'hui n'est toujours pas fait.",
     reaches: "La personne qui en est responsable, puis vous le lendemain matin",
   },
   {
     id: "stock",
     title: "Un produit atteint son seuil de stock faible",
-    body: "Le seuil se règle sur chaque produit, donc un article qui se vend a trente par mois peut alerter plus tot qu'un article qui se vend a douze par an.",
+    body: "Le seuil se règle sur chaque produit, donc un article qui se vend à trente par mois peut alerter plus tôt qu'un article qui se vend à douze par an.",
     reaches: "Vous",
   },
 ];
 
 const STORED = [
   { label: "Nom", why: "Pour qu'une réponse commence par le bon nom." },
-  { label: "Numéro de téléphone", why: "La societe de livraison le demande, et ici la plupart des clients repondent plus vite au téléphone que par email." },
-  { label: "Email", why: "Conserve uniquement quand le client en a donne un, et utilisé pour la confirmation de commande." },
-  { label: "Ville", why: "Determine les frais de livraison et le nombre de jours que prend la livraison." },
-  { label: "Messages, reçus et envoyés", why: "Pour que la personne qui repond ensuite puisse lire ce qui a déjà été promis." },
+  { label: "Numéro de téléphone", why: "La société de livraison le demande, et ici la plupart des clients répondent plus vite au téléphone que par email." },
+  { label: "Email", why: "Conservé uniquement quand le client en a donné un, et utilisé pour la confirmation de commande." },
+  { label: "Ville", why: "Détermine les frais de livraison et le nombre de jours que prend la livraison." },
+  { label: "Messages, reçus et envoyés", why: "Pour que la personne qui répond ensuite puisse lire ce qui a déjà été promis." },
   { label: "Commandes et leur contenu", why: "Votre trace de la vente, et la base de tous les chiffres de Statistiques." },
-  { label: "Notes ecrites par votre équipe", why: "Ce qui a été convenu au téléphone, garde la ou la personne suivante ira regarder." },
-  { label: "Le canal par lequel le client est arrive", why: "Pour qu'un client WhatsApp reste un client WhatsApp, et que vous voyiez quel canal est rentable." },
+  { label: "Notes écrites par votre équipe", why: "Ce qui a été convenu au téléphone, gardé là où la personne suivante ira regarder." },
+  { label: "Le canal par lequel le client est arrivé", why: "Pour qu'un client WhatsApp reste un client WhatsApp, et que vous voyiez quel canal est rentable." },
 ];
 
 const RETENTION = [
   {
     label: "Messages",
     value: "24 mois",
-    why: "Assez long pour retrouver ce qui a été promis la saison dernière, assez court pour que les vieux echanges ne restent pas ici pour toujours.",
+    why: "Assez long pour retrouver ce qui a été promis la saison dernière, assez court pour que les vieux échanges ne restent pas ici pour toujours.",
   },
   {
     label: "Commandes et factures",
     value: "10 ans",
-    why: "Votre comptabilite doit etre conservee, donc une commande reste même après la suppression du client qui est derriere.",
+    why: "Votre comptabilité doit être conservée, donc une commande reste même après la suppression du client qui est derrière.",
   },
   {
     label: "Photos et fichiers envoyés dans un message",
     value: "12 mois",
-    why: "C'est ce qui pese le plus lourd dans ce qui est conserve, et ce qu'on rouvre le moins souvent.",
+    why: "C'est ce qui pèse le plus lourd dans ce qui est conservé, et ce qu'on rouvre le moins souvent.",
   },
   {
     label: "Contacts",
     value: "Jusqu'à ce que le client demande sa suppression",
-    why: "Un client qui n'a pas ecrit depuis un an reste un client, donc rien n'est supprime au bout d'un délai.",
+    why: "Un client qui n'a pas écrit depuis un an reste un client, donc rien n'est supprimé au bout d'un délai.",
   },
 ];
 
 const DELETION_REMOVES = [
   "Nom, numéro de téléphone, email et ville",
   "Tous les messages de toutes les conversations avec lui, sur tous les canaux",
-  "Les notes que votre équipe a ecrites a son sujet",
-  "Sa place dans le pipeline, ses etiquettes et son score du prospect",
+  "Les notes que votre équipe a écrites à son sujet",
+  "Sa place dans le pipeline, ses étiquettes et son score de prospect",
 ];
 
 const DELETION_KEEPS = [
-  "La commande elle-même, sa date, son montant et son contenu, avec le client remplace par un numéro de référence, parce que votre comptabilite doit tomber juste",
+  "La commande elle-même, sa date, son montant et son contenu, avec le client remplacé par un numéro de référence, parce que votre comptabilité doit tomber juste",
   "Le nombre de commandes sur chaque canal, qui est un chiffre et non plus une personne",
 ];
 
@@ -164,7 +164,7 @@ function SettingRow({
 function Placeholder({ children }: { children: React.ReactNode }) {
   return (
     <p className="mt-auto rounded-[var(--radius-sm)] border border-line bg-surface-2 px-3 py-2 text-[12px] leading-relaxed text-muted">
-      <span className="font-semibold text-ink">Ecrit, pas encore applique. </span>
+      <span className="font-semibold text-ink">Écrit, pas encore appliqué. </span>
       {children}
     </p>
   );
@@ -201,7 +201,7 @@ export default async function SettingsPage() {
   const repos = getRepositories();
   const [team, connections, conversations, tasks, products, orders] = await Promise.all([
     repos.workspace.team(),
-    repos.intégrations.list(),
+    repos.integrations.list(),
     repos.conversations.list(),
     repos.workspace.tasks(),
     repos.workspace.products(),
@@ -210,7 +210,7 @@ export default async function SettingsPage() {
 
   const roleCount = (role: TeamRole) => team.filter((m) => m.role === role).length;
   const teamShape = [
-    plural(roleCount("owner"), "propriétaire", "proprietaires"),
+    plural(roleCount("owner"), "propriétaire", "propriétaires"),
     plural(roleCount("manager"), "responsable", "responsables"),
     plural(roleCount("agent"), "agent", "agents"),
   ].join(", ");
@@ -253,7 +253,7 @@ export default async function SettingsPage() {
   const live: {
     id: string;
     title: string;
-    détail: string;
+    detail: string;
     href: string;
     linkLabel: string;
     channelIds: ChannelId[];
@@ -262,9 +262,9 @@ export default async function SettingsPage() {
   if (silent.length > 0) {
     live.push({
       id: "silent",
-      title: `${plural(silent.length, "canal ne reçoit", "canaux ne recoivent")} plus correctement`,
-      détail:
-        "Tant qu'un canal est dans cet etat, ce qu'un client envoie peut se perdre, et il n'a aucun signe que quelque chose n'a pas fonctionne.",
+      title: `${plural(silent.length, "canal ne reçoit", "canaux ne reçoivent")} plus correctement`,
+      detail:
+        "Tant qu'un canal est dans cet état, ce qu'un client envoie peut se perdre, et il n'a aucun signe que quelque chose n'a pas fonctionné.",
       href: "/integrations",
       linkLabel: "Voir ce qui ne va pas",
       channelIds: silentChannels,
@@ -274,7 +274,7 @@ export default async function SettingsPage() {
     live.push({
       id: "waiting",
       title: `${plural(unattended.length, "demande attend", "demandes attendent")} depuis plus de deux heures sans personne dessus`,
-      détail: `La plus ancienne a recu son dernier message ${timeAgo(unattended[0].lastMessageAt, DEMO_NOW)}, et n'a toujours personne dessus.`,
+      detail: `La plus ancienne a reçu son dernier message ${timeAgo(unattended[0].lastMessageAt, DEMO_NOW)}, et n'a toujours personne dessus.`,
       href: "/inbox?assignee=none",
       linkLabel: "Ouvrir la boîte de réception",
       channelIds: [],
@@ -284,7 +284,7 @@ export default async function SettingsPage() {
     live.push({
       id: "overdue",
       title: `${plural(overdue.length, "relance est", "relances sont")} maintenant en retard`,
-      détail: "Chacune a déjà une personne en face, donc c'est un rappel plutot qu'un nouveau travail.",
+      detail: "Chacune a déjà une personne en face, donc c'est un rappel plutôt qu'un nouveau travail.",
       href: "/tasks",
       linkLabel: "Ouvrir les tâches",
       channelIds: [],
@@ -294,7 +294,7 @@ export default async function SettingsPage() {
     live.push({
       id: "stock",
       title: `${plural(lowStock.length, "produit est", "produits sont")} au seuil de stock faible ou en dessous`,
-      détail: `${lowStock
+      detail: `${lowStock
         .slice(0, 2)
         .map((p) => p.name)
         .join(", ")}${lowStock.length > 2 ? ", et d'autres" : ""}.`,
@@ -308,7 +308,7 @@ export default async function SettingsPage() {
     <div className="flex flex-col gap-5">
       <PageHeader
         title="Paramètres"
-        subtitle="Comment cet espace de travail se comporte. Chaque section dit ce qui est règle aujourd'hui, et ce qui reste fige jusqu'à l'arrivee de la connexion et de la base de données."
+        subtitle="Comment cet espace de travail se comporte. Chaque section dit ce qui est réglé aujourd'hui, et ce qui reste figé jusqu'à l'arrivée de la connexion et de la base de données."
         actions={<DemoChip />}
       />
 
@@ -331,7 +331,7 @@ export default async function SettingsPage() {
         <Card>
           <CardHead
             title="Nom et membres"
-            hint={`La boutique a laquelle appartient cet espace de travail, et les ${plural(team.length, "personne", "personnes")} qui peuvent l'ouvrir.`}
+            hint={`La boutique à laquelle appartient cet espace de travail, et les ${plural(team.length, "personne", "personnes")} qui peuvent l'ouvrir.`}
           />
           <dl className="flex flex-col">
             {/* The name comes from the shop record the shell reads, so this row
@@ -340,7 +340,7 @@ export default async function SettingsPage() {
               label="Nom de l'espace de travail"
               value={STORE.name}
               state="Pas encore modifiable"
-              note="Le nom de la boutique dont cet espace de travail tient les commandes. C'est le même nom que celui affiche dans le coin superieur de chaque écran. Il devient modifiable avec l'étape de connexion, et vous serez la seule personne a pouvoir le changer."
+              note="Le nom de la boutique dont cet espace de travail tient les commandes. C'est le même nom que celui affiché dans le coin supérieur de chaque écran. Il devient modifiable avec l'étape de connexion, et vous serez la seule personne à pouvoir le changer."
             />
             <SettingRow
               label="Personnes"
@@ -355,8 +355,8 @@ export default async function SettingsPage() {
               <thead>
                 <tr className="border-b border-line">
                   <th className="os-label pb-2 font-normal">Personne</th>
-                  <th className="os-label pb-2 font-normal">Role</th>
-                  <th className="os-label pb-2 font-normal">Ce que ce role peut faire</th>
+                  <th className="os-label pb-2 font-normal">Rôle</th>
+                  <th className="os-label pb-2 font-normal">Ce que ce rôle peut faire</th>
                   <th className="os-label pb-2 font-normal">Ces paramètres</th>
                 </tr>
               </thead>
@@ -385,38 +385,38 @@ export default async function SettingsPage() {
 
           <p className="mt-3 max-w-[74ch] rounded-[var(--radius-sm)] border border-line bg-surface-2 px-3 py-2 text-[12.5px] leading-relaxed text-muted">
             <span className="font-semibold text-ink">Inviter quelqu'un arrive avec l'étape de connexion. </span>
-            Il n'y a pas encore de moyen de se connecter, donc une invitation serait un email qui mene
-            a une porte qui ne s'ouvre pas. C'est pour cela qu'il n'y a pas de bouton d'invitation ici,
-            plutot qu'un bouton qui echoue.
+            Il n'y a pas encore de moyen de se connecter, donc une invitation serait un email qui mène
+            à une porte qui ne s'ouvre pas. C'est pour cela qu'il n'y a pas de bouton d'invitation ici,
+            plutôt qu'un bouton qui échoue.
           </p>
         </Card>
       </section>
 
       {/* Regional ------------------------------------------------------- */}
       <section id="regional" aria-labelledby="regional-heading" className="flex flex-col gap-3">
-        <h2 id="regional-heading" className="os-label">Regional</h2>
+        <h2 id="regional-heading" className="os-label">Régional</h2>
 
         <div className="grid gap-3 lg:grid-cols-[1.35fr_1fr]">
           <Card>
-            <CardHead title="Monnaie, langue et heure" hint="Regle pour une boutique qui vend a Tunis." />
+            <CardHead title="Monnaie, langue et heure" hint="Réglé pour une boutique qui vend à Tunis." />
             <dl className="flex flex-col">
               <SettingRow
                 label="Monnaie"
-                value="Dinar tunisien, trois decimales"
+                value="Dinar tunisien, trois décimales"
                 state="Pas encore modifiable"
-                note="Chaque montant du produit s'ecrit de la même facon, d'une ligne de commande jusqu'au budget. Une deuxieme monnaie n'est pas prévue, parce que la boutique vend en dinars."
+                note="Chaque montant du produit s'écrit de la même façon, d'une ligne de commande jusqu'au budget. Une deuxième monnaie n'est pas prévue, parce que la boutique vend en dinars."
               />
               <SettingRow
                 label="Langue"
-                value="Francais, sur chaque écran"
+                value="Français, sur chaque écran"
                 state="Pas encore modifiable"
-                note="L'interface est en francais. Ce que vos clients ecrivent reste dans la langue dans laquelle ils l'ont ecrit, francais, arabe ou anglais, et n'est jamais traduit a l'arrivee. Choisir une autre langue d'interface vient plus tard, après la base de données."
+                note="L'interface est en français. Ce que vos clients écrivent reste dans la langue dans laquelle ils l'ont écrit, français, arabe ou anglais, et n'est jamais traduit à l'arrivée. Choisir une autre langue d'interface vient plus tard, après la base de données."
               />
               <SettingRow
                 label="Fuseau horaire"
                 value="Tunis, GMT+1 toute l'année"
                 state="Pas encore modifiable"
-                note={`La Tunisie ne change pas d'heure en été, donc une commande horodatee a 14:20 a été passee a 14:20 dans la boutique. La démonstration n'a pas de serveur a Tunis derriere elle : elle lit l'horloge de la machine sur laquelle elle tourne, qui indique ${formatDateTime(DEMO_NOW.toISOString())} en ce moment.`}
+                note={`La Tunisie ne change pas d'heure en été, donc une commande horodatée à 14:20 a été passée à 14:20 dans la boutique. La démonstration n'a pas de serveur à Tunis derrière elle : elle lit l'horloge de la machine sur laquelle elle tourne, qui indique ${formatDateTime(DEMO_NOW.toISOString())} en ce moment.`}
               />
               <SettingRow
                 label="La semaine commence le"
@@ -429,11 +429,11 @@ export default async function SettingsPage() {
 
           <Card className="flex flex-col">
             <CardHead
-              title="Comment les montants s'ecrivent ici"
+              title="Comment les montants s'écrivent ici"
               hint={
                 moneyExample
-                  ? `Commande ${moneyExample.reference} des données d'exemple, ecrite comme chaque écran l'ecrit.`
-                  : "La facon dont chaque écran ecrit un montant."
+                  ? `Commande ${moneyExample.reference} des données d'exemple, écrite comme chaque écran l'écrit.`
+                  : "La façon dont chaque écran écrit un montant."
               }
             />
             {moneyExample ? (
@@ -468,9 +468,9 @@ export default async function SettingsPage() {
               </>
             ) : null}
             <p className="mt-3 max-w-[52ch] text-[12.5px] leading-relaxed text-muted">
-              La virgule separe les dinars des millimes, et mille millimes font un dinar, donc un
+              La virgule sépare les dinars des millimes, et mille millimes font un dinar, donc un
               montant se lit ici en dinars et jamais en milliers. Les montants sont tenus au millime
-              et ne sont jamais arrondis vers le haut pour arriver a un total.
+              et ne sont jamais arrondis vers le haut pour arriver à un total.
             </p>
           </Card>
         </div>
@@ -484,7 +484,7 @@ export default async function SettingsPage() {
           <Card>
             <CardHead
               title="Ce dont la boutique vous avertira"
-              hint="Quatre choses qui meritent de vous sortir de ce que vous etiez en train de faire. Tout le reste attend que vous alliez regarder."
+              hint="Quatre choses qui méritent de vous sortir de ce que vous étiez en train de faire. Tout le reste attend que vous alliez regarder."
             />
             <ul className="flex flex-col">
               {NOTIFY_EVENTS.map((event) => (
@@ -498,7 +498,7 @@ export default async function SettingsPage() {
             <p className="mt-3 max-w-[74ch] rounded-[var(--radius-sm)] border border-line bg-surface-2 px-3 py-2 text-[12.5px] leading-relaxed text-muted">
               <span className="font-semibold text-ink">Ce sont ces quatre cas que le produit signalera. </span>
               Vous les envoyer, par email ou sur votre téléphone, arrive après l'étape de connexion,
-              parce qu'il n'y a encore nulle part ou garder une adresse qui vous appartient. Rien ne
+              parce qu'il n'y a encore nulle part où garder une adresse qui vous appartient. Rien ne
               quitte l'écran aujourd'hui : les trois premiers apparaissent dans le bouton Alertes en
               haut, et celui du stock faible sur Produits et sur le tableau de bord.
             </p>
@@ -507,12 +507,12 @@ export default async function SettingsPage() {
           <Card className="flex flex-col">
             <CardHead
               title="Ce qui serait envoyé maintenant"
-              hint="Compte a partir des données d'exemple avec les memes règles, pour que vous voyiez ce que ces quatre cas attrapent vraiment."
+              hint="Compté à partir des données d'exemple avec les mêmes règles, pour que vous voyiez ce que ces quatre cas attrapent vraiment."
             />
             {live.length === 0 ? (
               <EmptyState
                 title="Rien ne vous parviendrait maintenant"
-                body="Tous les canaux recoivent correctement, aucune demande n'a attendu deux heures sans personne dessus, aucune relance n'est en retard et aucun produit n'est descendu a son seuil de stock faible."
+                body="Tous les canaux reçoivent correctement, aucune demande n'a attendu deux heures sans personne dessus, aucune relance n'est en retard et aucun produit n'est descendu à son seuil de stock faible."
                 action={{ label: "Ouvrir la boîte de réception", href: "/inbox" }}
               />
             ) : (
@@ -537,7 +537,7 @@ export default async function SettingsPage() {
                       </p>
                     ) : null}
                     <p className="mt-1.5 max-w-[52ch] text-[12.5px] leading-relaxed text-muted">
-                      {item.détail}
+                      {item.detail}
                     </p>
                     <Link
                       href={item.href}
@@ -555,13 +555,13 @@ export default async function SettingsPage() {
 
       {/* Data and privacy ------------------------------------------------ */}
       <section id="data" aria-labelledby="data-heading" className="flex flex-col gap-3">
-        <h2 id="data-heading" className="os-label">Données et confidentialite</h2>
+        <h2 id="data-heading" className="os-label">Données et confidentialité</h2>
 
         <div className="grid gap-3 xl:grid-cols-3">
           <Card className="flex flex-col">
             <CardHead
-              title="Ce qui est conserve sur un client"
-              hint="Uniquement ce qu'il faut pour lui repondre et pour le livrer."
+              title="Ce qui est conservé sur un client"
+              hint="Uniquement ce qu'il faut pour lui répondre et pour le livrer."
             />
             <dl className="flex flex-col gap-2 text-[12.5px]">
               {STORED.map((row) => (
@@ -572,20 +572,20 @@ export default async function SettingsPage() {
               ))}
             </dl>
             <p className="my-3 rounded-[var(--radius-sm)] border border-line bg-surface-2 px-3 py-2 text-[12px] leading-relaxed text-muted">
-              Aucun numéro de carte n'est jamais conserve ici. Le paiement se fait en especes a la
-              livraison ou par la societe de livraison, donc une carte ne passe jamais par Les Saveurs
+              Aucun numéro de carte n'est jamais conservé ici. Le paiement se fait en espèces à la
+              livraison ou par la société de livraison, donc une carte ne passe jamais par Les Saveurs
               du Cap Bon.
             </p>
             <Placeholder>
-              C'est la règle telle qu'elle est aujourd'hui, ecrite avant que les données existent.
-              Elle commence a s'appliquer le jour ou la base de données est allumee.
+              C'est la règle telle qu'elle est aujourd'hui, écrite avant que les données existent.
+              Elle commence à s'appliquer le jour où la base de données est allumée.
             </Placeholder>
           </Card>
 
           <Card className="flex flex-col">
             <CardHead
-              title="Combien de temps les choses sont conservees"
-              hint="Un parametre avec une valeur par defaut, une ligne par type d'enregistrement."
+              title="Combien de temps les choses sont conservées"
+              hint="Un paramètre avec une valeur par défaut, une ligne par type d'enregistrement."
             />
             <dl className="flex flex-col">
               {RETENTION.map((row) => (
@@ -602,26 +602,26 @@ export default async function SettingsPage() {
               ))}
             </dl>
             <p className="my-3 text-[12px] leading-relaxed text-muted">
-              Ce sont les valeurs par defaut. Les changer devient un parametre que vous pourrez
-              deplacer une fois la base de données en service, et une duree plus courte ne supprimera
-              que pour la suite, sans jamais revenir en arriere retirer ce que vous avez déjà.
+              Ce sont les valeurs par défaut. Les changer devient un paramètre que vous pourrez
+              déplacer une fois la base de données en service, et une durée plus courte ne supprimera
+              que pour la suite, sans jamais revenir en arrière retirer ce que vous avez déjà.
             </p>
             <Placeholder>
-              Rien n'est supprime a échéance aujourd'hui, parce que les données d'exemple vivent dans
+              Rien n'est supprimé à échéance aujourd'hui, parce que les données d'exemple vivent dans
               l'application et non dans une base de données.
             </Placeholder>
           </Card>
 
           <Card className="flex flex-col">
             <CardHead
-              title="Si un client demande a etre supprime"
+              title="Si un client demande à être supprimé"
               hint="Ce que vous feriez, et ce que cela retirerait."
             />
             <ol className="flex flex-col gap-1.5 text-[12.5px] leading-relaxed">
               <li className="flex gap-2">
                 <span className="os-num shrink-0 font-bold text-primary">1.</span>
-                Le client demande, sur n'importe quel canal ou par téléphone. Personne n'a a prouver
-                son identite au-dela du numéro ou de l'adresse depuis lesquels il a ecrit.
+                Le client demande, sur n'importe quel canal ou par téléphone. Personne n'a à prouver
+                son identité au-delà du numéro ou de l'adresse depuis lesquels il a écrit.
               </li>
               <li className="flex gap-2">
                 <span className="os-num shrink-0 font-bold text-primary">2.</span>
@@ -629,11 +629,11 @@ export default async function SettingsPage() {
               </li>
               <li className="flex gap-2">
                 <span className="os-num shrink-0 font-bold text-primary">3.</span>
-                C'est fait sous trente jours, et vous ecrivez une fois pour dire que c'est fait.
+                C'est fait sous trente jours, et vous écrivez une fois pour dire que c'est fait.
               </li>
             </ol>
 
-            <p className="os-label mt-3">Supprime</p>
+            <p className="os-label mt-3">Supprimé</p>
             <ul className="mt-1 flex flex-col gap-1 text-[12.5px] leading-relaxed text-muted">
               {DELETION_REMOVES.map((line) => (
                 <li key={line} className="flex gap-2">
@@ -643,7 +643,7 @@ export default async function SettingsPage() {
               ))}
             </ul>
 
-            <p className="os-label mt-3">Conserve</p>
+            <p className="os-label mt-3">Conservé</p>
             <ul className="mt-1 mb-3 flex flex-col gap-1 text-[12.5px] leading-relaxed text-muted">
               {DELETION_KEEPS.map((line) => (
                 <li key={line} className="flex gap-2">
@@ -654,8 +654,8 @@ export default async function SettingsPage() {
             </ul>
 
             <Placeholder>
-              Un bouton sur la fiche contact qui fait tout cela d'un coup est concu, pas construit.
-              La demande se note a la main pour le moment.
+              Un bouton sur la fiche contact qui fait tout cela d'un coup est conçu, pas construit.
+              La demande se note à la main pour le moment.
             </Placeholder>
           </Card>
         </div>
@@ -663,12 +663,12 @@ export default async function SettingsPage() {
 
       {/* Connected accounts ---------------------------------------------- */}
       <section id="accounts" aria-labelledby="accounts-heading" className="flex flex-col gap-3">
-        <h2 id="accounts-heading" className="os-label">Comptes connectes</h2>
+        <h2 id="accounts-heading" className="os-label">Comptes connectés</h2>
 
         <Card>
           <CardHead
-            title="D'ou arrivent vos commandes"
-            hint={`${plural(receiving.length, "source apporte", "sources apportent")} des commandes, ${plural(attention.length, "attend", "attendent")} quelque chose de vous, et ${plural(planned.length, "est prévue", "sont prevues")}.`}
+            title="D'où arrivent vos commandes"
+            hint={`${plural(receiving.length, "source apporte", "sources apportent")} des commandes, ${plural(attention.length, "attend", "attendent")} quelque chose de vous, et ${plural(planned.length, "est prévue", "sont prévues")}.`}
             action={
               <Link
                 href="/integrations"
@@ -681,8 +681,8 @@ export default async function SettingsPage() {
 
           {byChannel.length === 0 ? (
             <EmptyState
-              title="Aucune source n'est encore configuree"
-              body="Rien n'est liste ici parce qu'aucun connecteur n'a été ajouté a cet espace de travail."
+              title="Aucune source n'est encore configurée"
+              body="Rien n'est listé ici parce qu'aucun connecteur n'a été ajouté à cet espace de travail."
               action={{ label: "Ouvrir Intégrations", href: "/integrations" }}
             />
           ) : (
@@ -692,7 +692,7 @@ export default async function SettingsPage() {
                   <tr className="border-b border-line">
                     <th className="os-label pb-2 font-normal">Source</th>
                     <th className="os-label pb-2 font-normal">Comptes</th>
-                    <th className="os-label pb-2 font-normal">Etat</th>
+                    <th className="os-label pb-2 font-normal">État</th>
                     <th className="os-label pb-2 font-normal">Dernière commande reçue</th>
                     <th className="os-label pb-2 text-right font-normal">Commandes cette semaine</th>
                   </tr>
@@ -707,7 +707,7 @@ export default async function SettingsPage() {
                         <span className="os-num">{row.accounts}</span>
                         {row.planned > 0 ? (
                           <span className="ml-1.5 text-[11.5px]">
-                            (<span className="os-num">{row.planned}</span> prevus)
+                            (<span className="os-num">{row.planned}</span> prévus)
                           </span>
                         ) : null}
                       </td>
@@ -731,9 +731,9 @@ export default async function SettingsPage() {
 
           <p className="mt-3 max-w-[76ch] text-[12.5px] leading-relaxed text-muted">
             Ce dont chaque compte a besoin, ce qui lui manque encore et ce qui est en panne se
-            trouvent sur Intégrations, donc ce n'est pas repete ici. Tous les etats de ce tableau sont
+            trouvent sur Intégrations, donc ce n'est pas répété ici. Tous les états de ce tableau sont
             des données d'exemple : aucun compte WhatsApp, Instagram, Facebook ou Google réel n'est
-            rattache a cet espace de travail, et rien de ce que vous faites dans le produit n'atteint
+            rattaché à cet espace de travail, et rien de ce que vous faites dans le produit n'atteint
             un client.
           </p>
         </Card>

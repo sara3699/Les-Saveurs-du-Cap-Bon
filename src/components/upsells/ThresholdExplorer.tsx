@@ -62,13 +62,13 @@ export function ThresholdExplorer({
 
       <div role="status" className="mt-2 flex flex-col gap-1">
         <p className="text-[13px] leading-relaxed text-muted">
-          A <span className="os-num">{chosen.label}</span>, {chosen.shareLabel} des commandes
+          À <span className="os-num">{chosen.label}</span>, {chosen.shareLabel} des commandes
           atteindraient la livraison offerte, <span className="os-num">{chosen.reachedLabel}</span>.{" "}
           {chosen.justShortLabel}
         </p>
         <p className="text-[11.5px] text-muted">
           {value === currentValue
-            ? "C'est le montant que votre boutique utilisé aujourd'hui. En essayer un autre change cet écran uniquement."
+            ? "C'est le montant que votre boutique utilise aujourd'hui. En essayer un autre change cet écran uniquement."
             : "Essayer un montant ici change cet écran uniquement, rien n'est enregistré."}
         </p>
       </div>

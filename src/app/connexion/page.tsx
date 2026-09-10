@@ -1,8 +1,8 @@
 import { enterAs } from "./actions";
+import { SignInForm } from "@/components/connexion/SignInForm";
 import { getRepositories } from "@/lib/repositories";
 import { STORE } from "@/lib/mock/core";
 import type { TeamRole } from "@/lib/domain/types";
-import { hiddenFor } from "@/lib/session";
 
 export const metadata = { title: "Connexion, Les Saveurs du Cap Bon" };
 
@@ -12,83 +12,58 @@ const ROLE_LABEL: Record<TeamRole, string> = {
   agent: "Agent",
 };
 
-const ROLE_SUMMARY: Record<TeamRole, string> = {
-  owner:
-    "Voit tout : chaque commande, chaque conversation, les chiffres et la configuration des canaux.",
-  manager:
-    "Répartit le travail, suit les conversations et les commandes, consulte les statistiques. Ne voit pas le budget ni la boutique.",
-  agent:
-    "Traite les conversations et les commandes qui lui sont attribuées. Ne voit ni les chiffres de la boutique ni la configuration.",
-};
-
 export default async function ConnexionPage() {
   const team = await getRepositories().workspace.team();
 
   return (
-    <main className="min-h-screen bg-canvas px-4 py-10 sm:py-16">
-      <div className="mx-auto flex w-full max-w-[720px] flex-col gap-6">
-        <header className="flex flex-col gap-3">
-          <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-[11px] bg-primary font-display text-sm font-bold text-white">
-              {STORE.initials}
-            </span>
-            <div>
-              <p className="font-display text-lg font-bold leading-tight">{STORE.name}</p>
-              <p className="text-xs text-muted">{STORE.city}</p>
-            </div>
+    <main className="grid min-h-screen place-items-center bg-canvas px-4 py-10">
+      <div className="flex w-full max-w-[420px] flex-col gap-5">
+        <header className="flex flex-col items-center gap-3 text-center">
+          <span className="grid h-11 w-11 place-items-center rounded-[12px] bg-primary font-display text-base font-bold text-white">
+            {STORE.initials}
+          </span>
+          <div>
+            <h1 className="font-display text-xl font-bold leading-tight">{STORE.name}</h1>
+            <p className="mt-0.5 text-xs text-muted">{STORE.city}</p>
           </div>
-          <h1 className="text-2xl leading-tight">Qui ouvre l&apos;espace de travail ?</h1>
-          <p className="max-w-[62ch] text-sm text-muted">
-            Choisissez une personne pour entrer avec ses droits. Chaque rôle ne voit pas la même
-            chose, et l&apos;écran vous dit lesquels sont masqués.
-          </p>
-          <p className="inline-flex w-fit items-center gap-2 rounded-full border border-accent-line bg-accent-soft px-3 py-1 text-xs font-semibold text-accent-ink">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
-            Démonstration, aucun mot de passe et aucun compte réel
-          </p>
         </header>
 
-        <ul className="grid gap-3 sm:grid-cols-2">
-          {team.map((member) => {
-            const hidden = hiddenFor(member.role);
-            return (
-              <li key={member.id} className="os-card flex flex-col gap-3 p-4">
-                <div className="flex items-center gap-2.5">
-                  <span className="grid h-9 w-9 place-items-center rounded-[10px] bg-primary-soft font-display text-[13px] font-bold text-primary">
-                    {member.initials}
-                  </span>
-                  <span>
-                    <span className="block text-sm font-semibold leading-tight">{member.name}</span>
-                    <span className="block text-[11.5px] text-muted">{ROLE_LABEL[member.role]}</span>
-                  </span>
-                </div>
+        <SignInForm />
 
-                <p className="text-[12.5px] leading-relaxed text-muted">{ROLE_SUMMARY[member.role]}</p>
+        <details className="os-card px-4 py-3">
+          <summary className="cursor-pointer list-none text-[13px] font-semibold">
+            Ou entrer en démonstration, sans compte
+            <span className="mt-0.5 block text-[12px] font-normal text-muted">
+              Pour montrer l&apos;espace de travail. Vous voyez tout, rien n&apos;est enregistré.
+            </span>
+          </summary>
 
-                <p className="text-[11.5px] text-faint">
-                  {hidden.length === 0
-                    ? "Aucun écran masqué."
-                    : `${hidden.length} écrans masqués pour ce rôle.`}
-                </p>
-
-                <form action={enterAs} className="mt-auto">
+          <ul className="mt-3 flex flex-col gap-1.5 border-t border-line pt-3">
+            {team.map((member) => (
+              <li key={member.id}>
+                <form action={enterAs}>
                   <input type="hidden" name="memberId" value={member.id} />
                   <button
                     type="submit"
-                    className="w-full rounded-[var(--radius-md)] bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hi"
+                    className="flex w-full items-center gap-2.5 rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-2 text-left hover:border-line-strong"
                   >
-                    Entrer comme {member.name.split(" ")[0]}
+                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-[8px] bg-primary-soft font-display text-[11px] font-bold text-primary">
+                      {member.initials}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-[13px] font-semibold">{member.name}</span>
+                      <span className="block text-[11px] text-muted">{ROLE_LABEL[member.role]}</span>
+                    </span>
                   </button>
                 </form>
               </li>
-            );
-          })}
-        </ul>
+            ))}
+          </ul>
+        </details>
 
-        <p className="max-w-[70ch] text-xs text-muted">
-          Les vrais comptes, avec mot de passe, arrivent avec la base de données. Tant qu&apos;elle
-          n&apos;est pas en place, rien de ce que vous faites ici n&apos;est enregistré et aucun
-          compte Instagram, WhatsApp, Facebook ou Google n&apos;est connecté.
+        <p className="text-center text-[11.5px] leading-relaxed text-muted">
+          Aucun compte Instagram, WhatsApp, Facebook ou Google n&apos;est connecté à cet espace.
+          Les commandes et les clients que vous voyez sont des données d&apos;exemple.
         </p>
       </div>
     </main>

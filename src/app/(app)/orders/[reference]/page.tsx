@@ -24,7 +24,7 @@ export default async function OrderDetailPage({ params }: { params: Params }) {
   const [contact, team, connections, attributions] = await Promise.all([
     repos.contacts.byId(order.contactId),
     repos.workspace.team(),
-    repos.intégrations.list(),
+    repos.integrations.list(),
     repos.workspace.attributions(),
   ]);
 

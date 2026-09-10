@@ -8,9 +8,13 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:isolation": "node scripts/isolation-test.mjs",
+    "seed": "tsx scripts/emit-seed.ts > supabase/seed-core.sql"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.116.0",
     "next": "16.3.3",
     "react": "19.2.8",
     "react-dom": "19.2.8",
@@ -25,6 +29,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.3",
     "tailwindcss": "^4",
+    "tsx": "^4.23.13",
     "typescript": "^5",
     "vitest": "^3.2.4"
   }

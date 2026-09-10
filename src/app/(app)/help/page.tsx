@@ -23,59 +23,59 @@ const GUIDES: Guide[] = [
     what: "Les demandes envoyées depuis votre propre site arrivent sous forme de conversations, avec la page d'origine.",
     youNeed: [
       "Un site auquel vous pouvez ajouter un formulaire",
-      "Dix minutes avec la personne qui géré le site",
+      "Dix minutes avec la personne qui gère le site",
     ],
     weDo: [
       "Vous donner une adresse sur votre espace Les Saveurs du Cap Bon vers laquelle le formulaire envoie les demandes",
-      "Vérifier chaque demande avant de l'accepter, et refuser tout ce qui est mal forme",
-      "Limiter la frequence d'appel de cette adresse, pour que personne ne puisse inonder votre boîte de réception",
+      "Vérifier chaque demande avant de l'accepter, et refuser tout ce qui est mal formé",
+      "Limiter la fréquence d'appel de cette adresse, pour que personne ne puisse inonder votre boîte de réception",
     ],
   },
   {
     id: "whatsapp",
     channelId: "whatsapp",
     title: "WhatsApp Business",
-    what: "Lisez et repondez aux messages WhatsApp ici, plutot que sur un téléphone que l'on se passe entre collegues.",
+    what: "Lisez et répondez aux messages WhatsApp ici, plutôt que sur un téléphone que l'on se passe entre collègues.",
     youNeed: [
-      "Une entreprise vérifiée aupres de Meta",
+      "Une entreprise vérifiée auprès de Meta",
       "Un numéro de téléphone qui n'est pas déjà utilisé sur l'application WhatsApp",
-      "Un modèle de message approuve par Meta",
+      "Un modèle de message approuvé par Meta",
     ],
     weDo: [
       "Passer par la plateforme officielle WhatsApp Business, jamais par votre compte personnel",
-      "Conserver les messages reçus, vos reponses et les accuses de reception comme des enregistrements distincts",
-      "Refuser d'envoyer un modèle que Meta n'a pas approuve, plutot que d'echouer en silence",
+      "Conserver les messages reçus, vos réponses et les accusés de réception comme des enregistrements distincts",
+      "Refuser d'envoyer un modèle que Meta n'a pas approuvé, plutôt que d'échouer en silence",
     ],
     gotcha:
-      "Répondre dans les 24 heures qui suivent le message d'un client ne demande rien de plus. Ouvrir une conversation après ce délai exige un modèle approuve, et l'approbation prend plusieurs jours.",
+      "Répondre dans les 24 heures qui suivent le message d'un client ne demande rien de plus. Ouvrir une conversation après ce délai exige un modèle approuvé, et l'approbation prend plusieurs jours.",
   },
   {
     id: "instagram",
     channelId: "instagram",
     title: "Instagram",
-    what: "Les messages envoyés a votre compte professionnel Instagram arrivent dans la même liste.",
+    what: "Les messages envoyés à votre compte professionnel Instagram arrivent dans la même liste.",
     youNeed: [
       "Un compte professionnel Instagram",
-      "Une page Facebook liée a ce compte, que vous administrez",
+      "Une page Facebook liée à ce compte, que vous administrez",
     ],
     weDo: [
-      "Demander a Meta uniquement l'autorisation nécessaire pour lire et repondre aux messages",
-      "Garder les reponses aux stories et les commentaires de publication distincts des messages directs",
+      "Demander à Meta uniquement l'autorisation nécessaire pour lire et répondre aux messages",
+      "Garder les réponses aux stories et les commentaires de publication distincts des messages directs",
     ],
     gotcha:
-      "Seuls les comptes professionnels peuvent etre connectes. Aucun produit ne peut lire une boîte de réception Instagram personnelle, celui-ci compris.",
+      "Seuls les comptes professionnels peuvent être connectés. Aucun produit ne peut lire une boîte de réception Instagram personnelle, celui-ci compris.",
   },
   {
     id: "facebook",
     channelId: "facebook",
     title: "Facebook Messenger",
-    what: "Les messages envoyés a votre page Facebook, auxquels vous repondez depuis ici.",
+    what: "Les messages envoyés à votre page Facebook, auxquels vous répondez depuis ici.",
     youNeed: ["Une page Facebook que vous administrez"],
     weDo: [
       "Connecter la page via la plateforme officielle Messenger",
-      "Vous prevenir dès que l'autorisation sur la page est retirée, au lieu de ne plus rien recevoir en silence",
+      "Vous prévenir dès que l'autorisation sur la page est retirée, au lieu de ne plus rien recevoir en silence",
     ],
-    gotcha: "Les messages envoyés a un profil Facebook personnel ne sont jamais disponibles. Les pages uniquement.",
+    gotcha: "Les messages envoyés à un profil Facebook personnel ne sont jamais disponibles. Les pages uniquement.",
   },
   {
     id: "google-ads",
@@ -92,25 +92,25 @@ const GUIDES: Guide[] = [
     id: "google-business",
     channelId: "google",
     title: "Google Business Profile",
-    what: "Les messages et les avis de votre Google Business Profile. Prévu, pas encore developpe.",
+    what: "Les messages et les avis de votre Google Business Profile. Prévu, pas encore développé.",
     youNeed: ["Un Google Business Profile vérifié"],
-    weDo: ["Le garder comme source distincte, pour qu'un avis ne soit jamais compte comme un prospect"],
+    weDo: ["Le garder comme source distincte, pour qu'un avis ne soit jamais compté comme un prospect"],
   },
   {
     id: "gmail",
     channelId: "google",
     title: "Gmail",
-    what: "Les e-mails envoyés a l'adresse de la boutique, sous forme de conversations. Prévu, pas encore developpe.",
+    what: "Les e-mails envoyés à l'adresse de la boutique, sous forme de conversations. Prévu, pas encore développé.",
     youNeed: ["Un compte Gmail ou Google Workspace"],
-    weDo: ["Le garder separe de Google Ads, parce que les deux repondent a des questions differentes"],
+    weDo: ["Le garder séparé de Google Ads, parce que les deux répondent à des questions différentes"],
   },
   {
     id: "manual",
     channelId: "manual",
-    title: "Saisi a la main",
+    title: "Saisi à la main",
     what: "Les commandes et les demandes prises au téléphone ou au comptoir.",
     youNeed: ["Rien"],
-    weDo: ["Les marquer comme Manuel, jamais comme l'un des canaux connectes"],
+    weDo: ["Les marquer comme Manuel, jamais comme l'un des canaux connectés"],
   },
 ];
 
@@ -119,27 +119,27 @@ export default function HelpPage() {
     <div className="flex flex-col gap-4">
       <PageHeader
         title="Besoin d'aide ?"
-        subtitle="Ce que vous avez sous les yeux, et ce qui se passe quand vous voudrez le connecter a vos vrais comptes."
+        subtitle="Ce que vous avez sous les yeux, et ce qui se passe quand vous voudrez le connecter à vos vrais comptes."
         actions={<DemoChip />}
       />
 
       <Card className="max-w-[75ch]">
-        <h2 className="text-[15px]">Vous etes en mode démonstration</h2>
+        <h2 className="text-[15px]">Vous êtes en mode démonstration</h2>
         <div className="mt-2 flex flex-col gap-2 text-sm text-muted">
           <p>
-            Chaque client, message et commande que vous voyez a été invente pour cette
+            Chaque client, message et commande que vous voyez a été inventé pour cette
             démonstration. Aucun compte Instagram, WhatsApp, Facebook ou Google n'est connecté, et
             rien de ce que vous faites ici n'atteint un client.
           </p>
           <p>
-            L'interet de la démonstration est de vous laisser juger le produit avant de donner accès
-            a quoi que ce soit. Attribuez une conversation, filtrez les commandes par source, et
-            voyez si les reponses vous conviennent.
+            L'intérêt de la démonstration est de vous laisser juger le produit avant de donner accès
+            à quoi que ce soit. Attribuez une conversation, filtrez les commandes par source, et
+            voyez si les réponses vous conviennent.
           </p>
           <p>
             L'étape suivante est une vraie base de données et un moyen de se connecter. Ensuite, le
             formulaire du site web sera le premier connecteur, parce que c'est le seul qui ne demande
-            rien a Meta ni a Google.
+            rien à Meta ni à Google.
           </p>
         </div>
       </Card>

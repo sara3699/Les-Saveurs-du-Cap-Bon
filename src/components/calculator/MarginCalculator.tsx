@@ -75,12 +75,12 @@ function Field({
 function Figure({
   label,
   value,
-  détail,
+  detail,
   tone = "plain",
 }: {
   label: string;
   value: string;
-  détail: string;
+  detail: string;
   tone?: "plain" | "bad";
 }) {
   const bad = tone === "bad";
@@ -98,7 +98,7 @@ function Figure({
       >
         {value}
       </p>
-      <p className="mt-1.5 text-[11px] leading-snug text-muted">{détail}</p>
+      <p className="mt-1.5 text-[11px] leading-snug text-muted">{detail}</p>
     </div>
   );
 }
@@ -274,7 +274,7 @@ export function MarginCalculator({
             <Figure
               label="Marge sur une commande"
               value={formatTND(result.marginPerOrder)}
-              détail={
+              detail={
                 result.netPrice > 0
                   ? `${formatPercent(Math.round(result.marginPercent))} de ce que le client paie`
                   : "Le client ne paie rien avec cette remise, il n'y a donc pas de pourcentage à calculer"
@@ -284,7 +284,7 @@ export function MarginCalculator({
             <Figure
               label="Publicité par commande"
               value={formatTND(result.adPerOrder)}
-              détail={
+              detail={
                 orderCount > 0
                   ? `${formatTND(inputs.adSpend)} répartis sur ${orderWord(orderCount)}`
                   : "Aucune commande dans l'opération pour l'instant, rien ne porte donc la publicité"
@@ -293,12 +293,12 @@ export function MarginCalculator({
             <Figure
               label="Argent entrant, toute l'opération"
               value={formatTND(result.totalRevenue)}
-              détail={`${orderWord(orderCount)} à ${formatTND(result.netPrice)} chacune`}
+              detail={`${orderWord(orderCount)} à ${formatTND(result.netPrice)} chacune`}
             />
             <Figure
               label="Argent sortant, toute l'opération"
               value={formatTND(result.totalCost)}
-              détail="Le produit et la livraison sur chaque commande, plus la publicité une fois"
+              detail="Le produit et la livraison sur chaque commande, plus la publicité une fois"
             />
           </div>
 

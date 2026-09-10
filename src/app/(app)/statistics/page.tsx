@@ -64,7 +64,7 @@ export default async function StatisticsPage({ searchParams }: { searchParams: P
   const [orders, allConversations, connections, attributions] = await Promise.all([
     repos.orders.list({ sinceDays: days }),
     repos.conversations.list(),
-    repos.intégrations.list(),
+    repos.integrations.list(),
     repos.workspace.attributions(),
   ]);
 
@@ -241,8 +241,8 @@ export default async function StatisticsPage({ searchParams }: { searchParams: P
           title="Aucune commande sur cette période"
           body={
             days === 90
-              ? "Aucune commande n'a été passee sur les 90 derniers jours, la plage la plus large que cet écran propose, il n'y a donc rien a comparer pour l'instant."
-              : "Aucune commande n'a été passee sur la plage choisie, il n'y a donc rien a comparer. Elargissez la plage et les six sources reviennent."
+              ? "Aucune commande n'a été passée sur les 90 derniers jours, la plage la plus large que cet écran propose, il n'y a donc rien à comparer pour l'instant."
+              : "Aucune commande n'a été passée sur la plage choisie, il n'y a donc rien à comparer. Élargissez la plage et les six sources reviennent."
           }
           action={
             days === 90
@@ -256,7 +256,7 @@ export default async function StatisticsPage({ searchParams }: { searchParams: P
             <Stat
               label="Commandes"
               value={String(orders.length)}
-              détail={
+              detail={
                 threads.length === 1
                   ? "1 conversation est aussi arrivée"
                   : `${threads.length} conversations sont aussi arrivées`
@@ -265,7 +265,7 @@ export default async function StatisticsPage({ searchParams }: { searchParams: P
             <Stat
               label="Chiffre d'affaires"
               value={formatTNDCompact(totalRevenue)}
-              détail="Les commandes refusees et remboursees sont exclues"
+              detail="Les commandes refusées et remboursées sont exclues"
               tone="money"
             />
             <Stat
@@ -273,12 +273,12 @@ export default async function StatisticsPage({ searchParams }: { searchParams: P
               value={formatTNDCompact(
                 countedForRevenue.length === 0 ? 0 : totalRevenue / countedForRevenue.length,
               )}
-              détail={`Sur ${countedForRevenue.length} commandes, les refusees et les remboursees exclues`}
+              detail={`Sur ${countedForRevenue.length} commandes, les refusées et les remboursées exclues`}
             />
             <Stat
-              label="Conversations qui ont mene a une commande"
+              label="Conversations qui ont mené à une commande"
               value={`${convertedTotal} sur ${threads.length}`}
-              détail={
+              detail={
                 threads.length === 0
                   ? "Aucune conversation n'est arrivée sur cette période"
                   : `${((convertedTotal / threads.length) * 100).toFixed(0)} pour cent sur les six sources`
@@ -291,7 +291,7 @@ export default async function StatisticsPage({ searchParams }: { searchParams: P
           <div className="grid gap-3 xl:grid-cols-2">
             <PeriodBars
               title="Chiffre d'affaires sur la période"
-              hint={`Une barre par ${bucketWord}, commandes refusees et remboursees exclues`}
+              hint={`Une barre par ${bucketWord}, commandes refusées et remboursées exclues`}
               bars={revenueBars}
               tone="money"
               showValues={false}
@@ -299,7 +299,7 @@ export default async function StatisticsPage({ searchParams }: { searchParams: P
             />
             <PeriodBars
               title="Commandes sur la période"
-              hint={`Les memes ${bucketWord}s que le graphique du chiffre d'affaires, toutes les commandes comptees, y compris les refusees`}
+              hint={`Les mêmes ${bucketWord}s que le graphique du chiffre d'affaires, toutes les commandes comptées, y compris les refusées`}
               bars={orderBars}
               tone="orders"
               showValues={orderBars.length <= 10}
@@ -315,12 +315,12 @@ export default async function StatisticsPage({ searchParams }: { searchParams: P
 
           <Card>
             <p className="text-[13px] leading-relaxed text-muted">
-              Chaque chiffre de cet écran est calcule a partir des commandes et des conversations
-              enregistrees dans Les Saveurs du Cap Bon, decoupees par le canal sur lequel chaque demande est
-              arrivée. Une copie a telecharger et a envoyer a quelqu'un d'autre est prévue mais pas
-              construite, il n'y a donc rien a exporter d'ici pour l'instant.{" "}
+              Chaque chiffre de cet écran est calculé à partir des commandes et des conversations
+              enregistrées dans Les Saveurs du Cap Bon, découpées par le canal sur lequel chaque demande est
+              arrivée. Une copie à télécharger et à envoyer à quelqu'un d'autre est prévue mais pas
+              construite, il n'y a donc rien à exporter d'ici pour l'instant.{" "}
               <Link href="/orders" className="font-semibold text-primary hover:underline">
-                Ouvrir les commandes derriere ces chiffres
+                Ouvrir les commandes derrière ces chiffres
               </Link>
               .
             </p>

@@ -41,7 +41,7 @@ export default async function CalculatorPage() {
     repos.workspace.products(),
     repos.orders.list(),
     repos.workspace.attributions(),
-    repos.intégrations.list(),
+    repos.integrations.list(),
     repos.workspace.budgets(),
   ]);
 

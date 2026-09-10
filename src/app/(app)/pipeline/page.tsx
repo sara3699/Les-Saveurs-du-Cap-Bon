@@ -10,6 +10,7 @@ import type { ChannelId } from "@/lib/domain/types";
 import { formatDate, formatTND, isOverdue, relativeTime, timeAgo } from "@/lib/format";
 import { DEMO_NOW } from "@/lib/mock/time";
 import { getRepositories } from "@/lib/repositories";
+import { currentSession } from "@/lib/session";
 
 export const metadata = { title: "Pipeline, Les Saveurs du Cap Bon" };
 
@@ -44,13 +45,18 @@ export default async function PipelinePage({ searchParams }: { searchParams: Par
   const view = one(params.view) === "list" ? "list" : "board";
 
   const repos = getRepositories();
+  // The board writes its moves, so it has to know which of the two doors this
+  // visitor came through. The action checks the session again for itself.
+  const session = await currentSession();
+  const canWrite = session?.canWrite ?? false;
+
   const [leads, contacts, team, tasks, attributions, connections] = await Promise.all([
     repos.workspace.leads(),
     repos.contacts.list(),
     repos.workspace.team(),
     repos.workspace.tasks(),
     repos.workspace.attributions(),
-    repos.intégrations.list(),
+    repos.integrations.list(),
   ]);
 
   const index = buildAttributionIndex(attributions, connections);
@@ -239,8 +245,8 @@ export default async function PipelinePage({ searchParams }: { searchParams: Par
 
       {cards.length === 0 ? (
         <EmptyState
-          title="Aucun prospect ne correspond a ces filtres"
-          body="Chaque prospect des données d'exemple est arrive par l'une des six sources. Un tableau vide veut donc dire que la source et le responsable choisis ne se croisent pas. Retirez l'un des deux."
+          title="Aucun prospect ne correspond à ces filtres"
+          body="Chaque prospect des données d'exemple est arrivé par l'une des six sources. Un tableau vide veut donc dire que la source et le responsable choisis ne se croisent pas. Retirez l'un des deux."
           action={{
             label: "Retirer les filtres",
             href: keep({ source: undefined, owner: undefined }),
@@ -250,19 +256,19 @@ export default async function PipelinePage({ searchParams }: { searchParams: Par
         <Card>
           <CardHead
             title="Tous les prospects, étape par étape"
-            hint="Les memes prospects que sur le tableau, en lignes. Les cartes se deplacent sur le tableau."
+            hint="Les mêmes prospects que sur le tableau, en lignes. Les cartes se déplacent sur le tableau."
           />
           <PipelineList cards={cards} />
         </Card>
       ) : (
-        <PipelineBoard cards={cards} />
+        <PipelineBoard cards={cards} canWrite={canWrite} />
       )}
 
       <p className="max-w-[86ch] text-xs text-muted">
-        Un prospect devient une carte des qu'un premier message ou un formulaire arrive, et la
-        source affichee vient de cette arrivée, pas de ce qui est saisi ensuite. La valeur
-        correspond a ce que le prospect rapportera s'il aboutit, et non a de l'argent déjà
-        encaisse. Sur téléphone, la vue liste est la plus lisible.
+        Un prospect devient une carte dès qu'un premier message ou un formulaire arrive, et la
+        source affichée vient de cette arrivée, pas de ce qui est saisi ensuite. La valeur
+        correspond à ce que le prospect rapportera s'il aboutit, et non à de l'argent déjà
+        encaissé. Sur téléphone, la vue liste est la plus lisible.
       </p>
     </div>
   );

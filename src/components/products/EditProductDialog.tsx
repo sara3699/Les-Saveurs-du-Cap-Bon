@@ -74,26 +74,26 @@ export function EditProductDialog({
   function submit(event: React.FormEvent) {
     event.preventDefault();
     if (!name.trim() || !sku.trim()) {
-      setError("Un produit a besoin d'un nom et d'une référence avant de pouvoir etre enregistré.");
+      setError("Un produit a besoin d'un nom et d'une référence avant de pouvoir être enregistré.");
       return;
     }
     const wanted = sku.trim().toUpperCase();
     if (takenCodes.some((taken) => taken.trim().toUpperCase() === wanted)) {
-      setError(`Un autre produit utilisé déjà la référence ${wanted}. Donnez a celui-ci une référence qui lui est propre.`);
+      setError(`Un autre produit utilise déjà la référence ${wanted}. Donnez à celui-ci une référence qui lui est propre.`);
       return;
     }
     if (![price, cost, stock, lowStockAt].every(filled)) {
-      setError("Le prix, le cout, le stock et le seuil d'alerte doivent tous etre remplis.");
+      setError("Le prix, le coût, le stock et le seuil d'alerte doivent tous être remplis.");
       return;
     }
     if (!Object.values(numbers).every(sane)) {
       setError(
-        "Le prix, le cout, le stock et le seuil d'alerte doivent tous etre des nombres, et aucun ne peut passer sous zero.",
+        "Le prix, le coût, le stock et le seuil d'alerte doivent tous être des nombres, et aucun ne peut passer sous zéro.",
       );
       return;
     }
     if (numbers.price <= 0) {
-      setError("Un produit a besoin d'un prix superieur a zero avant de pouvoir figurer sur la boutique.");
+      setError("Un produit a besoin d'un prix supérieur à zéro avant de pouvoir figurer sur la boutique.");
       return;
     }
     setError(null);
@@ -117,7 +117,7 @@ export function EditProductDialog({
     >
       <button
         type="button"
-        aria-label="Fermer l'editeur de produit"
+        aria-label="Fermer l'éditeur de produit"
         onClick={onCancel}
         className="absolute inset-0 bg-ink/40"
       />
@@ -206,7 +206,7 @@ export function EditProductDialog({
             <p className="flex flex-wrap items-baseline gap-x-2">
               <span className="os-label">Marge par unité</span>
               <span className="os-num text-[14px] font-semibold">
-                {priced ? formatTND(margin) : "En attente d'un prix et d'un cout"}
+                {priced ? formatTND(margin) : "En attente d'un prix et d'un coût"}
               </span>
               {priced ? (
                 <span className="os-num text-muted">{formatPercent(marginShare)}</span>
@@ -214,12 +214,12 @@ export function EditProductDialog({
             </p>
             <p className="mt-1 text-muted">
               {sellsAtALoss
-                ? "Le cout est superieur au prix, chaque vente perd donc de l'argent. Vous pouvez quand même enregistrer, le chiffre vous appartient."
+                ? "Le coût est supérieur au prix, chaque vente perd donc de l'argent. Vous pouvez quand même enregistrer, le chiffre vous appartient."
                 : !countsKnown
-                  ? "Remplissez le stock et le seuil d'alerte pour voir ou se situerait ce produit."
+                  ? "Remplissez le stock et le seuil d'alerte pour voir où se situerait ce produit."
                   : willWarn
-                    ? "A ce niveau de stock, le produit se trouve dans l'alerte de stock faible."
-                    : "A ce niveau de stock, le produit se trouve au-dessus de son seuil d'alerte."}
+                    ? "À ce niveau de stock, le produit se trouve dans l'alerte de stock faible."
+                    : "À ce niveau de stock, le produit se trouve au-dessus de son seuil d'alerte."}
             </p>
           </div>
 
@@ -234,8 +234,8 @@ export function EditProductDialog({
 
           <p className="sm:col-span-2 text-[12px] leading-relaxed text-muted">
             L'enregistrement conserve la modification pour cette visite uniquement. La base de
-            données arrive dans une étape ulterieure, un rafraichissement ramene donc les chiffres
-            d'origine, et rien ici n'est envoyé a une boutique.
+            données arrive dans une étape ultérieure, un rafraîchissement ramène donc les chiffres
+            d'origine, et rien ici n'est envoyé à une boutique.
           </p>
 
           <div className="sm:col-span-2 flex flex-wrap gap-2">

@@ -34,17 +34,17 @@ const IMPORT_COLUMNS = [
   },
   {
     column: "cost",
-    holds: "Ce que le produit vous coute, pour pouvoir calculer la marge",
+    holds: "Ce que le produit vous coûte, pour pouvoir calculer la marge",
     example: "42.000",
   },
   {
     column: "stock",
-    holds: "Les unités en rayon le jour ou vous creez le fichier",
+    holds: "Les unités en rayon le jour où vous créez le fichier",
     example: "4",
   },
   {
     column: "low_stock_at",
-    holds: "Le nombre a partir duquel vous voulez une alerte",
+    holds: "Le nombre à partir duquel vous voulez une alerte",
     example: "8",
   },
 ];
@@ -55,7 +55,7 @@ export default async function ProductsPage() {
     repos.workspace.products(),
     repos.orders.list(),
     repos.workspace.attributions(),
-    repos.intégrations.list(),
+    repos.integrations.list(),
   ]);
 
   const index = buildAttributionIndex(attributions, connections);
@@ -127,14 +127,14 @@ export default async function ProductsPage() {
     <div className="flex flex-col gap-5">
       <PageHeader
         title="Produits"
-        subtitle={`Tout ce que ${profile.displayName} vend, ce que chaque produit vous coute, et ce qui commence a manquer.`}
+        subtitle={`Tout ce que ${profile.displayName} vend, ce que chaque produit vous coûte, et ce qui commence à manquer.`}
         actions={<DemoChip />}
       />
 
       <div className="rounded-[var(--radius-md)] border border-accent-line bg-accent-soft px-4 py-3 text-[12.5px] leading-relaxed text-accent-ink">
         Les noms de produits reposent sur des signaux publics visibles sur Instagram. Les prix, le
-        stock et les references produit sont des valeurs d'exemple, en attendant un import de
-        catalogue autorise.
+        stock et les références produit sont des valeurs d'exemple, en attendant un import de
+        catalogue autorisé.
       </div>
 
       <ProductWorkbench rows={rows} shop={shop} />
@@ -142,7 +142,7 @@ export default async function ProductsPage() {
       <Card>
         <CardHead
           title="Importer votre liste de produits"
-          hint="Ce qu'un fichier doit contenir pour pouvoir etre lu"
+          hint="Ce qu'un fichier doit contenir pour pouvoir être lu"
           action={
             <span className="rounded-[var(--radius-sm)] border border-dashed border-line-strong bg-surface-2 px-3 py-1.5 text-center text-[12px] font-semibold text-faint">
               Le choix d'un fichier n'est pas encore construit
@@ -150,8 +150,8 @@ export default async function ProductsPage() {
           }
         />
         <p className="max-w-[80ch] text-[13px] leading-relaxed text-muted">
-          L'import est concu mais pas construit, cette page ne peut donc pas encore recevoir de
-          fichier. Voici la forme a preparer en attendant. Un produit par ligne, enregistré dans un
+          L'import est conçu mais pas construit, cette page ne peut donc pas encore recevoir de
+          fichier. Voici la forme à préparer en attendant. Un produit par ligne, enregistré dans un
           fichier CSV, une virgule entre les colonnes, et la première ligne qui porte les noms de
           colonnes ci-dessous.
         </p>
@@ -179,24 +179,24 @@ export default async function ProductsPage() {
 
         <ul className="mt-3 flex max-w-[80ch] list-disc flex-col gap-1 pl-4 text-[13px] leading-relaxed text-muted">
           <li>
-            Une ligne dont la référence produit existe déjà met a jour ce produit. Elle n'en ajouté
-            pas un deuxieme avec la même référence.
+            Une ligne dont la référence produit existe déjà met à jour ce produit. Elle n'en ajoute
+            pas un deuxième avec la même référence.
           </li>
           <li>
-            Les unités vendues ne figurent pas dans le fichier. Elles sont comptees à partir de vos
-            commandes, un import ne reecrit donc jamais ce que vous avez déjà vendu.
+            Les unités vendues ne figurent pas dans le fichier. Elles sont comptées à partir de vos
+            commandes, un import ne réécrit donc jamais ce que vous avez déjà vendu.
           </li>
           <li>
-            Les prix sont lus en dinar. Ecrivez <span className="os-num">89.500</span>, et non{" "}
-            <span className="os-num">89,500</span>, car la virgule sert déjà a separer les colonnes.
+            Les prix sont lus en dinar. Écrivez <span className="os-num">89.500</span>, et non{" "}
+            <span className="os-num">89,500</span>, car la virgule sert déjà à séparer les colonnes.
           </li>
         </ul>
       </Card>
 
       <p className="max-w-[80ch] text-xs leading-relaxed text-muted">
-        Rien sur cet écran n'atteint une boutique, une place de marche ou un fournisseur. Modifier
+        Rien sur cet écran n'atteint une boutique, une place de marché ou un fournisseur. Modifier
         un produit change ce que vous voyez pendant cette visite, et les chiffres reviennent tels
-        quels au prochain rafraichissement, car la base de données arrive dans une étape ulterieure.
+        quels au prochain rafraîchissement, car la base de données arrive dans une étape ultérieure.
       </p>
     </div>
   );

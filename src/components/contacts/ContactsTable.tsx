@@ -46,8 +46,8 @@ export function ContactsTable({ rows }: { rows: ContactRow[] }) {
   if (rows.length === 0) {
     return (
       <EmptyState
-        title="Aucun client ne correspond a ces filtres"
-        body="Retirez un filtre pour elargir la liste. La recherche porte sur le nom, le numéro de téléphone et l'adresse e-mail, donc un numéro partiel retrouve aussi la fiche."
+        title="Aucun client ne correspond à ces filtres"
+        body="Retirez un filtre pour élargir la liste. La recherche porte sur le nom, le numéro de téléphone et l'adresse e-mail, donc un numéro partiel retrouve aussi la fiche."
         action={{ label: "Effacer les filtres", href: "/contacts" }}
       />
     );
@@ -60,11 +60,11 @@ export function ContactsTable({ rows }: { rows: ContactRow[] }) {
           <tr>
             <th className="os-label pb-2.5 pr-3 text-left font-normal">Client</th>
             <th className="os-label pb-2.5 pr-3 text-left font-normal">Premier contact</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Plus recent</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Plus récent</th>
             <th className="os-label pb-2.5 pr-3 text-left font-normal">Ville</th>
             <th className="os-label pb-2.5 pr-3 text-left font-normal">Téléphone</th>
             <th className="os-label pb-2.5 pr-3 text-left font-normal">Étape</th>
-            <th className="os-label pb-2.5 pr-3 text-right font-normal">Total dépense, TND</th>
+            <th className="os-label pb-2.5 pr-3 text-right font-normal">Total dépensé, TND</th>
             <th className="os-label pb-2.5 text-left font-normal">Responsable</th>
           </tr>
         </thead>
@@ -89,12 +89,12 @@ export function ContactsTable({ rows }: { rows: ContactRow[] }) {
                 <SourceBadge channelId={row.latestTouch} account={row.latestAccount} size="sm" />
                 {row.moved ? (
                   <span className="mt-1 block text-[10.5px] font-semibold text-primary">
-                    Arrive par {channel(row.firstTouch).label}
+                    Arrivé par {channel(row.firstTouch).label}
                   </span>
                 ) : null}
               </td>
               <td className="py-2.5 pr-3 text-[13px]">
-                {row.city ?? <span className="text-faint">Non renseignee</span>}
+                {row.city ?? <span className="text-faint">Non renseignée</span>}
               </td>
               <td className="py-2.5 pr-3">
                 {row.phone ? (

@@ -45,7 +45,7 @@ function ConnectorCard({ connection }: { connection: ChannelConnection }) {
       <p className="text-[13px] leading-relaxed text-muted">{connection.summary}</p>
 
       <dl className="flex flex-col gap-1 text-[12px]">
-        <Row label="Prerequis" value={connection.requires} />
+        <Row label="Prérequis" value={connection.requires} />
         <Row
           label="Autorisations"
           value={connection.permissions.length ? connection.permissions.join(", ") : "Aucune"}
@@ -56,16 +56,16 @@ function ConnectorCard({ connection }: { connection: ChannelConnection }) {
           value={connection.lastEventAt ? timeAgo(connection.lastEventAt, DEMO_NOW) : "Jamais"}
         />
         <Row
-          label="Dernière verification"
+          label="Dernière vérification"
           value={connection.lastSyncAt ? timeAgo(connection.lastSyncAt, DEMO_NOW) : "Jamais"}
         />
-        <Row label="Evenements cette semaine" value={String(connection.eventsThisWeek)} mono />
+        <Row label="Événements cette semaine" value={String(connection.eventsThisWeek)} mono />
       </dl>
 
       {connection.lastErrorMessage ? (
         <p className="rounded-[var(--radius-sm)] border border-danger/20 bg-danger-soft px-3 py-2 text-[12px] text-danger">
           <span className="font-semibold">
-            {connection.lastErrorAt ? `${timeAgo(connection.lastErrorAt, DEMO_NOW)}: ` : ""}
+            {connection.lastErrorAt ? `${timeAgo(connection.lastErrorAt, DEMO_NOW)} : ` : ""}
           </span>
           {connection.lastErrorMessage}
         </p>
@@ -73,7 +73,7 @@ function ConnectorCard({ connection }: { connection: ChannelConnection }) {
 
       {connection.outstanding.length > 0 ? (
         <div className="rounded-[var(--radius-sm)] border border-accent-line bg-accent-soft px-3 py-2 text-[12px] text-accent-ink">
-          <p className="font-semibold">Reste a faire</p>
+          <p className="font-semibold">Reste à faire</p>
           <ul className="mt-1 flex flex-col gap-0.5">
             {connection.outstanding.map((item) => (
               <li key={item}>{item}</li>
@@ -110,7 +110,7 @@ function Row({ label, value, mono = false }: { label: string; value: string; mon
 }
 
 export default async function IntegrationsPage() {
-  const connections = await getRepositories().intégrations.list();
+  const connections = await getRepositories().integrations.list();
   const working = connections.filter((c) => c.status === "connected");
   const needsWork = connections.filter(
     (c) => !c.planned && (c.status === "setup_required" || c.status === "warning" || c.status === "error"),
@@ -121,7 +121,7 @@ export default async function IntegrationsPage() {
     <div className="flex flex-col gap-5">
       <PageHeader
         title="Intégrations"
-        subtitle="D'ou arrivent vos commandes, ce qui est connecté et ce qui reste a moitie fait. Aucune carte ici ne pretend faire plus qu'elle ne sait faire."
+        subtitle="D'où arrivent vos commandes, ce qui est connecté et ce qui reste à moitié fait. Aucune carte ici ne prétend faire plus qu'elle ne sait faire."
         actions={<DemoChip />}
       />
 
@@ -144,7 +144,7 @@ export default async function IntegrationsPage() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="os-label">Prevus, {planned.length}</h2>
+        <h2 className="os-label">Prévus, {planned.length}</h2>
         <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
           {planned.map((c) => (
             <ConnectorCard key={c.id} connection={c} />
@@ -152,7 +152,7 @@ export default async function IntegrationsPage() {
         </div>
         <p className="max-w-[70ch] text-xs text-muted">
           Google Business Profile et Gmail sont volontairement des connecteurs distincts de Google
-          Ads. Un avis laisse sur votre fiche Business Profile n'est pas un prospect, et les traiter
+          Ads. Un avis laissé sur votre fiche Business Profile n'est pas un prospect, et les traiter
           comme une seule source rendrait la ligne Google de votre tableau de bord vide de sens.
         </p>
       </section>

@@ -10,7 +10,7 @@ export interface ReassignItem {
   /** What the row is called: a conversation subject, or an order référence. */
   label: string;
   /** The customer and how long it has been sitting there. */
-  détail: string;
+  detail: string;
   channelId: ChannelId;
   account: string | null;
 }
@@ -59,13 +59,13 @@ export function ReassignControl({
 
   return (
     <div className="mt-auto flex flex-col gap-2 border-t border-line pt-3">
-      <p className="os-label">Transferer du travail a quelqu&apos;un d&apos;autre</p>
+      <p className="os-label">Transférer du travail à quelqu&apos;un d&apos;autre</p>
 
       {remaining.length > 0 && selected && target ? (
         <>
           <div className="flex flex-wrap items-center gap-1.5">
             <select
-              aria-label="Travail a transferer"
+              aria-label="Travail à transférer"
               value={selected.id}
               onChange={(event) => setItemId(event.target.value)}
               className="min-w-[9rem] flex-1 rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2 py-1.5 text-[12.5px]"
@@ -77,7 +77,7 @@ export function ReassignControl({
               ))}
             </select>
             <select
-              aria-label="Personne a qui le transferer"
+              aria-label="Personne à qui le transférer"
               value={target.id}
               onChange={(event) => setToId(event.target.value)}
               className="rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2 py-1.5 text-[12.5px]"
@@ -96,20 +96,20 @@ export function ReassignControl({
               }}
               className="rounded-[var(--radius-sm)] bg-primary px-3 py-1.5 text-[12.5px] font-semibold text-white hover:bg-primary-hi"
             >
-              Transferer
+              Transférer
             </button>
           </div>
           <p className="flex flex-wrap items-center gap-1.5 text-[11.5px] text-muted">
             <SourceBadge channelId={selected.channelId} account={selected.account} size="sm" />
             <span>
-              {selected.détail}
+              {selected.detail}
               {selected.account ? `, ${selected.account}` : ""}
             </span>
           </p>
         </>
       ) : (
         <p className="text-[12px] text-muted">
-          Tout ce qui est ici a été transmis a quelqu&apos;un d&apos;autre sur cet écran.
+          Tout ce qui est ici a été transmis à quelqu&apos;un d&apos;autre sur cet écran.
         </p>
       )}
 
@@ -121,7 +121,7 @@ export function ReassignControl({
               className="flex items-center justify-between gap-2 rounded-[var(--radius-sm)] border border-line bg-surface-2 px-2.5 py-1.5 text-[12px]"
             >
               <span className="min-w-0">
-                <span className="font-semibold">{move.itemLabel}</span> revient maintenant a{" "}
+                <span className="font-semibold">{move.itemLabel}</span> revient maintenant à{" "}
                 {move.toName}
               </span>
               <button
@@ -137,9 +137,9 @@ export function ReassignControl({
       ) : null}
 
       <p className="text-[11.5px] text-muted">
-        Rien n&apos;est encore enregistré. Un vrai transfert deposerait le travail dans la boite de
-        reception de la personne choisie et l&apos;en avertirait. Ici, cela ne change que cet écran,
-        et c&apos;est oublie quand vous partez.
+        Rien n&apos;est encore enregistré. Un vrai transfert déposerait le travail dans la boîte de
+        réception de la personne choisie et l&apos;en avertirait. Ici, cela ne change que cet écran,
+        et c&apos;est oublié quand vous partez.
       </p>
     </div>
   );

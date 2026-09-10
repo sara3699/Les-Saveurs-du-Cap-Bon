@@ -30,7 +30,7 @@ export function PipelineList({ cards }: { cards: PipelineCard[] }) {
             <th className="os-label pb-2.5 pr-3 text-left font-normal">Étape</th>
             <th className="os-label pb-2.5 pr-3 text-left font-normal">Responsable</th>
             <th className="os-label pb-2.5 pr-3 text-left font-normal">Prochaine action</th>
-            <th className="os-label pb-2.5 pr-3 text-left font-normal">Anciennete</th>
+            <th className="os-label pb-2.5 pr-3 text-left font-normal">Ancienneté</th>
             <th className="os-label pb-2.5 text-right font-normal">Valeur</th>
           </tr>
         </thead>
@@ -74,7 +74,7 @@ export function PipelineList({ cards }: { cards: PipelineCard[] }) {
                     </span>
                   </>
                 ) : (
-                  <span className="text-faint">Rien de note</span>
+                  <span className="text-faint">Rien de noté</span>
                 )}
               </td>
               <td className="py-2.5 pr-3 text-[12.5px] text-muted">

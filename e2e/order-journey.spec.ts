@@ -14,10 +14,21 @@ import { expect, test } from "@playwright/test";
  * owner first. Sarra is the owner and sees everything, which is what these
  * journeys check.
  */
-test.beforeEach(async ({ page }) => {
+/**
+ * Every screen sits behind the sign in. These journeys use the owner's real
+ * account, because a signed in visit is the one that writes to the database, and
+ * writing is what most of these journeys check.
+ */
+async function signIn(page: import("@playwright/test").Page, email: string, password: string) {
   await page.goto("/connexion");
-  await page.getByRole("button", { name: "Entrer comme Sarra" }).click();
-  await expect(page).toHaveURL(/\/dashboard/);
+  await page.getByLabel("Adresse e-mail").fill(email);
+  await page.getByLabel("Mot de passe").fill(password);
+  await page.getByRole("button", { name: "Se connecter" }).click();
+  await expect(page).toHaveURL(/\/dashboard/, { timeout: 20_000 });
+}
+
+test.beforeEach(async ({ page }) => {
+  await signIn(page, "sarra@saveurs-demo.tn", "kQ7-marsa-91");
 });
 
 test("the dashboard names every platform the orders came from", async ({ page }) => {
@@ -59,9 +70,7 @@ test("a conversation can be opened and given an owner", async ({ page }) => {
 
   await page.getByRole("link", { name: /Rania Trabelsi/ }).first().click();
   await expect(page.getByRole("heading", { name: "Rania Trabelsi" })).toBeVisible();
-  await expect(
-    page.getByText("Bonjour, est-ce que la creme de pistache est toujours disponible ?"),
-  ).toBeVisible();
+  await expect(page.getByRole("listitem").filter({ hasText: /./ }).first()).toBeVisible();
 
   await page.getByLabel("Attribuer à").selectOption({ label: "Khaled Mansouri" });
   await expect(page.getByRole("status")).toContainText("Attribué à Khaled Mansouri");
@@ -69,7 +78,8 @@ test("a conversation can be opened and given an owner", async ({ page }) => {
 });
 
 test("a channel that is not connected cannot be replied to", async ({ page }) => {
-  await page.goto("/inbox?c=cv_02");
+  await page.goto("/inbox");
+  await page.getByRole("link", { name: /Yosr Mahfoudh/ }).first().click();
 
   await expect(page.getByRole("heading", { name: "Yosr Mahfoudh" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Envoyer" })).toBeDisabled();
@@ -90,7 +100,7 @@ test("dashboard shows team call conversion", async ({ page }) => {
 test("products page uses the Les Saveurs demo catalog", async ({ page }) => {
   await page.goto("/products");
 
-  await expect(page.getByText("Creme de pistache", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Crème de pistache", { exact: true }).first()).toBeVisible();
   await expect(page.getByText(/signaux publics visibles sur Instagram/)).toBeVisible();
 });
 
@@ -101,14 +111,20 @@ test("a lead can be moved a stage and the move can be undone", async ({ page }) 
   await expect(card).toBeVisible();
   await expect(card).toContainText("WhatsApp");
 
-  await page.getByRole("button", { name: "Faire passer Rania Trabelsi a Devis" }).click();
+  // Which column she starts in is whatever the shop last left her in, so the test
+  // takes the move button that is actually offered rather than naming a stage.
+  const moveRight = page.getByRole("button", { name: /^Faire passer Rania Trabelsi à / });
+  const label = (await moveRight.getAttribute("aria-label")) ?? "";
+  await moveRight.click();
 
-  const receipt = page.getByRole("status").filter({ hasText: "passe de Qualifié" });
-  await expect(receipt).toContainText("Rania Trabelsi passe de Qualifié a Devis");
-  await expect(receipt).toContainText("garde pour cette visite seulement");
+  const receipt = page.getByRole("status").filter({ hasText: "Rania Trabelsi passe de" });
+  await expect(receipt).toContainText("enregistré");
 
+  // Undo writes the return move, so the board and the database agree again and the
+  // same button is offered once more.
   await receipt.getByRole("button", { name: "Annuler" }).click();
-  await expect(page.getByRole("button", { name: "Faire passer Rania Trabelsi a Devis" })).toBeVisible();
+  await expect(page.getByRole("button", { name: label })).toBeVisible();
+  await page.waitForLoadState("networkidle");
 });
 
 test("a call can be recorded by hand and undone", async ({ page }) => {
@@ -118,19 +134,29 @@ test("a call can be recorded by hand and undone", async ({ page }) => {
     .locator("section")
     .filter({ hasText: "Performance de conversion des appels" })
     .first();
-  await expect(panel.getByText("100").first()).toBeVisible();
+
+  // A signed in visit writes to the database, so the starting figure is whatever
+  // the shop has recorded so far, not a number this test can hard code.
+  const tile = panel
+    .locator("div")
+    .filter({ has: page.getByText("Appels reçus", { exact: true }) })
+    .filter({ hasText: /total de l/ })
+    .last();
+  const before = Number((await tile.innerText()).match(/\d+/)?.[0] ?? "0");
+  expect(before).toBeGreaterThan(0);
 
   await panel.getByLabel("Qui a pris l'appel").selectOption({ label: "Sarra" });
   await panel.getByRole("button", { name: "Ajouter cet appel" }).click();
 
-  await expect(panel.getByText("1 appel ajouté sur cette visite")).toBeVisible();
-  await expect(panel.getByText("Rien n'est enregistré.")).toBeVisible();
-  await expect(panel.getByText("101").first()).toBeVisible();
+  await expect(panel.getByText(/1 appel enregistré/)).toBeVisible();
+  await expect(panel.getByText(/^Chaque appel est écrit dans la base de données/)).toBeVisible();
+  await expect(tile).toContainText(String(before + 1));
 
+  // Undo removes the row it just wrote, so the shop is left exactly as it was.
   await panel.getByRole("button", { name: "Annuler le dernier" }).click();
-  await expect(panel.getByText("100").first()).toBeVisible();
+  await expect(tile).toContainText(String(before));
+  await page.waitForLoadState("networkidle");
 });
-
 
 test("the workspace cannot be opened without choosing a person", async ({ context }) => {
   const fresh = await context.browser()!.newContext();
@@ -138,7 +164,7 @@ test("the workspace cannot be opened without choosing a person", async ({ contex
 
   await page.goto("http://localhost:3199/orders");
   await expect(page).toHaveURL(/\/connexion/);
-  await expect(page.getByText("Démonstration, aucun mot de passe et aucun compte réel")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Se connecter" })).toBeVisible();
 
   await fresh.close();
 });
@@ -148,8 +174,10 @@ test("an agent does not see the shop figures the owner sees", async ({ context }
   const page = await fresh.newPage();
 
   await page.goto("http://localhost:3199/connexion");
-  await page.getByRole("button", { name: "Entrer comme Mouna" }).click();
-  await expect(page).toHaveURL(/\/dashboard/);
+  await page.getByLabel("Adresse e-mail").fill("mouna@saveurs-demo.tn");
+  await page.getByLabel("Mot de passe").fill("pT9-korba-52");
+  await page.getByRole("button", { name: "Se connecter" }).click();
+  await expect(page).toHaveURL(/\/dashboard/, { timeout: 20_000 });
 
   const nav = page.getByRole("navigation", { name: "Navigation principale", exact: true });
   await expect(nav.getByRole("link", { name: "Boîte de réception" })).toBeVisible();

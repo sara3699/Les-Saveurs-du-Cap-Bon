@@ -46,14 +46,14 @@ const KIND_META: Record<
 > = {
   bundle: {
     chip: "Lot",
-    section: "Lots, au prix groupe",
-    hint: "Deux produits proposes a un prix unique, plus bas que les deux achetes separement.",
+    section: "Lots, au prix groupé",
+    hint: "Deux produits proposés à un prix unique, plus bas que les deux achetés séparément.",
     tone: "primary",
   },
   recommendation: {
     chip: "Suggestion",
-    section: "Suggestions, proposees a cote d'un produit",
-    hint: "Un deuxieme produit est affiche a son prix normal. Rien ne s'ajoute au panier tout seul.",
+    section: "Suggestions, proposées à côté d'un produit",
+    hint: "Un deuxième produit est affiché à son prix normal. Rien ne s'ajoute au panier tout seul.",
     tone: "muted",
   },
   threshold: {
@@ -65,7 +65,7 @@ const KIND_META: Record<
   discount: {
     chip: "Remise",
     section: "Remises",
-    hint: "Un pourcentage est retire du panier quand celui-ci correspond a la règle.",
+    hint: "Un pourcentage est retiré du panier quand celui-ci correspond à la règle.",
     tone: "muted",
   },
 };
@@ -73,7 +73,7 @@ const KIND_META: Record<
 /** `group` names the same set in a sentence, for the empty state. */
 const KIND_FILTERS: { value: string; label: string; group: string }[] = [
   { value: "", label: "Toutes les règles", group: "règle" },
-  { value: "bundle", label: "Lots", group: "offre groupee" },
+  { value: "bundle", label: "Lots", group: "offre groupée" },
   { value: "recommendation", label: "Suggestions", group: "suggestion" },
   { value: "threshold", label: "Livraison offerte", group: "règle de livraison offerte" },
   { value: "discount", label: "Remises", group: "remise" },
@@ -152,7 +152,7 @@ function RuleCard({ rule, productById }: { rule: Bundle; productById: Map<string
       {rule.bundlePrice !== null && parts.length > 0 ? (
         <div className="grid grid-cols-3 gap-2 rounded-[var(--radius-md)] border border-line bg-surface-2 px-3 py-2.5">
           <div>
-            <p className="os-label">Separement</p>
+            <p className="os-label">Séparément</p>
             <p className="os-num mt-1 text-[13px] font-semibold">
               {formatTND(partsTotal, { withCurrency: false })}
             </p>
@@ -164,7 +164,7 @@ function RuleCard({ rule, productById }: { rule: Bundle; productById: Map<string
             </p>
           </div>
           <div>
-            <p className="os-label">Le client economise</p>
+            <p className="os-label">Le client économise</p>
             <p className="os-num mt-1 text-[13px] font-semibold text-success">
               {formatTND(partsTotal - rule.bundlePrice, { withCurrency: false })}
             </p>
@@ -172,7 +172,7 @@ function RuleCard({ rule, productById }: { rule: Bundle; productById: Map<string
         </div>
       ) : parts.length > 0 ? (
         <p className="rounded-[var(--radius-md)] border border-line bg-surface-2 px-3 py-2.5 text-[12.5px] text-muted">
-          Pas de prix groupe. Tout reste a son prix normal, et les produits ci-dessus reviennent a{" "}
+          Pas de prix groupé. Tout reste à son prix normal, et les produits ci-dessus reviennent à{" "}
           <span className="os-num font-semibold text-ink">{formatTND(partsTotal)}</span> ensemble.
         </p>
       ) : null}
@@ -186,14 +186,14 @@ function RuleCard({ rule, productById }: { rule: Bundle; productById: Map<string
 
       {rate === null ? (
         <p className="text-[12px] text-muted">
-          Cette règle n'a jamais été affichee, elle n'a donc pas encore de chiffres a comparer.
+          Cette règle n'a jamais été affichée, elle n'a donc pas encore de chiffres à comparer.
         </p>
       ) : (
         <div className="flex flex-col gap-1.5">
           <ShareBar share={rate} />
           <p className="text-[12px] text-muted">
             <span className="os-num">{rule.timesTaken}</span> des{" "}
-            <span className="os-num">{rule.timesShown}</span> clients qui l'ont vue l'ont acceptee
+            <span className="os-num">{rule.timesShown}</span> clients qui l'ont vue l'ont acceptée
             {perTake ? (
               <>
                 , soit <span className="os-num">{formatTND(perTake)}</span> par commande
@@ -220,7 +220,7 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
     repos.workspace.products(),
     repos.orders.list(),
     repos.workspace.attributions(),
-    repos.intégrations.list(),
+    repos.integrations.list(),
   ]);
 
   const index = buildAttributionIndex(attributions, connections);
@@ -252,8 +252,8 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
       reachedLabel: `${reached} sur ${baskets.length}`,
       justShortLabel:
         nearMiss.length > 0
-          ? `${nearMiss.length} ${plural(nearMiss.length, "commande s'arrete", "commandes s'arretent")} a moins de ${NEAR_MISS_BAND} TND du seuil, en moyenne ${formatTND(averageShort)} en dessous.`
-          : `Aucune commande de ce jeu d'exemple ne s'arrete a moins de ${NEAR_MISS_BAND} TND du seuil.`,
+          ? `${nearMiss.length} ${plural(nearMiss.length, "commande s'arrête", "commandes s'arrêtent")} à moins de ${NEAR_MISS_BAND} TND du seuil, en moyenne ${formatTND(averageShort)} en dessous.`
+          : `Aucune commande de ce jeu d'exemple ne s'arrête à moins de ${NEAR_MISS_BAND} TND du seuil.`,
     };
   });
 
@@ -309,46 +309,46 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
   const stateWord = state === "on" ? "active" : state === "off" ? "désactivée" : null;
   const filterSentence = stateWord
     ? `Aucune ${groupLabel} n'est ${stateWord}.`
-    : `Cette boutique n'utilisé aucune ${groupLabel}.`;
+    : `Cette boutique n'utilise aucune ${groupLabel}.`;
 
   return (
     <div className="flex flex-col gap-5">
       <PageHeader
         title="Ventes additionnelles"
-        subtitle="Les règles qui augmentent la valeur d'une commande : ce que chacune propose, a quelle frequence les clients l'acceptent, et ce qu'elle a rapporte."
+        subtitle="Les règles qui augmentent la valeur d'une commande : ce que chacune propose, à quelle fréquence les clients l'acceptent, et ce qu'elle a rapporté."
         actions={<DemoChip />}
       />
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Stat
-          label="Ajoute par les règles actives"
+          label="Ajouté par les règles actives"
           value={formatTNDCompact(revenueRunning)}
-          détail={`Sur ${running.length} ${plural(running.length, "règle", "règles")}`}
+          detail={`Sur ${running.length} ${plural(running.length, "règle", "règles")}`}
           tone="money"
         />
         <Stat
           label="Règles actives"
           value={`${running.length} sur ${bundles.length}`}
-          détail={`${bundles.length - running.length} desactivees`}
+          detail={`${bundles.length - running.length} désactivées`}
         />
         <Stat
           label="Affichages d'une offre"
           value={String(shownRunning)}
-          détail="Sur les règles actives"
+          detail="Sur les règles actives"
         />
         <Stat
           label="Acceptations d'une offre"
           value={String(takenRunning)}
-          détail={`${formatPercent(overallRate)} des offres affichees`}
+          detail={`${formatPercent(overallRate)} des offres affichées`}
         />
       </section>
 
       <p className="max-w-[86ch] text-[13px] leading-relaxed text-muted">
         Tous les chiffres de cet écran sont des données d'exemple. Le chiffre d'affaires ajouté
-        compte ce que l'offre elle-même a rapporte sur les commandes ou elle a été acceptee, pas la
-        commande entiere et pas le bénéfice, et il n'a pas été compare aux commandes qui n'ont
+        compte ce que l'offre elle-même a rapporté sur les commandes où elle a été acceptée, pas la
+        commande entière et pas le bénéfice, et il n'a pas été comparé aux commandes qui n'ont
         jamais vu la règle. Les quatre chiffres ci-dessus portent sur toutes les règles de la
-        boutique, ils restent donc les memes quel que soit le filtre choisi ci-dessous.
+        boutique, ils restent donc les mêmes quel que soit le filtre choisi ci-dessous.
       </p>
 
       <Card>
@@ -376,14 +376,14 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
             aria-current={state === "off" ? "true" : undefined}
             className={chipClass(state === "off")}
           >
-            Desactivees
+            Désactivées
           </Link>
         </div>
       </Card>
 
       {visible.length === 0 ? (
         <EmptyState
-          title="Aucune règle ne correspond a ces filtres"
+          title="Aucune règle ne correspond à ces filtres"
           body={`${filterSentence} La boutique compte ${bundles.length} règles en tout, dont ${running.length} actives.`}
           action={{ label: "Afficher toutes les règles", href: "/upsells" }}
         />
@@ -405,11 +405,11 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
               </p>
               <p className="text-[12.5px] leading-relaxed text-muted">
                 En dessous, le client paie les frais de livraison de sa zone. Ce montant est
-                range avec vos frais de livraison sur{" "}
+                rangé avec vos frais de livraison sur{" "}
                 <Link href="/store" className="font-semibold text-primary hover:underline">
                   l'écran Boutique
                 </Link>
-                . Le modifier depuis cet écran est concu mais pas developpe.
+                . Le modifier depuis cet écran est conçu mais pas développé.
               </p>
               <RuleSwitch ruleName={thresholdRule.name} startsActive={thresholdRule.active} />
             </div>
@@ -425,13 +425,13 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
                 d'exemple ont{" "}
                 <span className="os-num">{formatTNDCompact(FREE_DELIVERY_FROM)}</span> ou plus de
                 marchandises dans le panier.{" "}
-                {current.justShortLabel} Les paniers qui passent juste a cote sont ceux pour
-                lesquels le rappel est ecrit.
+                {current.justShortLabel} Les paniers qui passent juste à côté sont ceux pour
+                lesquels le rappel est écrit.
               </p>
             </div>
 
             <div className="flex flex-col gap-2 border-line lg:border-l lg:pl-4">
-              <p className="os-label">D'ou viennent ces commandes</p>
+              <p className="os-label">D'où viennent ces commandes</p>
               {channelRows.length === 0 ? (
                 <p className="text-[13px] text-muted">
                   Aucune commande de ce jeu d'exemple n'atteint encore le seuil.
@@ -452,7 +452,7 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
                 ))}
               </ul>
               <p className="text-[12px] leading-relaxed text-muted">
-                Le canal par lequel une commande est arrivée est conserve, donc un panier plus
+                Le canal par lequel une commande est arrivée est conservé, donc un panier plus
                 gros passe sur WhatsApp reste un panier WhatsApp ici.
               </p>
             </div>
@@ -468,9 +468,9 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
             <Figure label="Chiffre d'affaires ajouté" value={formatTNDCompact(thresholdRule.revenueAdded)} money />
           </dl>
           <p className="mt-2 text-[12px] leading-relaxed text-muted">
-            Les affichages comptent les fois ou un panier a été informe du montant restant pour
-            obtenir la livraison offerte, et les acceptations comptent les fois ou ce panier a
-            ensuite atteint le seuil. C'est une question differente de la part affichee plus haut,
+            Les affichages comptent les fois où un panier a été informé du montant restant pour
+            obtenir la livraison offerte, et les acceptations comptent les fois où ce panier a
+            ensuite atteint le seuil. C'est une question différente de la part affichée plus haut,
             qui porte sur toutes les commandes, que le rappel soit apparu ou non.
           </p>
 
@@ -504,20 +504,20 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
       {ranked.length > 0 ? (
         <Card>
           <CardHead
-            title="Les règles cote a cote"
-            hint="Classees par taux d'acceptation, pour reperer vite une règle souvent affichee et rarement acceptee."
+            title="Les règles côte à côte"
+            hint="Classées par taux d'acceptation, pour repérer vite une règle souvent affichée et rarement acceptée."
           />
           <div className="os-scroll">
             <table className="w-full min-w-[760px] border-collapse text-sm">
               <thead>
                 <tr>
-                  <th className="os-label pb-2.5 pr-3 text-left font-normal">Regle</th>
+                  <th className="os-label pb-2.5 pr-3 text-left font-normal">Règle</th>
                   <th className="os-label pb-2.5 pr-3 text-left font-normal">Type</th>
-                  <th className="os-label pb-2.5 pr-3 text-left font-normal">Etat</th>
+                  <th className="os-label pb-2.5 pr-3 text-left font-normal">État</th>
                   <th className="os-label pb-2.5 pr-3 text-right font-normal">Affichages</th>
                   <th className="os-label pb-2.5 pr-3 text-right font-normal">Acceptations</th>
                   <th className="os-label pb-2.5 pr-3 text-right font-normal">Taux d'acceptation</th>
-                  <th className="os-label pb-2.5 text-right font-normal">Ajoute, TND</th>
+                  <th className="os-label pb-2.5 text-right font-normal">Ajouté, TND</th>
                 </tr>
               </thead>
               <tbody>
@@ -533,7 +533,7 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
                         {rule.active ? (
                           <span className="font-semibold text-primary">Active</span>
                         ) : (
-                          <span className="text-muted">Desactivee</span>
+                          <span className="text-muted">Désactivée</span>
                         )}
                       </td>
                       <td className="os-num py-2.5 pr-3 text-right text-[12.5px]">{rule.timesShown}</td>
@@ -554,9 +554,9 @@ export default async function UpsellsPage({ searchParams }: { searchParams: Para
       ) : null}
 
       <p className="max-w-[86ch] text-xs leading-relaxed text-muted">
-        Ecrire une nouvelle règle, modifier le montant de la livraison offerte et arreter vraiment
-        une règle sont concus mais pas developpes, donc les interrupteurs de cet écran changent ce
-        que vous voyez et rien d'autre. Aucun compte n'est connecté, et rien ici n'est envoyé a un
+        Écrire une nouvelle règle, modifier le montant de la livraison offerte et arrêter vraiment
+        une règle sont conçus mais pas développés, donc les interrupteurs de cet écran changent ce
+        que vous voyez et rien d'autre. Aucun compte n'est connecté, et rien ici n'est envoyé à un
         client.
       </p>
     </div>

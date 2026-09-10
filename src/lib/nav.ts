@@ -3,7 +3,7 @@ export interface NavItem {
   label: string;
   glyph: string;
   /** Key of the count passed in from the server, when the item carries one. */
-  badge?: "inbox" | "orders" | "tasks" | "intégrations";
+  badge?: "inbox" | "orders" | "tasks" | "integrations";
 }
 
 export interface NavGroup {
@@ -38,7 +38,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { href: "/contacts", label: "Contacts", glyph: "◌" },
       { href: "/pipeline", label: "Pipeline", glyph: "⌁" },
       { href: "/tasks", label: "Tâches", glyph: "✓", badge: "tasks" },
-      { href: "/integrations", label: "Intégrations", glyph: "⌘", badge: "intégrations" },
+      { href: "/integrations", label: "Intégrations", glyph: "⌘", badge: "integrations" },
     ],
   },
   {
@@ -56,5 +56,5 @@ export const MOBILE_NAV: NavItem[] = [
   { href: "/orders", label: "Commandes", glyph: "◈", badge: "orders" },
   { href: "/inbox", label: "Messages", glyph: "✦", badge: "inbox" },
   { href: "/tasks", label: "Tâches", glyph: "✓", badge: "tasks" },
-  { href: "/integrations", label: "Canaux", glyph: "⌘", badge: "intégrations" },
+  { href: "/integrations", label: "Canaux", glyph: "⌘", badge: "integrations" },
 ];

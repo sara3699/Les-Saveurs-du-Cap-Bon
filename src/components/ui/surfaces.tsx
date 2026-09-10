@@ -96,12 +96,12 @@ export function EmptyState({
 export function Stat({
   label,
   value,
-  détail,
+  detail,
   tone = "plain",
 }: {
   label: string;
   value: string;
-  détail?: string;
+  detail?: string;
   tone?: "plain" | "money";
 }) {
   const money = tone === "money";
@@ -115,7 +115,7 @@ export function Stat({
       >
         {value}
       </p>
-      {détail ? <p className="mt-1.5 text-xs font-semibold text-muted">{détail}</p> : null}
+      {detail ? <p className="mt-1.5 text-xs font-semibold text-muted">{detail}</p> : null}
     </div>
   );
 }

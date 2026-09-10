@@ -64,7 +64,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Param
     }),
     repos.contacts.list(),
     repos.workspace.team(),
-    repos.intégrations.list(),
+    repos.integrations.list(),
     repos.workspace.attributions(),
   ]);
 

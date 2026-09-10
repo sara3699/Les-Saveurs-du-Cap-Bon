@@ -9,6 +9,7 @@ import type { ChannelId, ConversationStatus, PipelineStage } from "@/lib/domain/
 import { formatDate, formatStamp, formatTND, isOverdue, relativeTime } from "@/lib/format";
 import { DEMO_NOW } from "@/lib/mock/time";
 import { getRepositories } from "@/lib/repositories";
+import { currentSession } from "@/lib/session";
 
 export const metadata = { title: "Boîte de réception, Les Saveurs du Cap Bon" };
 
@@ -45,6 +46,11 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
   const selectedId = one(params.c);
 
   const repos = getRepositories();
+  // Only a signed in account can change a conversation. The thread is told which
+  // kind of visit this is so it can say the truth after every action; the server
+  // action re-reads the session itself and never trusts this.
+  const session = await currentSession();
+  const canWrite = session?.canWrite ?? false;
   const [conversations, contacts, team, connections, attributions, tasks, orders] =
     await Promise.all([
       repos.conversations.list({
@@ -56,7 +62,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
       }),
       repos.contacts.list(),
       repos.workspace.team(),
-      repos.intégrations.list(),
+      repos.integrations.list(),
       repos.workspace.attributions(),
       repos.workspace.tasks(),
       repos.orders.list(),
@@ -138,6 +144,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
         connection && connection.status !== "connected"
           ? `${channel(source.channelId).cannotSendReason} Ouvrez Intégrations pour terminer la configuration.`
           : channel(source.channelId).cannotSendReason,
+      canWrite,
       messages: threadMessages,
       team: team.map((m) => ({ id: m.id, name: m.name })),
       assigneeId: selected.assigneeId,
@@ -340,7 +347,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
                   Retour à la liste
                 </Link>
               </div>
-              <Thread {...threadProps} />
+              <Thread key={threadProps.conversationId} {...threadProps} />
             </div>
             <div className="hidden border-t border-line lg:block lg:border-l lg:border-t-0">
               <ContextPanel {...contextProps} />

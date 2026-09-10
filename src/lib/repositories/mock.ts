@@ -107,7 +107,7 @@ const orders: OrderRepository = {
   },
 };
 
-const intégrations: IntegrationRepository = {
+const integrations: IntegrationRepository = {
   async list() {
     return CONNECTIONS;
   },
@@ -153,6 +153,6 @@ export const mockRepositories: Repositories = {
   conversations,
   contacts,
   orders,
-  intégrations,
+  integrations,
   workspace,
 };

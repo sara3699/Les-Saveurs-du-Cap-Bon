@@ -48,7 +48,7 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
   const [{ budgets, lines }, recentOrders, connections, attributions] = await Promise.all([
     repos.workspace.budgets(),
     repos.orders.list({ sinceDays: 30 }),
-    repos.intégrations.list(),
+    repos.integrations.list(),
     repos.workspace.attributions(),
   ]);
 
@@ -103,7 +103,7 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
     <div className="flex flex-col gap-4">
       <PageHeader
         title="Gestion du budget"
-        subtitle={`${period}. Ce que vous aviez prévu de depenser, ce qui est déjà sorti, et ce que le plan permet encore.`}
+        subtitle={`${period}. Ce que vous aviez prévu de dépenser, ce qui est déjà sorti, et ce que le plan permet encore.`}
         actions={<DemoChip />}
       />
 
@@ -111,23 +111,23 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
         <Stat
           label="Prévu ce mois-ci"
           value={formatTNDCompact(plannedTotal)}
-          détail={budgets.map((b) => b.name).join(", ")}
+          detail={budgets.map((b) => b.name).join(", ")}
         />
         <Stat
-          label="Utilisé a ce jour"
+          label="Utilisé à ce jour"
           value={formatTNDCompact(usedTotal)}
-          détail={`${shareLabel(usedTotal, plannedTotal)} du plan`}
+          detail={`${shareLabel(usedTotal, plannedTotal)} du plan`}
         />
         <Stat
           label="Restant dans le plan"
           value={formatTNDCompact(leftTotal)}
-          détail="Si rien de nouveau n'y est ajouté"
+          detail="Si rien de nouveau n'y est ajouté"
           tone="money"
         />
         <Stat
-          label="Lignes a leur limite"
+          label="Lignes à leur limite"
           value={String(atLimit.length)}
-          détail={
+          detail={
             atLimit.length > 0
               ? atLimit.map((l) => l.label).join(", ")
               : "Chaque ligne a encore de la marge"
@@ -199,7 +199,7 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
             </table>
           </div>
           <p className="mt-3 text-xs text-muted">
-            Utilisé correspond a ce qui est déjà sorti du compte ce mois-ci. Restant correspond a
+            Utilisé correspond à ce qui est déjà sorti du compte ce mois-ci. Restant correspond à
             ce que le plan permet encore, ce qui n'est pas la même chose que de l'argent disponible
             en banque.
           </p>
@@ -207,8 +207,8 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
 
         <Card>
           <CardHead
-            title="Apercu du resultat"
-            hint="Chiffres d'exemple, additionnes sur cet écran"
+            title="Aperçu du résultat"
+            hint="Chiffres d'exemple, additionnés sur cet écran"
           />
           <dl className="flex flex-col gap-2">
             <div className="flex items-baseline justify-between gap-3 border-b border-line pb-2">
@@ -233,7 +233,7 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
 
           {bySource.length > 0 ? (
             <>
-              <p className="os-label mt-4">D'ou vient ce chiffre d'affaires</p>
+              <p className="os-label mt-4">D'où vient ce chiffre d'affaires</p>
               <ul className="mt-2 flex flex-col gap-1.5">
                 {bySource.map((row) => (
                   <li
@@ -256,11 +256,11 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
           <p className="mt-4 text-xs leading-relaxed text-muted">
             Deux chiffres entrent ici. Le chiffre d'affaires reprend toutes les commandes passées
             sur les 30 jours jusqu'au{" "}
-            {formatDate(DEMO_NOW.toISOString())}, les commandes refusees et remboursees retirées.
+            {formatDate(DEMO_NOW.toISOString())}, les commandes refusées et remboursées retirées.
             Les dépenses sont la colonne utilisé des trois budgets, qui couvrent {period}, donc les
-            deux ne comptent pas exactement les memes jours. Ce que les produits coutent a fabriquer
+            deux ne comptent pas exactement les mêmes jours. Ce que les produits coûtent à fabriquer
             n'est pas compris ici, lisez donc la dernière ligne comme l'argent restant face au plan
-            plutot que comme un bénéfice dans vos comptes.
+            plutôt que comme un bénéfice dans vos comptes.
           </p>
         </Card>
       </div>
@@ -302,7 +302,7 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
                 : "border-line bg-surface-2 text-muted"
             }`}
           >
-            Seulement les lignes a leur limite
+            Seulement les lignes à leur limite
           </Link>
         </div>
       </Card>
@@ -314,11 +314,11 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
 
         {cards.length === 0 ? (
           <EmptyState
-            title="Aucune ligne ne correspond a ces filtres"
+            title="Aucune ligne ne correspond à ces filtres"
             body={
               nearOnly
-                ? "Seules les lignes qui ont utilisé 95 pour cent ou plus de leur plan sont affichees, et rien dans cette vue n'est alle aussi loin. Retirez le filtre pour revoir toutes les lignes."
-                : "Il n'y a pas encore de ligne sous ce budget, il n'y a donc rien a detailler ici."
+                ? "Seules les lignes qui ont utilisé 95 pour cent ou plus de leur plan sont affichées, et rien dans cette vue n'est allé aussi loin. Retirez le filtre pour revoir toutes les lignes."
+                : "Il n'y a pas encore de ligne sous ce budget, il n'y a donc rien à détailler ici."
             }
             action={{ label: "Afficher toutes les lignes", href: "/budget" }}
           />
@@ -396,9 +396,9 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
 
                 {budgetLines.length < lineCount ? (
                   <p className="mt-2.5 text-xs text-muted">
-                    {budgetLines.length} lignes affichees sur {lineCount}. Les montants prevus et
-                    utilises en haut de cette carte comptent toujours chaque ligne, y compris celles
-                    que le filtre masqué.
+                    {budgetLines.length} lignes affichées sur {lineCount}. Les montants prévus et
+                    utilisés en haut de cette carte comptent toujours chaque ligne, y compris celles
+                    que le filtre masque.
                   </p>
                 ) : null}
               </Card>
@@ -408,8 +408,8 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
       </section>
 
       <p className="text-xs text-muted">
-        Cet écran se contente de lire les chiffres. Modifier un plan et envoyer le mois a votre
-        comptable ne sont pas encore construits, et rien ici ne deplace d'argent ni ne communique
+        Cet écran se contente de lire les chiffres. Modifier un plan et envoyer le mois à votre
+        comptable ne sont pas encore construits, et rien ici ne déplace d'argent ni ne communique
         avec une banque.
       </p>
     </div>

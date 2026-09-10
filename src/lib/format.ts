@@ -31,12 +31,12 @@ const DAY = 24 * HOUR;
 /**
  * Relative timestamps are rendered on the server and passed down as strings, so
  * a client component never recomputes them and never mismatches on hydration.
- * Future times read as "dans 4h", because a task due later today is not "a l'instant".
+ * Future times read as "dans 4h", because a task due later today is not "à l'instant".
  */
 export function relativeTime(iso: string, now: Date = new Date()): string {
   const diff = now.getTime() - new Date(iso).getTime();
   if (diff < 0) return `dans ${spanLabel(-diff)}`;
-  if (diff < MINUTE) return "a l'instant";
+  if (diff < MINUTE) return "à l'instant";
   if (diff < 2 * DAY) {
     if (diff < DAY) return spanLabel(diff);
     return "hier";
@@ -53,8 +53,8 @@ function spanLabel(ms: number): string {
 }
 
 const MONTHS = [
-  "janvier", "fevrier", "mars", "avril", "mai", "juin",
-  "juillet", "aout", "septembre", "octobre", "novembre", "decembre",
+  "janvier", "février", "mars", "avril", "mai", "juin",
+  "juillet", "août", "septembre", "octobre", "novembre", "décembre",
 ];
 
 /**
@@ -62,8 +62,8 @@ const MONTHS = [
  * share their first three letters and a message stamp has to tell them apart.
  */
 const MONTHS_SHORT = [
-  "janv", "fevr", "mars", "avr", "mai", "juin",
-  "juil", "aout", "sept", "oct", "nov", "dec",
+  "janv", "févr", "mars", "avr", "mai", "juin",
+  "juil", "août", "sept", "oct", "nov", "déc",
 ];
 
 export function formatDate(iso: string): string {
@@ -87,7 +87,7 @@ export function formatClock(iso: string): string {
 export function timeAgo(iso: string, now: Date = new Date()): string {
   const diff = now.getTime() - new Date(iso).getTime();
   if (diff < 0) return `dans ${spanLabel(-diff)}`;
-  if (diff < MINUTE) return "a l'instant";
+  if (diff < MINUTE) return "à l'instant";
   if (diff < 7 * DAY) return `il y a ${spanLabel(diff)}`;
   return formatDate(iso);
 }

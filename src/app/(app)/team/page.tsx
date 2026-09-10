@@ -9,6 +9,7 @@ import type { ChannelId, Conversation, Order, Task, TeamRole } from "@/lib/domai
 import { formatTND, formatTNDCompact, isOverdue, timeAgo } from "@/lib/format";
 import { DEMO_NOW } from "@/lib/mock/time";
 import { getRepositories } from "@/lib/repositories";
+import { currentSession } from "@/lib/session";
 
 export const metadata = { title: "Équipe, Les Saveurs du Cap Bon" };
 
@@ -32,16 +33,16 @@ const ROLE_COPY: Record<TeamRole, { label: string; can: string; short: string }>
   owner: {
     label: "Propriétaire",
     can: "Voit tout dans l'espace de travail. Chaque conversation, chaque commande, les chiffres et la configuration des canaux. Seul le propriétaire peut ajouter une personne ou en retirer une.",
-    short: "Voit tout, et reste la seule personne a pouvoir ajouter ou retirer quelqu'un.",
+    short: "Voit tout, et reste la seule personne à pouvoir ajouter ou retirer quelqu'un.",
   },
   manager: {
     label: "Responsable",
-    can: "Attribue le travail et lit les rapports. Voit chaque conversation et chaque commande, et peut en passer n'importe laquelle a quelqu'un d'autre. Ne voit pas la facturation, et ne peut pas modifier ce qui est connecté.",
+    can: "Attribue le travail et lit les rapports. Voit chaque conversation et chaque commande, et peut en passer n'importe laquelle à quelqu'un d'autre. Ne voit pas la facturation, et ne peut pas modifier ce qui est connecté.",
     short: "Attribue le travail, et voit chaque conversation, chaque commande et les rapports.",
   },
   agent: {
     label: "Agent",
-    can: "Traite les conversations qui lui sont attribuées, les clients derriere ces conversations, et les commandes dont il est responsable. Ne voit pas les chiffres de la boutique, et ne peut pas passer du travail a une autre personne.",
+    can: "Traite les conversations qui lui sont attribuées, les clients derrière ces conversations, et les commandes dont il est responsable. Ne voit pas les chiffres de la boutique, et ne peut pas passer du travail à une autre personne.",
     short: "Traite les conversations qui lui sont attribuées et les commandes dont il est responsable.",
   },
 };
@@ -92,6 +93,11 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
   const requested = one(params.source) as ChannelId | undefined;
   const source = requested && CHANNEL_ORDER.includes(requested) ? requested : undefined;
 
+  // Only a real signed in account may write a call. A demonstration visit gets
+  // the same screen, and the database refuses its writes anyway.
+  const session = await currentSession();
+  const canWrite = session?.canWrite === true;
+
   const repos = getRepositories();
   const [team, conversionMetrics, conversations, tasks, liveOrders, contacts, connections, attributions] =
     await Promise.all([
@@ -101,7 +107,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
       repos.workspace.tasks(),
       repos.orders.list({ deliveryStatuses: ["preparing", "dispatched"] }),
       repos.contacts.list(),
-      repos.intégrations.list(),
+      repos.integrations.list(),
       repos.workspace.attributions(),
     ]);
 
@@ -161,7 +167,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
     return {
       id: conversation.id,
       label: conversation.subject,
-      détail: `${contactName.get(conversation.contactId) ?? "Client"}, dernier message ${timeAgo(conversation.lastMessageAt, DEMO_NOW)}`,
+      detail: `${contactName.get(conversation.contactId) ?? "Client"}, dernier message ${timeAgo(conversation.lastMessageAt, DEMO_NOW)}`,
       channelId: resolved.channelId,
       account: resolved.accountLabel,
     };
@@ -172,7 +178,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
     return {
       id: order.id,
       label: `${order.reference}, ${formatTND(order.total)}`,
-      détail: `${contactName.get(order.contactId) ?? "Client"}, ${order.deliveryStatus === "preparing" ? "en préparation" : "en route"}`,
+      detail: `${contactName.get(order.contactId) ?? "Client"}, ${order.deliveryStatus === "preparing" ? "en préparation" : "en route"}`,
       channelId: resolved.channelId,
       account: resolved.accountLabel,
     };
@@ -209,7 +215,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
     <div className="flex flex-col gap-5">
       <PageHeader
         title="Équipe"
-        subtitle={`${team.length} personnes, et ce que chacune porte en ce moment. Compte a partir des conversations, des tâches et des commandes elles-memes.`}
+        subtitle={`${team.length} personnes, et ce que chacune porte en ce moment. Compté à partir des conversations, des tâches et des commandes elles-mêmes.`}
         actions={<DemoChip />}
       />
 
@@ -217,38 +223,38 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
         <Stat
           label="Personnes dans l'espace de travail"
           value={String(team.length)}
-          détail={ROLE_ORDER.map((role) =>
+          detail={ROLE_ORDER.map((role) =>
             count(team.filter((m) => m.role === role).length, ROLE_COPY[role].label.toLowerCase()),
           ).join(", ")}
         />
         <Stat
           label="Conversations ouvertes"
           value={String(openConversations.length)}
-          détail={`${looseConversations.length} sans responsable`}
+          detail={`${looseConversations.length} sans responsable`}
         />
         <Stat
           label="Tâches non terminées"
           value={String(openTasks.length)}
-          détail={`${count(overdueTasks.length, "tache")} en retard`}
+          detail={`${count(overdueTasks.length, "tâche")} en retard`}
         />
         <Stat
           label="Commandes en cours"
           value={String(liveOrders.length)}
-          détail={`${formatTNDCompact(liveOrders.reduce((sum, o) => sum + o.total, 0))} en préparation ou en route`}
+          detail={`${formatTNDCompact(liveOrders.reduce((sum, o) => sum + o.total, 0))} en préparation ou en route`}
         />
       </div>
 
       <Card>
         <CardHead
           title="La charge en ce moment"
-          hint="La personne la plus chargee en premier. Le travail sans personne dessus se trouve dans la dernière ligne."
+          hint="La personne la plus chargée en premier. Le travail sans personne dessus se trouve dans la dernière ligne."
         />
         <div className="os-scroll">
           <table className="w-full min-w-[760px] border-collapse text-sm">
             <thead>
               <tr>
                 <th className="os-label pb-2.5 pr-3 text-left font-normal">Personne</th>
-                <th className="os-label pb-2.5 pr-3 text-left font-normal">Role</th>
+                <th className="os-label pb-2.5 pr-3 text-left font-normal">Rôle</th>
                 <th className="os-label pb-2.5 pr-3 text-right font-normal">Conversations</th>
                 <th className="os-label pb-2.5 pr-3 text-right font-normal">Tâches</th>
                 <th className="os-label pb-2.5 pr-3 text-right font-normal">En retard</th>
@@ -276,7 +282,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
               ))}
               <tr className="border-t border-accent-line bg-accent-soft">
                 <td className="py-2.5 pr-3 text-[13px] font-semibold text-accent-ink">Personne pour l&apos;instant</td>
-                <td className="py-2.5 pr-3 text-[13px] text-accent-ink">Non attribue</td>
+                <td className="py-2.5 pr-3 text-[13px] text-accent-ink">Non attribué</td>
                 <td className="os-num py-2.5 pr-3 text-right text-[12.5px] text-accent-ink">
                   {looseConversations.length}
                 </td>
@@ -297,14 +303,14 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
           </table>
         </div>
         <p className="mt-3 max-w-[80ch] text-xs text-muted">
-          Chaque tache des données d&apos;exemple porte un nom, donc la dernière ligne n&apos;en
-          affiche aucune. Ces chiffres sont comptes a partir des enregistrements que vous avez sous
-          les yeux, pas a partir des compteurs enregistres sur chaque membre, qui ont été ecrits
-          plus tot et ne concordent plus.
+          Chaque tâche des données d&apos;exemple porte un nom, donc la dernière ligne n&apos;en
+          affiche aucune. Ces chiffres sont comptés à partir des enregistrements que vous avez sous
+          les yeux, pas à partir des compteurs enregistrés sur chaque membre, qui ont été écrits
+          plus tôt et ne concordent plus.
         </p>
       </Card>
 
-      <CallPerformance rows={callRows} />
+      <CallPerformance rows={callRows} canWrite={canWrite} />
 
       <section className="rounded-[var(--radius-card)] border border-accent-line bg-accent-soft p-4 sm:p-5">
         <CardHead
@@ -343,11 +349,11 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
         <div className="mt-3">
           {shownLoose.length === 0 ? (
             <EmptyState
-              title={source ? `Rien n'attend du cote de ${channel(source).label}` : "Chaque demande porte un nom"}
+              title={source ? `Rien n'attend du côté de ${channel(source).label}` : "Chaque demande porte un nom"}
               body={
                 source
-                  ? "Rien de ce qui est arrive par cette source n'est sans responsable. Retirez le filtre pour voir le reste de la pile."
-                  : "Chaque conversation ouverte et chaque commande en cours appartient a quelqu'un. Il n'y a rien a distribuer en ce moment."
+                  ? "Rien de ce qui est arrivé par cette source n'est sans responsable. Retirez le filtre pour voir le reste de la pile."
+                  : "Chaque conversation ouverte et chaque commande en cours appartient à quelqu'un. Il n'y a rien à distribuer en ce moment."
               }
               action={source ? { label: "Afficher toutes les sources", href: "/team" } : undefined}
             />
@@ -360,7 +366,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
                 >
                   <span className="min-w-0">
                     <span className="block text-[13px] font-semibold">{item.label}</span>
-                    <span className="block text-[11.5px] text-muted">{item.détail}</span>
+                    <span className="block text-[11.5px] text-muted">{item.detail}</span>
                   </span>
                   <SourceBadge channelId={item.channelId} account={item.account} size="sm" />
                 </li>
@@ -372,7 +378,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
         {filteredLoose.length > shownLoose.length ? (
           <p className="mt-2 text-xs text-accent-ink">
             <span className="os-num">{filteredLoose.length - shownLoose.length}</span> autres
-            attendent derriere celles-ci, dans la boîte de réception et dans la liste des commandes.
+            attendent derrière celles-ci, dans la boîte de réception et dans la liste des commandes.
           </p>
         ) : null}
 
@@ -391,8 +397,8 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
             options={options()}
             emptyLine={
               source
-                ? `Rien n'attend du cote de ${channel(source).label}, il n'y a donc rien a distribuer depuis ce filtre.`
-                : "Rien n'attend un nom, il n'y a donc rien a distribuer."
+                ? `Rien n'attend du côté de ${channel(source).label}, il n'y a donc rien à distribuer depuis ce filtre.`
+                : "Rien n'attend un nom, il n'y a donc rien à distribuer."
             }
           />
         </div>
@@ -400,8 +406,8 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
 
       <Card>
         <CardHead
-          title="Ce que chaque role voit et peut faire"
-          hint="Trois roles, et aucun moyen d'en créer un quatrieme. Ce qu'une personne peut atteindre decoule du role indique a cote de son nom."
+          title="Ce que chaque rôle voit et peut faire"
+          hint="Trois rôles, et aucun moyen d'en créer un quatrième. Ce qu'une personne peut atteindre découle du rôle indiqué à côté de son nom."
         />
         <div className="grid gap-3 md:grid-cols-3">
           {ROLE_ORDER.map((role) => {
@@ -426,7 +432,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
       </Card>
 
       <section className="flex flex-col gap-3">
-        <h2 className="os-label">Personne par personne, la plus chargee en premier</h2>
+        <h2 className="os-label">Personne par personne, la plus chargée en premier</h2>
         <div className="grid gap-3 lg:grid-cols-2">
           {rows.map((row) => {
             const late = row.next ? isOverdue(row.next.dueAt, DEMO_NOW) : false;
@@ -472,7 +478,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
                 </dl>
 
                 <div>
-                  <p className="os-label">D&apos;ou viennent les conversations ouvertes</p>
+                  <p className="os-label">D&apos;où viennent les conversations ouvertes</p>
                   <div className="mt-1.5 flex flex-wrap gap-1.5">
                     {row.mix.length === 0 ? (
                       <span className="text-[12px] text-muted">Aucune conversation ouverte en ce moment.</span>
@@ -510,7 +516,7 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
                 <ReassignControl
                   items={row.conversations.map(conversationItem)}
                   options={options(row.id)}
-                  emptyLine={`${row.name} n'a aucune conversation ouverte a transmettre.`}
+                  emptyLine={`${row.name} n'a aucune conversation ouverte à transmettre.`}
                 />
               </Card>
             );
@@ -519,9 +525,9 @@ export default async function TeamPage({ searchParams }: { searchParams: Params 
       </section>
 
       <p className="max-w-[80ch] text-xs text-muted">
-        Ajouter une personne, en retirer une et enregistrer un transfert sont concus mais pas encore
-        construits. Les roles sont fixes a propriétaire, responsable et agent, et rien sur cet écran
-        n&apos;est envoyé a qui que ce soit. Ceci est le mode démonstration.
+        Ajouter une personne, en retirer une et enregistrer un transfert sont conçus mais pas encore
+        construits. Les rôles sont fixés à propriétaire, responsable et agent, et rien sur cet écran
+        n&apos;est envoyé à qui que ce soit. Ceci est le mode démonstration.
       </p>
     </div>
   );

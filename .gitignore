@@ -7,3 +7,7 @@ playwright-report/
 tsconfig.tsbuildinfo
 .env*
 .vercel
+
+# Preview tooling leftovers, not part of the project.
+.clicky-preview.*
+output/

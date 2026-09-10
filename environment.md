@@ -1,4 +1,4 @@
-# OmniShop Environment Guide
+# Environment guide
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@
 
 ## Local setup
 
-From the OmniShop repository:
+From this repository:
 
 ```bash
 npm install

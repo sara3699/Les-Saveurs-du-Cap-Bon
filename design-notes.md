@@ -1,4 +1,4 @@
-# OmniShop Dashboard Professionalization
+# Design notes
 
 ## Implemented in this pass
 

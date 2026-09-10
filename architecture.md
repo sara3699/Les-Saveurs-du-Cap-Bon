@@ -1,8 +1,8 @@
-# OmniShop Architecture
+# Architecture
 
 ## Product shape
 
-OmniShop is an omnichannel workspace for a small food and gourmet business. The owner should be able to see orders, customer conversations, team activity, and connector health without switching between six provider dashboards.
+This is an order workspace for a small food and gourmet business. The owner should be able to see orders, customer conversations, team activity, and connector health without switching between six provider dashboards.
 
 The core product promise is:
 

@@ -1,9 +1,11 @@
 import { ConnectionPill, SourceBadge } from "@/components/ui/badges";
 import { ConnectorActions } from "@/components/integrations/ConnectorActions";
+import { WebsiteConnector } from "@/components/integrations/WebsiteConnector";
 import { Card, DemoChip, PageHeader } from "@/components/ui/surfaces";
+import { websiteConnectorState } from "./actions";
 import { channel } from "@/lib/domain/channels";
 import type { ChannelConnection } from "@/lib/domain/types";
-import { timeAgo } from "@/lib/format";
+import { formatDateTime, timeAgo } from "@/lib/format";
 import { DEMO_NOW } from "@/lib/mock/time";
 import { getRepositories } from "@/lib/repositories";
 
@@ -27,7 +29,20 @@ function primaryLabel(connection: ChannelConnection): string {
   }
 }
 
-function ConnectorCard({ connection }: { connection: ChannelConnection }) {
+/**
+ * The site's own connector is the only one with something to configure, because
+ * it is the only one that works. Its state is read once by the page and handed
+ * down; every other card gets null and is drawn exactly as before.
+ */
+type WebsiteState = Awaited<ReturnType<typeof websiteConnectorState>>;
+
+function ConnectorCard({
+  connection,
+  websiteState = null,
+}: {
+  connection: ChannelConnection;
+  websiteState?: WebsiteState | null;
+}) {
   const def = channel(connection.channelId);
   const broken = connection.status === "error";
   return (
@@ -88,10 +103,29 @@ function ConnectorCard({ connection }: { connection: ChannelConnection }) {
         </p>
       ) : null}
 
+      {websiteState ? (
+        <WebsiteConnector
+          connectionId={connection.id}
+          keyIssuedLabel={websiteState.keyIssuedAt ? formatDateTime(websiteState.keyIssuedAt) : null}
+          canIssue={websiteState.canIssue}
+          canWrite={websiteState.canWrite}
+          live={websiteState.live}
+        />
+      ) : null}
+
+      {/*
+        The site's card now carries a test that really arrives. The rehearsed one
+        here would say a request was added when none was, so on that one card it
+        is turned off rather than left to contradict the working control above it.
+      */}
       <ConnectorActions
         name={connection.accountLabel}
         channelLabel={def.label}
-        canTest={connection.status === "connected" || connection.status === "warning"}
+        canTest={
+          websiteState
+            ? false
+            : connection.status === "connected" || connection.status === "warning"
+        }
         canDisconnect={connection.status === "connected" || connection.status === "warning" || connection.status === "error"}
         primaryLabel={primaryLabel(connection)}
         guideHref={connection.setupGuideHref}
@@ -111,6 +145,12 @@ function Row({ label, value, mono = false }: { label: string; value: string; mon
 
 export default async function IntegrationsPage() {
   const connections = await getRepositories().integrations.list();
+  // Read once, not once per card: the state is the same wherever the site's card
+  // ends up, and only that card is given it.
+  const website = connections.find((c) => c.channelId === "website") ?? null;
+  const websiteState = website ? await websiteConnectorState(website.id) : null;
+  const forCard = (c: ChannelConnection) => (website && c.id === website.id ? websiteState : null);
+
   const working = connections.filter((c) => c.status === "connected");
   const needsWork = connections.filter(
     (c) => !c.planned && (c.status === "setup_required" || c.status === "warning" || c.status === "error"),
@@ -129,7 +169,7 @@ export default async function IntegrationsPage() {
         <h2 className="os-label">Demande votre attention, {needsWork.length}</h2>
         <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
           {needsWork.map((c) => (
-            <ConnectorCard key={c.id} connection={c} />
+            <ConnectorCard key={c.id} connection={c} websiteState={forCard(c)} />
           ))}
         </div>
       </section>
@@ -138,7 +178,7 @@ export default async function IntegrationsPage() {
         <h2 className="os-label">En service, {working.length}</h2>
         <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
           {working.map((c) => (
-            <ConnectorCard key={c.id} connection={c} />
+            <ConnectorCard key={c.id} connection={c} websiteState={forCard(c)} />
           ))}
         </div>
       </section>
@@ -147,7 +187,7 @@ export default async function IntegrationsPage() {
         <h2 className="os-label">Prévus, {planned.length}</h2>
         <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
           {planned.map((c) => (
-            <ConnectorCard key={c.id} connection={c} />
+            <ConnectorCard key={c.id} connection={c} websiteState={forCard(c)} />
           ))}
         </div>
         <p className="max-w-[70ch] text-xs text-muted">

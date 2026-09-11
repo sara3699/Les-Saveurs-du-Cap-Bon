@@ -26,8 +26,12 @@ export async function loadChrome() {
   // their own moment. An order the website posts mid-read would land in the
   // orders query while missing from an attributions query that had already gone
   // out, and resolveSource is right to throw at an order whose source it cannot
-  // find. Asking afterwards means this snapshot is never older than the records
-  // it has to explain. The cost is one round trip; the rule stays untouched.
+  // find. Asking afterwards keeps this snapshot no older than the records it has
+  // to explain. The cost is one round trip; the rule stays untouched.
+  //
+  // Ordering alone is not enough. Next.js memoises fetch GETs across the whole
+  // tree, so without the matching change in the repositories this line can still
+  // be handed the snapshot the page took earlier. See FRESH_READS there.
   const attributions = await repos.workspace.attributions();
 
   const index = buildAttributionIndex(attributions, connections);

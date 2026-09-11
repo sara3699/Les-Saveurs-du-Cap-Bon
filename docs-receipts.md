@@ -154,6 +154,13 @@ Whatever the server finds goes through `parseQrPayload` unchanged. Finding a cod
 the receipt are separate successes, so a code found on a receipt whose reading then fails is
 kept by `attach_receipt_qr`, a function that writes three columns and touches nothing else.
 
+**All four ways a code can arrive are tested.** Live camera scanning runs against a fake
+webcam: Chromium accepts a raw Y4M file in place of one, so permission, the video element,
+the frames pulled off it, the reader, and the still frame that becomes the receipt all run
+for real. A browser with no reader of its own, which is every iPhone, is tested by deleting
+`BarcodeDetector` and checking the WebAssembly fallback loads from this application rather
+than anyone's CDN. A code in a photograph and a code inside a PDF are covered separately.
+
 **Limitations, plainly:**
 
 - **Remote verification against a tax authority is not built.** A verification address is stored
@@ -441,7 +448,7 @@ node scripts/make-fixtures.mjs
 ```bash
 npm test              # 172 unit tests
 npm run test:isolation # 25 checks that one shop cannot reach another
-npm run test:e2e      # 26 browser journeys
+npm run test:e2e      # 28 browser journeys
 npm run lint
 npx tsc --noEmit
 npm run build

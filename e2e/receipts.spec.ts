@@ -166,6 +166,33 @@ test("a QR code on a photograph is read in the browser and shown before anything
   await expect(page.getByText(/Conservé tel quel/)).toBeVisible();
 });
 
+test("a QR code is still read on a browser with no barcode reader of its own", async ({ page }) => {
+  // Chrome and Android have a reader built in. Safari does not, and the shop uses
+  // iPhones, so the fallback is ZXing compiled to WebAssembly and served from this
+  // application. That is the path this test forces: without it, the fallback would only
+  // ever run on the phones nobody is testing on.
+  await page.addInitScript(() => {
+    Reflect.deleteProperty(window, "BarcodeDetector");
+  });
+
+  await signIn(page, OWNER);
+  await page.goto("/receipts/nouveau");
+
+  const wasm = page.waitForResponse(
+    (response) => response.url().includes("/zxing/zxing_reader.wasm"),
+    { timeout: 30_000 },
+  );
+  await page.locator('input[type="file"]').setInputFiles("e2e/fixtures/recu-qr.png");
+
+  // The binary really is fetched from this application, not from anybody's CDN.
+  const response = await wasm;
+  expect(response.status()).toBe(200);
+  expect(new URL(response.url()).origin).toBe(new URL(page.url()).origin);
+
+  await expect(page.getByText("Contenu du code QR")).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText("FAC-2026-00412")).toBeVisible();
+});
+
 test("a QR code drawn inside a PDF is read by the server and lands in a field", async ({ page }) => {
   // This one does more than the others: it uploads, and then the server draws the PDF
   // page and reads it. The default thirty seconds is not enough, especially on the first

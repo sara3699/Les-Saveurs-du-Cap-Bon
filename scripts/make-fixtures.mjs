@@ -193,6 +193,46 @@ function receiptPdf(symbol, { drawAs }) {
   return assemble(objects);
 }
 
+/**
+ * The QR code as a fake camera feed.
+ *
+ * Chromium can be handed a raw Y4M file in place of a webcam, which is the only way to
+ * exercise live scanning without a physical phone. Live scanning is the headline action
+ * of this feature, so leaving it untested would mean shipping the main path on hope.
+ *
+ * Small on purpose: Y4M is uncompressed, so 160x120 keeps the fixture at tens of
+ * kilobytes rather than megabytes, and still leaves nearly four pixels per module, well
+ * above the roughly one and a half a reader needs.
+ */
+function qrY4m(symbol, { width = 160, height = 120, frames = 2, quiet = 4 } = {}) {
+  const n = symbol.width;
+  const side = n + quiet * 2;
+  const scale = Math.floor((Math.min(width, height) * 0.92) / side);
+  const drawn = side * scale;
+  const left = Math.floor((width - drawn) / 2);
+  const top = Math.floor((height - drawn) / 2);
+
+  const luma = Buffer.alloc(width * height, 255);
+  for (let row = 0; row < n; row += 1) {
+    for (let column = 0; column < n; column += 1) {
+      if (symbol.data[row * n + column] !== 0) continue;
+      for (let dy = 0; dy < scale; dy += 1) {
+        const y = top + (quiet + row) * scale + dy;
+        const x = left + (quiet + column) * scale;
+        luma.fill(0, y * width + x, y * width + x + scale);
+      }
+    }
+  }
+  // Grey has no colour: both chroma planes sit at their neutral value.
+  const chroma = Buffer.alloc((width / 2) * (height / 2), 128);
+
+  const parts = [Buffer.from(`YUV4MPEG2 W${width} H${height} F15:1 Ip A1:1 C420\n`, "latin1")];
+  for (let frame = 0; frame < frames; frame += 1) {
+    parts.push(Buffer.from("FRAME\n", "latin1"), luma, chroma, chroma);
+  }
+  return Buffer.concat(parts);
+}
+
 const wasmBinary = readFileSync(
   new URL("../node_modules/zxing-wasm/dist/writer/zxing_writer.wasm", import.meta.url),
 );
@@ -213,5 +253,7 @@ writeFileSync(
   new URL("pas-une-image.jpg", into),
   Buffer.from("Ceci n'est pas une image.\n".repeat(20)),
 );
+
+writeFileSync(new URL("camera-qr.y4m", into), qrY4m(symbol));
 
 console.log(`Fixtures written to e2e/fixtures/ (QR payload: ${PAYLOAD}, symbol ${symbol.width}x${symbol.height})`);

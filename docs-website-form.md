@@ -25,6 +25,12 @@ nouvelle rend l'ancienne inutilisable.
 Un formulaire qui l'envoie directement depuis le navigateur la donne à tout le monde.
 Le site reçoit la soumission, puis son serveur la transmet ici.
 
+**Ni dans un fichier suivi par git.** La première clé avait été écrite en clair dans un
+fichier de test, dans un dépôt public. Elle a été remplacée le 2026-09-11 : l'ancienne
+n'ouvre plus rien. Effacer la ligne n'aurait pas suffi, car l'historique de git la
+conserve ; seule une nouvelle clé annule la précédente. La clé de travail est maintenant
+dans `.env.local`, que `.gitignore` couvre, sous le nom `WEBSITE_INTAKE_KEY`.
+
 ## Deux formes, une seule adresse
 
 Une soumission qui porte des articles est une **commande**. Une soumission sans

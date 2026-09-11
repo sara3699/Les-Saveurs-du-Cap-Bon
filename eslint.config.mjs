@@ -17,7 +17,12 @@ const eslintConfig = defineConfig([
       "react/no-unescaped-entities": "off",
     },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  /*
+   * `.claude/` holds tooling state, including git worktrees that are whole second
+   * copies of this repository. Linting those reports every problem twice and reports
+   * problems in branches nobody is working on.
+   */
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", ".claude/**"]),
 ]);
 
 export default eslintConfig;

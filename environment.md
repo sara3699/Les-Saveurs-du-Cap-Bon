@@ -49,6 +49,8 @@ NEXT_PUBLIC_APP_URL
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY
+OCR_PROVIDER
+GOOGLE_VISION_API_KEY
 META_APP_ID
 META_APP_SECRET
 META_WEBHOOK_VERIFY_TOKEN
@@ -58,6 +60,29 @@ GOOGLE_WEBHOOK_SECRET
 STRIPE_SECRET_KEY
 STRIPE_WEBHOOK_SECRET
 ```
+
+## The website intake key
+
+`WEBSITE_INTAKE_KEY` in `.env.local` holds the key the shop's own website posts orders
+with. It belongs to whoever runs that website's server, and it is never read by this
+application: the intake endpoint takes the key from the request, not from an environment
+variable. It lives here so the browser tests can use it without writing it into a file
+git tracks.
+
+Issue a new one with `node scripts/rotate-intake-key.mjs`, which signs in as the owner,
+asks the database for a key, and writes it straight into `.env.local` without printing
+it. Issuing a new one makes the previous one stop working immediately.
+
+## Reading receipts
+
+Two variables, both optional and both server-only. `OCR_PROVIDER=google` together with
+`GOOGLE_VISION_API_KEY` turns on Google Cloud Vision. With either missing, receipts are read by
+the demonstration reader, which invents its figures from the file's hash and says so on every
+screen that shows them. There is no silent half-configured state.
+
+`GOOGLE_VISION_API_KEY` must never be prefixed `NEXT_PUBLIC_`. It is read in
+`src/lib/ocr/index.ts` and nowhere else. The whole receipts feature, file upload included, runs
+as the person signed in, so it needs no service-role key. See `docs-receipts.md`.
 
 Only `NEXT_PUBLIC_*` values are safe for browser delivery. Service-role keys, OAuth secrets, webhook verification tokens, and payment secrets must stay in server-only code and deployment secrets.
 

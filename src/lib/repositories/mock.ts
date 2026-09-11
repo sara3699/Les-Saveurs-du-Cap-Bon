@@ -7,6 +7,7 @@ import {
   CONVERSATION_ATTRIBUTIONS,
   MESSAGES,
 } from "@/lib/mock/people";
+import { RECEIPTS, RECEIPT_EVENTS } from "@/lib/mock/receipts";
 import type { SourceAttribution } from "@/lib/domain/types";
 import type {
   ContactRepository,
@@ -15,6 +16,8 @@ import type {
   IntegrationRepository,
   OrderFilter,
   OrderRepository,
+  ReceiptFilter,
+  ReceiptRepository,
   Repositories,
   WorkspaceRepository,
 } from "./types";
@@ -149,10 +152,49 @@ const workspace: WorkspaceRepository = {
   },
 };
 
+const receipts: ReceiptRepository = {
+  async list(filter: ReceiptFilter = {}) {
+    return RECEIPTS.filter((receipt) => {
+      if (filter.statuses?.length && !filter.statuses.includes(receipt.status)) return false;
+      if (filter.categories?.length && !filter.categories.includes(receipt.category)) return false;
+      if (filter.merchantKey && receipt.merchantKey !== filter.merchantKey) return false;
+      if (filter.uploadedById && receipt.uploadedById !== filter.uploadedById) return false;
+      if (filter.from && (receipt.purchaseDate ?? "") < filter.from) return false;
+      if (filter.to && (receipt.purchaseDate ?? "9999-12-31") > filter.to) return false;
+      if (filter.search) {
+        const haystack = [receipt.merchantName, receipt.receiptNumber, receipt.note]
+          .filter(Boolean)
+          .join(" ");
+        if (!matches(haystack, filter.search)) return false;
+      }
+      return true;
+    });
+  },
+  async byId(id) {
+    return RECEIPTS.find((receipt) => receipt.id === id) ?? null;
+  },
+  async fingerprints() {
+    return RECEIPTS.map((receipt) => ({
+      id: receipt.id,
+      // The demonstration set has no files behind it, so there is no hash to compare.
+      fileHash: null,
+      merchantName: receipt.merchantName,
+      receiptNumber: receipt.receiptNumber,
+      purchaseDate: receipt.purchaseDate,
+      totalAmount: receipt.totalAmount,
+      currency: receipt.currency,
+    }));
+  },
+  async events(receiptId) {
+    return RECEIPT_EVENTS[receiptId] ?? [];
+  },
+};
+
 export const mockRepositories: Repositories = {
   conversations,
   contacts,
   orders,
   integrations,
   workspace,
+  receipts,
 };

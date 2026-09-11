@@ -5,6 +5,7 @@ import type {
   ConversationRepository,
   IntegrationRepository,
   OrderRepository,
+  ReceiptRepository,
   Repositories,
   WorkspaceRepository,
 } from "../types";
@@ -12,6 +13,7 @@ import { supabaseContacts } from "./contacts";
 import { supabaseConversations } from "./conversations";
 import { supabaseIntegrations } from "./integrations";
 import { supabaseOrders } from "./orders";
+import { supabaseReceipts } from "./receipts";
 import { supabaseWorkspace } from "./workspace";
 
 /**
@@ -39,5 +41,6 @@ export function supabaseRepositories(): Repositories {
     orders: lazy<OrderRepository>(supabaseOrders),
     integrations: lazy<IntegrationRepository>(supabaseIntegrations),
     workspace: lazy<WorkspaceRepository>(supabaseWorkspace),
+    receipts: lazy<ReceiptRepository>(supabaseReceipts),
   };
 }

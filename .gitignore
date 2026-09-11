@@ -17,3 +17,6 @@ output/
 .memory/
 MEMORY.md
 .claude/
+
+# The QR reader's WebAssembly file, copied from node_modules before dev and build.
+public/zxing/

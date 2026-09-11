@@ -8,6 +8,7 @@ import {
   SourcePanel,
   type AttentionItem,
 } from "@/components/dashboard/panels";
+import { ExpensesGlance } from "@/components/receipts/panels";
 import { OrdersTable } from "@/components/orders/OrdersTable";
 import { Card, CardHead, DemoChip, PageHeader, Stat } from "@/components/ui/surfaces";
 import { buildAttributionIndex, resolveSource } from "@/lib/domain/attribution";
@@ -25,7 +26,9 @@ import {
   summarizeConversions,
 } from "@/lib/metrics";
 import { DEMO_NOW } from "@/lib/mock/time";
+import { expensesByCategory, summarizeExpenses } from "@/lib/receipts/expenses";
 import { getRepositories } from "@/lib/repositories";
+import { canSeeFinances, currentSession } from "@/lib/session";
 import { toOrderRow } from "@/lib/views";
 
 export const metadata = { title: "Tableau de bord, Les Saveurs du Cap Bon" };
@@ -131,6 +134,14 @@ export default async function DashboardPage() {
   const unassigned = conversations.filter((c) => !c.assigneeId && c.status !== "resolved");
   const overdue = tasks.filter((t) => !t.completedAt && isOverdue(t.dueAt, now));
   const products = await repos.workspace.products();
+
+  // The money going out is the owner's to see. Everyone else gets the rest of this
+  // screen and no expense figures at all.
+  const session = await currentSession();
+  const seesFinances = session ? canSeeFinances(session.member.role) : false;
+  const receipts = seesFinances ? await repos.receipts.list() : [];
+  const expenses = summarizeExpenses(receipts);
+  const topExpenseCategory = expensesByCategory(receipts)[0] ?? null;
   const lowStock = products.filter((p) => p.stock <= p.lowStockAt);
   const brokenConnections = connections.filter((c) => c.status === "error");
 
@@ -219,6 +230,10 @@ export default async function DashboardPage() {
       <ChannelHubPanel rows={demand} />
 
       <ConversionPanel summary={conversionSummary} rows={conversionRows} />
+
+      {seesFinances ? (
+        <ExpensesGlance summary={expenses} topCategory={topExpenseCategory} />
+      ) : null}
 
       <Card>
         <CardHead

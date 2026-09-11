@@ -101,6 +101,32 @@ src/lib/repositories/
     website.ts
 ```
 
+## Receipts and expenses
+
+Money going out, added on 2026-09-10. The full account is in `docs-receipts.md`; this is the
+shape of it.
+
+A receipt arrives as a file. `POST /api/receipts` checks its extension, its declared type and
+its first bytes, hashes it, takes a `draft` row through `register_receipt`, then stores the file
+in a private bucket under `<organization-id>/<year>/<uuid>.<ext>`. A second request,
+`POST /api/receipts/[id]/process`, reads it: an OCR provider returns text, `extractReceipt`
+turns that text into fields with a confidence each, and `apply_receipt_extraction` writes them.
+A person then corrects anything on the review screen, and the owner confirms it.
+
+Three things are load-bearing:
+
+- **Only a verified receipt counts.** Every figure on the expenses screen comes from
+  `status = 'verified'`. A reading nobody confirmed is visible and worth nothing.
+- **Reading is behind an interface.** `src/lib/ocr/` chooses a provider; the knowledge of what
+  a French or Tunisian receipt looks like stays in `src/lib/receipts/extract.ts`, where it can
+  be tested without a network and kept when the provider changes.
+- **The finances are the owner's.** The team files receipts; the owner sees the totals and is
+  the only one who can verify. Enforced in row level security for a signed-in account, and in
+  the application for the demonstration shop, which signs nobody in.
+
+The QR code is decoded in the browser for speed and parsed on the server for safety. Nothing
+opens it, fetches it, or trusts it.
+
 ## Production data model
 
 The first production migration should include:
@@ -159,8 +185,18 @@ Keep customer message content out of ordinary application logs. Use a correlatio
 
 ## Deliberate current limitations
 
-- The current repository is demo data only.
-- No real social account is connected.
+Corrected 2026-09-10. Sign-in, the database, row level security and the website intake connector
+were built after this document was first written, and the list below now says so.
+
+- No real social account is connected: WhatsApp, Instagram, Facebook and Google all wait on the
+  client's own accounts and, for Meta, on their review.
 - No provider credential is stored in the project.
 - Prices, stock, and SKUs are placeholders until an authorized catalog import is available.
-- Authentication, database persistence, RLS, webhooks, and billing are production follow-up work.
+- Selling something does not reduce its stock, so the low-stock warning is not yet real.
+- Nothing notifies anyone when they are not looking at the screen.
+- Receipts: no server-side QR decode, no HEIC conversion, no background queue, and the Google
+  Cloud Vision adapter has never been run against the live service. See `docs-receipts.md`.
+
+Built, and no longer follow-up work: email and password sign-in with three roles, a Supabase
+database behind every screen, row level security proved by `npm run test:isolation`, the website
+form connector, orders taken by hand, and receipts and expenses.

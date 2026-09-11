@@ -1,0 +1,51 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 300 252] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<<  /Length 918 >>
+stream
+BT
+/F1 8 Tf
+1 0 0 1 16 238 Tm (COMPTOIR EXEMPLE, GROS) Tj
+1 0 0 1 16 226 Tm (12 rue de l'Exemple, 8000 Nabeul) Tj
+1 0 0 1 16 214 Tm (Matricule fiscal : 9999101A/M/000) Tj
+1 0 0 1 16 202 Tm (--------------------------------) Tj
+1 0 0 1 16 190 Tm (Facture N 8421) Tj
+1 0 0 1 16 178 Tm (Date : 04/03/2026    14:35) Tj
+1 0 0 1 16 166 Tm (--------------------------------) Tj
+1 0 0 1 16 154 Tm (3 x Pistaches decortiquees, kg   144,000) Tj
+1 0 0 1 16 142 Tm (1 x Miel de romarin, pot 1 kg   38,000) Tj
+1 0 0 1 16 130 Tm (--------------------------------) Tj
+1 0 0 1 16 118 Tm (SOUS-TOTAL HT        182,000) Tj
+1 0 0 1 16 106 Tm (TVA 19%              34,580) Tj
+1 0 0 1 16 94 Tm (TOTAL TTC            216,580) Tj
+1 0 0 1 16 82 Tm (Reglement : Carte bancaire) Tj
+1 0 0 1 16 70 Tm (Carte **** **** **** 4242) Tj
+1 0 0 1 16 58 Tm (--------------------------------) Tj
+1 0 0 1 16 46 Tm (Donnees d'exemple, aucun recu reel) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000001211 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1306
+%%EOF

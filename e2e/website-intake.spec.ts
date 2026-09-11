@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { readFileSync } from "node:fs";
 
 /**
  * The shop's own website posting an order. This is the first connector that needs
@@ -6,8 +7,30 @@ import { expect, test } from "@playwright/test";
  *
  * These tests write to the demonstration shop, using references prefixed e2e- so
  * they can be told apart from real orders and cleared afterwards.
+ *
+ * The key is read from .env.local. It is never written into this file.
  */
-const KEY = "lsc_92d823c837d280353e4270d564532eab1086ab2e5ca61001";
+/**
+ * Read from .env.local, which .gitignore covers.
+ *
+ * This key used to be written out here in full, which put a working credential into a
+ * public repository. It has been rotated, so the one that leaked opens nothing, and
+ * nothing that unlocks the shop belongs in a file git tracks. Issue a fresh one with
+ * `node scripts/rotate-intake-key.mjs`.
+ */
+function intakeKey(): string {
+  const line = readFileSync(".env.local", "utf8")
+    .split("\n")
+    .find((entry) => entry.startsWith("WEBSITE_INTAKE_KEY="));
+  if (!line) {
+    throw new Error(
+      "WEBSITE_INTAKE_KEY is missing from .env.local. Issue one with: node scripts/rotate-intake-key.mjs",
+    );
+  }
+  return line.slice("WEBSITE_INTAKE_KEY=".length).trim();
+}
+
+const KEY = intakeKey();
 const ENDPOINT = "/api/intake/website";
 
 function reference() {

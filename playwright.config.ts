@@ -10,6 +10,13 @@ export default defineConfig({
   timeout: 30_000,
   expect: { timeout: 7_000 },
   fullyParallel: false,
+  /**
+   * One at a time, because every one of these journeys reads and writes the same live
+   * demonstration database. Playwright otherwise runs separate files in parallel, and
+   * then one test's new order lands in the middle of another's page render. That was
+   * not a flake: it failed nine of twenty-five, and passed all twenty-five sequentially.
+   */
+  workers: 1,
   reporter: [["list"]],
   use: {
     baseURL: "http://localhost:3199",

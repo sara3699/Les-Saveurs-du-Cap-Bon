@@ -23,7 +23,10 @@ The app runs on http://localhost:3100 and opens on the dashboard.
 | `npm run dev` | Development server on port 3100 |
 | `npm run build` | Production build |
 | `npm run lint` | ESLint, with the Next.js rules |
-| `npm run test` | Vitest, currently the source attribution suite |
+| `npm run test` | Vitest, the unit suites |
+| `npm run test:e2e` | Playwright, the browser journeys |
+| `npm run test:isolation` | Proves one shop cannot reach another's records |
+| `npx tsx scripts/seed-receipts.ts` | Fills the demonstration shop with receipts, by walking the real upload path |
 
 ## What is built
 

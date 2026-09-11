@@ -21,6 +21,12 @@ export interface Session {
   /** True only for a real signed in account. */
   canWrite: boolean;
   email: string | null;
+  /**
+   * Which shop, for the few places that need it before the database can work it out
+   * for itself: a receipt file's path has to start with it. Null through the
+   * demonstration door, which belongs to no shop and cannot write to one.
+   */
+  organizationId: string | null;
 }
 
 export async function currentSession(): Promise<Session | null> {
@@ -33,7 +39,7 @@ export async function currentSession(): Promise<Session | null> {
     if (user) {
       const { data: row } = await db
         .from("organization_members")
-        .select("id, display_name, initials, role")
+        .select("id, display_name, initials, role, organization_id")
         .eq("profile_id", user.id)
         .is("archived_at", null)
         .maybeSingle();
@@ -48,7 +54,12 @@ export async function currentSession(): Promise<Session | null> {
             openConversations: 0,
             tasksDue: 0,
           } satisfies TeamMember);
-        return { member, canWrite: true, email: user.email ?? null };
+        return {
+          member,
+          canWrite: true,
+          email: user.email ?? null,
+          organizationId: (row.organization_id as string | null) ?? null,
+        };
       }
     }
   }
@@ -57,7 +68,7 @@ export async function currentSession(): Promise<Session | null> {
   const demoId = jar.get(DEMO_COOKIE)?.value;
   if (!demoId) return null;
   const member = team.find((m) => m.id === demoId);
-  return member ? { member, canWrite: false, email: null } : null;
+  return member ? { member, canWrite: false, email: null, organizationId: null } : null;
 }
 
 /** What each role is allowed to open. The owner sees everything. */
@@ -73,4 +84,16 @@ export function canOpen(role: TeamRole, href: string): boolean {
 
 export function hiddenFor(role: TeamRole): string[] {
   return HIDDEN_FOR[role];
+}
+
+/**
+ * Who sees the money going out.
+ *
+ * Sarra's rule: the team can photograph a receipt into the workspace, the owner is the
+ * one who sees the finances. The database enforces this for a signed-in account; this
+ * is the same rule at the screen, which is also what the demonstration door obeys since
+ * the database cannot tell one demonstration visitor from another.
+ */
+export function canSeeFinances(role: TeamRole): boolean {
+  return role === "owner";
 }

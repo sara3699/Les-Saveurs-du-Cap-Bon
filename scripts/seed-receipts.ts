@@ -140,6 +140,12 @@ async function main() {
     const client = index % 3 === 2 ? agent : owner;
     const path = storagePath({ organizationId: DEMO_ORG, extension: "pdf" });
 
+    // Every ninth receipt carries the code printed on it. It is worked out once and
+    // passed to both calls below, because the extraction replaces these two columns
+    // outright: a payload that leaves the code out does not preserve it, it erases it.
+    const scannedCode = index % 9 === 3 ? `FAC-2026-${4000 + index}` : null;
+    const scannedKind = scannedCode ? "receipt_number" : null;
+
     const { data: registered, error } = await client.rpc("register_receipt", {
       p_payload: {
         file_path: path,
@@ -147,9 +153,9 @@ async function main() {
         file_mime: "application/pdf",
         file_size: bytes.length,
         file_hash: fileHash,
-        source_type: index % 4 === 0 ? "camera" : index % 9 === 3 ? "qr" : "upload",
-        qr_payload: index % 9 === 3 ? `FAC-2026-${4000 + index}` : null,
-        qr_kind: index % 9 === 3 ? "receipt_number" : null,
+        source_type: index % 4 === 0 ? "camera" : scannedCode ? "qr" : "upload",
+        qr_payload: scannedCode,
+        qr_kind: scannedKind,
       },
     });
     if (error) throw new Error(`register_receipt failed: ${error.message}`);
@@ -219,6 +225,8 @@ async function main() {
         payment_method: read.payment_method,
         card_last_four: read.card_last_four,
         raw_ocr_text: text,
+        qr_payload: scannedCode,
+        qr_kind: scannedKind,
         rejected: verdict.status === "rejected",
         reasons: verdict.reasons,
         missing_fields: verdict.missingFields,
@@ -281,8 +289,24 @@ async function main() {
     }
   }
 
+  // The code printed on a receipt was being erased by its own extraction, quietly, and
+  // nothing noticed because nothing ever counted them. Now the seed refuses to finish on
+  // a shop where every code has gone missing.
+  const { count: withCode } = await owner
+    .from("receipts")
+    .select("id", { count: "exact", head: true })
+    .eq("organization_id", DEMO_ORG)
+    .not("qr_payload", "is", null);
+
+  if (filed > 0 && !withCode) {
+    throw new Error(
+      "Not one receipt kept its QR code. Something in the payloads above is dropping it.",
+    );
+  }
+
   console.log(
-    `Filed ${filed} receipts, ${verified} verified, ${failed} left in error, ${already} were already there.`,
+    `Filed ${filed} receipts, ${verified} verified, ${failed} left in error, ` +
+      `${already} were already there, ${withCode ?? 0} carrying a QR code.`,
   );
 }
 

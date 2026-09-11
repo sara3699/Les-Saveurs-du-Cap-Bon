@@ -21,12 +21,16 @@ export default async function OrderDetailPage({ params }: { params: Params }) {
   const order = await repos.orders.byReference(decodeURIComponent(reference));
   if (!order) notFound();
 
-  const [contact, team, connections, attributions] = await Promise.all([
+  const [contact, team, connections] = await Promise.all([
     repos.contacts.byId(order.contactId),
     repos.workspace.team(),
     repos.integrations.list(),
-    repos.workspace.attributions(),
   ]);
+
+  // Read after the records above and never alongside them, so the index is
+  // never older than the records it has to explain. loadChrome carries the
+  // long note on why a parallel read leaves resolveSource nothing to find.
+  const attributions = await repos.workspace.attributions();
 
   const index = buildAttributionIndex(attributions, connections);
   const source = orderSource(order, index);

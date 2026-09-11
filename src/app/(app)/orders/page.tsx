@@ -52,7 +52,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Param
   const query = one(params.q) ?? "";
 
   const repos = getRepositories();
-  const [orders, contacts, team, connections, attributions] = await Promise.all([
+  const [orders, contacts, team, connections] = await Promise.all([
     repos.orders.list({
       channels: source ? [source] : undefined,
       paymentStatuses: payment ? [payment] : undefined,
@@ -65,8 +65,12 @@ export default async function OrdersPage({ searchParams }: { searchParams: Param
     repos.contacts.list(),
     repos.workspace.team(),
     repos.integrations.list(),
-    repos.workspace.attributions(),
   ]);
+
+  // Read after the records above and never alongside them, so the index is
+  // never older than the records it has to explain. loadChrome carries the
+  // long note on why a parallel read leaves resolveSource nothing to find.
+  const attributions = await repos.workspace.attributions();
 
   const index = buildAttributionIndex(attributions, connections);
   const rows = orders.map((o) =>

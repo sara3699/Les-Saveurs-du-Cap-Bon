@@ -45,12 +45,16 @@ export default async function BudgetPage({ searchParams }: { searchParams: Param
   const nearOnly = one(params.near) === "1";
 
   const repos = getRepositories();
-  const [{ budgets, lines }, recentOrders, connections, attributions] = await Promise.all([
+  const [{ budgets, lines }, recentOrders, connections] = await Promise.all([
     repos.workspace.budgets(),
     repos.orders.list({ sinceDays: 30 }),
     repos.integrations.list(),
-    repos.workspace.attributions(),
   ]);
+
+  // Read after the records above and never alongside them, so the index is
+  // never older than the records it has to explain. loadChrome carries the
+  // long note on why a parallel read leaves resolveSource nothing to find.
+  const attributions = await repos.workspace.attributions();
 
   // A budget is worth the sum of the lines underneath it. The tiles, the summary
   // table and the line tables are all read off this one addition, so a card can

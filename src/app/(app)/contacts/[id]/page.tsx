@@ -71,7 +71,7 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
   const contact = await repos.contacts.byId(decodeURIComponent(id));
   if (!contact) notFound();
 
-  const [contacts, conversations, orders, tasks, team, connections, attributions, duplicates] =
+  const [contacts, conversations, orders, tasks, team, connections, duplicates] =
     await Promise.all([
       repos.contacts.list(),
       repos.conversations.list(),
@@ -79,9 +79,13 @@ export default async function ContactDetailPage({ params }: { params: Params }) 
       repos.workspace.tasks(),
       repos.workspace.team(),
       repos.integrations.list(),
-      repos.workspace.attributions(),
       repos.contacts.duplicates(),
     ]);
+
+  // Read after the records above and never alongside them, so the index is
+  // never older than the records it has to explain. loadChrome carries the
+  // long note on why a parallel read leaves resolveSource nothing to find.
+  const attributions = await repos.workspace.attributions();
 
   const index = buildAttributionIndex(attributions, connections);
   const teamById = new Map(team.map((member) => [member.id, member.name]));

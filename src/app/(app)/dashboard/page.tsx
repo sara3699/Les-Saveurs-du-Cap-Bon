@@ -46,17 +46,21 @@ function greeting(now: Date): string {
 
 export default async function DashboardPage() {
   const repos = getRepositories();
-  const [orders, contacts, team, conversionMetrics, connections, attributions, conversations, tasks] =
+  const [orders, contacts, team, conversionMetrics, connections, conversations, tasks] =
     await Promise.all([
       repos.orders.list(),
       repos.contacts.list(),
       repos.workspace.team(),
       repos.workspace.conversionMetrics(),
       repos.integrations.list(),
-      repos.workspace.attributions(),
       repos.conversations.list(),
       repos.workspace.tasks(),
     ]);
+
+  // Read after the records above and never alongside them, so the index is
+  // never older than the records it has to explain. loadChrome carries the
+  // long note on why a parallel read leaves resolveSource nothing to find.
+  const attributions = await repos.workspace.attributions();
 
   const index = buildAttributionIndex(attributions, connections);
   const now = DEMO_NOW;

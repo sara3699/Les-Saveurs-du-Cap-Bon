@@ -61,6 +61,25 @@ STRIPE_SECRET_KEY
 STRIPE_WEBHOOK_SECRET
 ```
 
+## The demonstration accounts
+
+`DEMO_OWNER_EMAIL`, `DEMO_OWNER_PASSWORD`, `DEMO_AGENT_EMAIL` and `DEMO_AGENT_PASSWORD` in
+`.env.local` are what the tests and the seeding script sign in as. They are read by
+`e2e/accounts.ts` and by the two scripts, and they appear in no file git tracks.
+
+These two passwords were written out in full across ten files in the public repository
+until 2026-09-11. The owner's account can write, so anyone who read them could have
+signed in and changed the shop's data. Both were changed and the published ones are
+refused. Change them again with:
+
+```bash
+node scripts/rotate-demo-passwords.mjs
+```
+
+It signs in as each person, sets a new password, proves the new one works before
+recording it, and writes it into `.env.local` without printing it. The other demonstration
+members, Khaled and Yassine, never had their passwords published and were left alone.
+
 ## The website intake key
 
 `WEBSITE_INTAKE_KEY` in `.env.local` holds the key the shop's own website posts orders

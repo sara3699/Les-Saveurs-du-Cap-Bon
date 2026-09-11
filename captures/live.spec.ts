@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { OWNER } from "../e2e/accounts";
 
 const LIVE = "https://omnishop-ten.vercel.app";
 
@@ -9,8 +10,8 @@ test("the deployed site signs in and reads the database", async ({ page }) => {
   await page.goto(`${LIVE}/connexion`, { waitUntil: "networkidle" });
   await page.screenshot({ path: ".captures/live-connexion.png", fullPage: true });
 
-  await page.getByLabel("Adresse e-mail").fill("sarra@saveurs-demo.tn");
-  await page.getByLabel("Mot de passe").fill("kQ7-marsa-91");
+  await page.getByLabel("Adresse e-mail").fill(OWNER.email);
+  await page.getByLabel("Mot de passe").fill(OWNER.password);
   await page.getByRole("button", { name: "Se connecter" }).click();
   await expect(page).toHaveURL(/\/dashboard/, { timeout: 60_000 });
 

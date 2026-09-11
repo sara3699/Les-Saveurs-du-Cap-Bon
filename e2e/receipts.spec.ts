@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 import { readFileSync } from "node:fs";
+import { AGENT, OWNER } from "./accounts";
 
 /**
  * Photographing a receipt into the shop's accounts.
@@ -22,8 +23,6 @@ const env = Object.fromEntries(
     }),
 );
 
-const OWNER = { email: "sarra@saveurs-demo.tn", password: "kQ7-marsa-91" };
-const AGENT = { email: "mouna@saveurs-demo.tn", password: "pT9-korba-52" };
 const MARK = "test-e2e-";
 
 async function signIn(page: Page, who: { email: string; password: string }) {

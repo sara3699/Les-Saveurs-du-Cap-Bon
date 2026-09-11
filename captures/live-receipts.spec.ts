@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 import { readFileSync } from "node:fs";
+import { OWNER } from "../e2e/accounts";
 
 /**
  * Receipts, against the deployed site rather than a local server.
@@ -18,7 +19,6 @@ import { readFileSync } from "node:fs";
  * It files a receipt in the live demonstration shop and clears it away afterwards.
  */
 const LIVE = "https://omnishop-ten.vercel.app";
-const OWNER = { email: "sarra@saveurs-demo.tn", password: "kQ7-marsa-91" };
 const MARK = "test-live-";
 
 const env = Object.fromEntries(

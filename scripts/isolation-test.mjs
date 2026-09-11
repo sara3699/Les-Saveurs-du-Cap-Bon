@@ -50,9 +50,11 @@ async function writesNothing(name, promise) {
 }
 
 const owner = createClient(URL_, KEY);
+// Read from .env.local, never written down here: this repository is public and the
+// owner account can write. Set them with: node scripts/rotate-demo-passwords.mjs
 const { error: signInError } = await owner.auth.signInWithPassword({
-  email: "sarra@saveurs-demo.tn",
-  password: "kQ7-marsa-91",
+  email: env.DEMO_OWNER_EMAIL,
+  password: env.DEMO_OWNER_PASSWORD,
 });
 if (signInError) {
   console.error("Le compte propriétaire n'a pas pu se connecter:", signInError.message);

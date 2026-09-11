@@ -1,11 +1,12 @@
 import { expect, test } from "@playwright/test";
+import { OWNER } from "../e2e/accounts";
 const LIVE = "https://omnishop-ten.vercel.app";
 
 test("the deployed site can take an order by hand", async ({ page }) => {
   test.setTimeout(150_000);
   await page.goto(`${LIVE}/connexion`);
-  await page.getByLabel("Adresse e-mail").fill("sarra@saveurs-demo.tn");
-  await page.getByLabel("Mot de passe").fill("kQ7-marsa-91");
+  await page.getByLabel("Adresse e-mail").fill(OWNER.email);
+  await page.getByLabel("Mot de passe").fill(OWNER.password);
   await page.getByRole("button", { name: "Se connecter" }).click();
   await expect(page).toHaveURL(/\/dashboard/, { timeout: 60_000 });
 

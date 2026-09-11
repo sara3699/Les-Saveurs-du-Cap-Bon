@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { OWNER } from "./accounts";
 
 /**
  * The order taken on the telephone. This is the screen the shop uses most, so it is
@@ -14,7 +15,7 @@ async function signIn(page: import("@playwright/test").Page, email: string, pass
 }
 
 test("an order taken by hand is saved and appears in the list as Manuel", async ({ page }) => {
-  await signIn(page, "sarra@saveurs-demo.tn", "kQ7-marsa-91");
+  await signIn(page, OWNER.email, OWNER.password);
 
   await page.goto("/orders");
   await page.getByRole("link", { name: "Nouvelle commande" }).first().click();

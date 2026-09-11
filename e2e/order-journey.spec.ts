@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { AGENT, OWNER } from "./accounts";
 
 /**
  * The journey an owner walks on the first morning: see which platform the
@@ -28,7 +29,7 @@ async function signIn(page: import("@playwright/test").Page, email: string, pass
 }
 
 test.beforeEach(async ({ page }) => {
-  await signIn(page, "sarra@saveurs-demo.tn", "kQ7-marsa-91");
+  await signIn(page, OWNER.email, OWNER.password);
 });
 
 test("the dashboard names every platform the orders came from", async ({ page }) => {
@@ -174,8 +175,8 @@ test("an agent does not see the shop figures the owner sees", async ({ context }
   const page = await fresh.newPage();
 
   await page.goto("http://localhost:3199/connexion");
-  await page.getByLabel("Adresse e-mail").fill("mouna@saveurs-demo.tn");
-  await page.getByLabel("Mot de passe").fill("pT9-korba-52");
+  await page.getByLabel("Adresse e-mail").fill(AGENT.email);
+  await page.getByLabel("Mot de passe").fill(AGENT.password);
   await page.getByRole("button", { name: "Se connecter" }).click();
   await expect(page).toHaveURL(/\/dashboard/, { timeout: 20_000 });
 

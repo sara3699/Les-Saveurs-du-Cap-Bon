@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { readFileSync } from "node:fs";
+import { OWNER } from "./accounts";
 
 /**
  * The shop's own website posting an order. This is the first connector that needs
@@ -129,8 +130,8 @@ test("the order the website sent shows up in the workspace, labelled Site web", 
   const { reference: created } = await posted.json();
 
   await page.goto("/connexion");
-  await page.getByLabel("Adresse e-mail").fill("sarra@saveurs-demo.tn");
-  await page.getByLabel("Mot de passe").fill("kQ7-marsa-91");
+  await page.getByLabel("Adresse e-mail").fill(OWNER.email);
+  await page.getByLabel("Mot de passe").fill(OWNER.password);
   await page.getByRole("button", { name: "Se connecter" }).click();
   await expect(page).toHaveURL(/\/dashboard/, { timeout: 20_000 });
 

@@ -36,8 +36,9 @@ const BUCKET = "receipts";
 const COUNT = 26;
 
 const PEOPLE = [
-  { email: "sarra@saveurs-demo.tn", password: "kQ7-marsa-91", role: "owner" as const },
-  { email: "mouna@saveurs-demo.tn", password: "pT9-korba-52", role: "agent" as const },
+  // From .env.local. This repository is public and the owner account can write.
+  { email: env.DEMO_OWNER_EMAIL, password: env.DEMO_OWNER_PASSWORD, role: "owner" as const },
+  { email: env.DEMO_AGENT_EMAIL, password: env.DEMO_AGENT_PASSWORD, role: "agent" as const },
 ];
 
 /**

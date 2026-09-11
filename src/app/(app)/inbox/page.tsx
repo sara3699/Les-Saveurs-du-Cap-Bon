@@ -51,7 +51,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
   // action re-reads the session itself and never trusts this.
   const session = await currentSession();
   const canWrite = session?.canWrite ?? false;
-  const [conversations, contacts, team, connections, attributions, tasks, orders] =
+  const [conversations, contacts, team, connections, tasks, orders] =
     await Promise.all([
       repos.conversations.list({
         channels: channelFilter ? [channelFilter] : undefined,
@@ -63,10 +63,14 @@ export default async function InboxPage({ searchParams }: { searchParams: Params
       repos.contacts.list(),
       repos.workspace.team(),
       repos.integrations.list(),
-      repos.workspace.attributions(),
       repos.workspace.tasks(),
       repos.orders.list(),
     ]);
+
+  // Read after the records above and never alongside them, so the index is
+  // never older than the records it has to explain. loadChrome carries the
+  // long note on why a parallel read leaves resolveSource nothing to find.
+  const attributions = await repos.workspace.attributions();
 
   const index = buildAttributionIndex(attributions, connections);
   const contactById = new Map(contacts.map((c) => [c.id, c]));

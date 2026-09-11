@@ -51,12 +51,16 @@ const IMPORT_COLUMNS = [
 
 export default async function ProductsPage() {
   const repos = getRepositories();
-  const [products, orders, attributions, connections] = await Promise.all([
+  const [products, orders, connections] = await Promise.all([
     repos.workspace.products(),
     repos.orders.list(),
-    repos.workspace.attributions(),
     repos.integrations.list(),
   ]);
+
+  // Read after the records above and never alongside them, so the index is
+  // never older than the records it has to explain. loadChrome carries the
+  // long note on why a parallel read leaves resolveSource nothing to find.
+  const attributions = await repos.workspace.attributions();
 
   const index = buildAttributionIndex(attributions, connections);
 

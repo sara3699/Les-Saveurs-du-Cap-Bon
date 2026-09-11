@@ -37,13 +37,17 @@ function commonDeliveryFee(fees: number[]): number {
 
 export default async function CalculatorPage() {
   const repos = getRepositories();
-  const [products, orders, attributions, connections, budgets] = await Promise.all([
+  const [products, orders, connections, budgets] = await Promise.all([
     repos.workspace.products(),
     repos.orders.list(),
-    repos.workspace.attributions(),
     repos.integrations.list(),
     repos.workspace.budgets(),
   ]);
+
+  // Read after the records above and never alongside them, so the index is
+  // never older than the records it has to explain. loadChrome carries the
+  // long note on why a parallel read leaves resolveSource nothing to find.
+  const attributions = await repos.workspace.attributions();
 
   const index = buildAttributionIndex(attributions, connections);
 

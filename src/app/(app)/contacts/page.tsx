@@ -32,13 +32,17 @@ export default async function ContactsPage({ searchParams }: { searchParams: Par
   const query = (one(params.q) ?? "").trim();
 
   const repos = getRepositories();
-  const [contacts, duplicateGroups, team, connections, attributions] = await Promise.all([
+  const [contacts, duplicateGroups, team, connections] = await Promise.all([
     repos.contacts.list(),
     repos.contacts.duplicates(),
     repos.workspace.team(),
     repos.integrations.list(),
-    repos.workspace.attributions(),
   ]);
+
+  // Read after the records above and never alongside them, so the index is
+  // never older than the records it has to explain. loadChrome carries the
+  // long note on why a parallel read leaves resolveSource nothing to find.
+  const attributions = await repos.workspace.attributions();
 
   const index = buildAttributionIndex(attributions, connections);
   const teamById = new Map(team.map((member) => [member.id, member.name]));

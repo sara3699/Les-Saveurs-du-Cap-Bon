@@ -35,18 +35,22 @@ export default async function TasksPage({ searchParams }: { searchParams: Params
   const requestedType = one(params.type);
 
   const repos = getRepositories();
-  const [tasks, contacts, team, conversations, connections, attributions, session] =
+  const [tasks, contacts, team, conversations, connections, session] =
     await Promise.all([
       repos.workspace.tasks(),
       repos.contacts.list(),
       repos.workspace.team(),
       repos.conversations.list(),
       repos.integrations.list(),
-      repos.workspace.attributions(),
       // Only a real account can tick a box and have it saved. The board says
       // which of the two visits this is, and the action checks it again itself.
       currentSession(),
     ]);
+
+  // Read after the records above and never alongside them, so the index is
+  // never older than the records it has to explain. loadChrome carries the
+  // long note on why a parallel read leaves resolveSource nothing to find.
+  const attributions = await repos.workspace.attributions();
 
   // A filter value no chip on this screen can produce is ignored rather than
   // obeyed. A hand typed or stale link then shows the whole list, instead of an

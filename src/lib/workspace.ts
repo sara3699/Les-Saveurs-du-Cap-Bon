@@ -11,14 +11,24 @@ import type { HealthNotice, SearchEntry } from "@/components/shell/AppChrome";
  */
 export async function loadChrome() {
   const repos = getRepositories();
-  const [conversations, contacts, orders, connections, attributions, tasks] = await Promise.all([
+  const [conversations, contacts, orders, connections, tasks] = await Promise.all([
     repos.conversations.list(),
     repos.contacts.list(),
     repos.orders.list({ sinceDays: 40 }),
     repos.integrations.list(),
-    repos.workspace.attributions(),
     repos.workspace.tasks(),
   ]);
+
+  // Read last, on purpose, and never alongside the records above.
+  //
+  // A record and its attribution row are written in one transaction, so the two
+  // never disagree on disk. Separate queries, though, each see the database at
+  // their own moment. An order the website posts mid-read would land in the
+  // orders query while missing from an attributions query that had already gone
+  // out, and resolveSource is right to throw at an order whose source it cannot
+  // find. Asking afterwards means this snapshot is never older than the records
+  // it has to explain. The cost is one round trip; the rule stays untouched.
+  const attributions = await repos.workspace.attributions();
 
   const index = buildAttributionIndex(attributions, connections);
   const contactName = new Map(contacts.map((c) => [c.id, c.name]));

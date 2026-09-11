@@ -157,6 +157,20 @@ Never reuse production webhook secrets in local development. For provider work, 
 
 The app is a Next.js application and can be deployed to Vercel or another Node-compatible platform. Configure the build command as `npm run build`, keep the runtime on Node 20+, and set the application URL before registering OAuth callbacks.
 
+### How this copy deploys
+
+The published demonstration is the Vercel project `omnishop`, served at
+`https://omnishop-ten.vercel.app`.
+
+Until 2026-09-10 that project had no repository connected to it, so pushing changed
+nothing and every deployment had to be run by hand. It was easy to miss: the site kept
+working, it simply kept serving an older commit, and at one point it sat four commits
+behind `main` without any sign on the screen. The repository is connected now, so a push
+to `main` builds and deploys on its own.
+
+`npx vercel --prod` still works and is the fallback when a deployment has to go out
+without a push, or when the connection has to be checked.
+
 Before launch, verify:
 
 - Authenticated users cannot read another workspace.
